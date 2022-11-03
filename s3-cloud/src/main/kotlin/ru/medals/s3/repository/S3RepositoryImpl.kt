@@ -1,0 +1,67 @@
+package ru.medals.s3.repository
+
+import com.amazonaws.services.s3.AmazonS3
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import ru.medals.domain.core.util.Constants
+import ru.medals.domain.image.model.FileData
+import ru.medals.domain.image.repository.S3Repository
+import java.io.File
+
+class S3RepositoryImpl(
+	private val s3: AmazonS3
+) : S3Repository {
+
+	override suspend fun putObject(key: String, fileData: FileData): String? {
+		return try {
+			withContext(Dispatchers.IO) {
+				val file = File(fileData.url)
+				s3.putObject(Constants.S3_BUCKET_NAME, key, file)
+				s3.getUrl(Constants.S3_BUCKET_NAME, key).toExternalForm()
+			}
+		} catch (e: Exception) {
+			println(e.message)
+			null
+		}
+	}
+
+	override suspend fun deleteObject(key: String): Boolean {
+		return try {
+			withContext(Dispatchers.IO) {
+				s3.deleteObject(Constants.S3_BUCKET_NAME, key)
+			}
+			true
+		} catch (e: Exception) {
+			println(e.message)
+			false
+		}
+	}
+
+	/**
+	 * Проверка доступности хранилища
+	 */
+	override suspend fun available(): Boolean {
+		return try {
+			withContext(Dispatchers.IO) {
+				s3.listBuckets().map {
+					println(it.name)
+					it.name
+				}.contains(Constants.S3_BUCKET_NAME)
+			}
+		} catch (e: Exception) {
+			false
+		}
+	}
+
+//		return suspendCoroutine {
+//			it.resume(
+//				try {
+//					s3.deleteObject(Constants.S3_BUCKET_NAME, key)
+//					true
+//				} catch (e: Exception) {
+//					println(e.stackTrace)
+//					false
+//				}
+//			)
+//		}
+}

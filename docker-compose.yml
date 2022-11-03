@@ -1,0 +1,37 @@
+version: '3.9'
+networks:
+  net:
+services:
+  mongo:
+    image: mongo:6.0.2
+    restart: always
+    networks:
+      - net
+    ports:
+      - "27017:27017"
+    volumes:
+      - /home/nifont/mongo/data:/data/db
+  server:
+    build: medals/.
+    restart: always
+    depends_on:
+      - mongo
+    networks:
+      - net
+    ports:
+      - "8080:8080"
+    volumes:
+      - /home/nifont/medals/files:/app/files
+    env_file:
+      - .env
+  web:
+    build: bravo/.
+    restart: always
+    depends_on:
+      - server
+    networks:
+      - net
+    ports:
+      - "3000:3000"
+
+

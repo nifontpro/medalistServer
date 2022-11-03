@@ -1,0 +1,182 @@
+package ru.medals.data.medal.repository
+
+import org.litote.kmongo.*
+import org.litote.kmongo.coroutine.CoroutineDatabase
+import ru.medals.data.core.deleteImageFile
+import ru.medals.data.core.errorBadImageKey
+import ru.medals.data.core.errorS3
+import ru.medals.data.medal.model.MedalCol
+import ru.medals.domain.core.bussines.model.RepositoryData
+import ru.medals.domain.core.bussines.model.RepositoryError
+import ru.medals.domain.image.model.FileData
+import ru.medals.domain.image.model.ImageRef
+import ru.medals.domain.image.repository.S3Repository
+import ru.medals.domain.medal.model.Medal
+import ru.medals.domain.medal.repository.MedalRepository
+
+class MedalRepositoryImpl(
+	db: CoroutineDatabase,
+	private val s3repository: S3Repository
+) : MedalRepository {
+
+	private val medals = db.getCollection<MedalCol>()
+
+	override suspend fun createEmptyMedal(isSystem: Boolean, companyId: String?): String? {
+		val medal = MedalCol(companyId = companyId, isSystem = isSystem)
+		return if (medals.insertOne(medal).wasAcknowledged()) {
+			medal.id
+		} else {
+			null
+		}
+	}
+
+	override suspend fun getMedalById(id: String): Medal? {
+		return medals.findOneById(id)?.toMedal()
+	}
+
+	override suspend fun getCompanyMedals(companyId: String, filter: String?): List<Medal> {
+		return medals.find(
+			MedalCol::companyId eq companyId,
+			filter?.let { MedalCol::name regex Regex("$filter", RegexOption.IGNORE_CASE) }
+		).toList().map { it.toMedal() }
+	}
+
+	override suspend fun updateMedal(medal: Medal): Boolean {
+		return medals.updateOneById(
+			id = medal.id,
+			update = MedalCol(
+				id = medal.id,
+				name = medal.name,
+				description = medal.description,
+				score = medal.score,
+			)
+		).wasAcknowledged()
+	}
+
+	override suspend fun deleteMedal(medal: Medal): Boolean {
+		val isSuccess = medals.deleteOneById(medal.id).wasAcknowledged()
+		if (isSuccess) {
+			deleteImageFile(medal.imageUrl)
+		}
+		return isSuccess
+	}
+
+	override suspend fun getCountByCompany(companyId: String): Long {
+		return medals.countDocuments(MedalCol::companyId eq companyId)
+	}
+
+	@Deprecated("Удалить в будущем")
+	override suspend fun updateImage(
+		medalId: String,
+		fileData: FileData,
+	): Boolean {
+		try {
+			val medal = medals.findOneById(medalId) ?: return false
+			val imageKey = "C${medal.companyId}/medals/${fileData.filename}"
+			val imageUrl = s3repository.putObject(key = imageKey, fileData = fileData) ?: return false
+
+			val isSuccess = medals.updateOneById(
+				id = medalId,
+				update = set(
+					MedalCol::imageUrl setTo imageUrl,
+					MedalCol::imageKey setTo imageKey
+				),
+			).wasAcknowledged()
+
+			if (isSuccess) {
+				// Удаляем старое изображение в s3
+				medal.imageKey?.let {
+					s3repository.deleteObject(key = it)
+				}
+			} else {
+				// Удаляем новое изображение в s3, если не обновились данные в БД
+				s3repository.deleteObject(key = imageKey)
+			}
+
+			return isSuccess
+		} catch (e: Exception) {
+			println(e.stackTrace)
+			return false
+		}
+	}
+
+	override suspend fun addImage(medalId: String, fileData: FileData): RepositoryData<Unit> {
+		if (!s3repository.available()) return errorS3()
+		val medal = medals.findOneById(medalId) ?: return errorMedalNotFound()
+		val imageKey = "C${medal.companyId}/medals/${fileData.filename}"
+		val imageUrl = s3repository.putObject(key = imageKey, fileData = fileData) ?: return errorS3()
+
+		val isSuccess = medals.updateOneById(
+			id = medalId,
+			push(
+				MedalCol::images, ImageRef(
+					imageKey = imageKey,
+					imageUrl = imageUrl,
+					description = fileData.description
+				)
+			)
+		).wasAcknowledged()
+
+		return if (isSuccess) {
+			RepositoryData.success()
+		} else {
+			s3repository.deleteObject(imageKey)
+			errorBadUpdate()
+		}
+	}
+
+	override suspend fun updateImage(medalId: String, imageKey: String, fileData: FileData): RepositoryData<Unit> {
+		if (!s3repository.available()) return errorS3()
+		val medal = medals.findOneById(medalId) ?: return errorMedalNotFound()
+		val images = medal.images ?: return errorBadImageKey(REPO)
+		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey(REPO)
+
+		s3repository.putObject(key = imageKey, fileData = fileData) ?: return errorS3()
+
+		medals.updateOne(
+			and(MedalCol::id eq medalId, MedalCol::images / ImageRef::imageKey eq imageKey),
+			setValue(MedalCol::images.posOp / ImageRef::description, fileData.description)
+		)
+		return RepositoryData.success()
+	}
+
+	override suspend fun deleteImage(medalId: String, imageKey: String): RepositoryData<Unit> {
+		if (!s3repository.available()) return errorS3()
+		val medal = medals.findOneById(medalId) ?: return errorMedalNotFound()
+		val images = medal.images ?: return errorBadImageKey("medals")
+		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey("medals")
+
+		val isSuccess = medals.updateOneById(
+			id = medalId, pullByFilter(MedalCol::images, ImageRef::imageKey eq imageKey)
+		).wasAcknowledged()
+
+		return if (isSuccess) {
+			s3repository.deleteObject(imageKey)
+			RepositoryData.success()
+		} else {
+			errorBadUpdate()
+		}
+	}
+
+	companion object {
+
+		const val REPO = "medal"
+
+		private fun errorMedalNotFound() = RepositoryData.error(
+			error = RepositoryError(
+				repository = REPO,
+				violationCode = "medal not found",
+				description = "Награда не найдена"
+			)
+		)
+
+		private fun errorBadUpdate() = RepositoryData.error(
+			error = RepositoryError(
+				repository = REPO,
+				violationCode = "bad update",
+				description = "Ошибка обновления данных награды"
+			)
+		)
+
+	}
+}
