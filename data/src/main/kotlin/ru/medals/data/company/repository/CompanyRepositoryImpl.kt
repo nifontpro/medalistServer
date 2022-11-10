@@ -37,7 +37,7 @@ class CompanyRepositoryImpl(
 
 	override suspend fun deleteCompany(id: String): Boolean {
 		val company = companies.findOneById(id) ?: return false
-		val isSuccess = companies.deleteOne(CompanyCol::id eq id).wasAcknowledged()
+		val isSuccess = companies.deleteOneById(id).wasAcknowledged()
 		if (isSuccess && company.imageUrl != null) {
 			deleteImageFile(company.imageUrl)
 		}

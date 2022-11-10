@@ -8,9 +8,12 @@ services:
     networks:
       - net
     ports:
-      - "27017:27017"
+      - "27017:27117"
     volumes:
       - /home/nifont/mongo/data:/data/db
+    env_file:
+      - .mongoenv
+
   server:
     build: medals/.
     restart: always
@@ -19,11 +22,13 @@ services:
     networks:
       - net
     ports:
-      - "8080:8080"
+      - "8080:8180"
     volumes:
       - /home/nifont/medals/files:/app/files
     env_file:
       - .env
+    container_name: medals-server
+    image: medals/server:1
   web:
     build: bravo/.
     restart: always
@@ -33,5 +38,7 @@ services:
       - net
     ports:
       - "3000:3000"
-
-
+    env_file:
+      - .webenv
+    container_name: medals-web
+    image: medals/web:1

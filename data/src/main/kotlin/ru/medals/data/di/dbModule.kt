@@ -19,11 +19,7 @@ val dbModule = module {
 		val db = KMongo.createClient(
 			MongoClientSettings
 				.builder()
-				.applyConnectionString(
-					ConnectionString(
-						System.getenv("MONGO_STRING") ?: ""
-					)
-				)
+				.applyConnectionString(ConnectionString(System.getenv("MONGO_STRING")))
 				.applyToClusterSettings { it.serverSelectionTimeout(3, TimeUnit.SECONDS) }
 				.build()
 		).coroutine
