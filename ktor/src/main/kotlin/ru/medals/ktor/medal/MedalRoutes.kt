@@ -11,7 +11,7 @@ fun Route.medalRoutes() {
 
 	val medalProcessor: MedalProcessor by inject()
 
-	route("api/medal") {
+	route("medal") {
 
 		authenticate(ADMIN) {
 

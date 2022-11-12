@@ -9,7 +9,7 @@ import ru.medals.domain.user.model.User.Companion.USER
 
 fun Route.rewardRoutes() {
 
-	route("api/reward") {
+	route("reward") {
 		val rewardProcessor = RewardProcessor()
 
 		authenticate(DIRECTOR) {

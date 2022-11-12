@@ -40,7 +40,7 @@ class UserProcessor : IBaseProcessor<UserContext> {
 				validateUserIdEmpty("Проверяем на непустой userId")
 				trimFieldUserIdAndCopyToValid("Очищаем userId")
 				getUserByIdFromDb("Получаем сотрудника из БД")
-				prepareAuth("Подготовка к авторизации")
+				prepareAuthFromUser("Подготовка к авторизации")
 				validateDirectorLevel("Уровень доступа - не ниже директор отдела")
 				validateOwnerContainCompany("Проверяем наличие компаний у владельца")
 				deleteUser("Удаление")

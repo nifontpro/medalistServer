@@ -11,7 +11,7 @@ fun Route.companyRoutes() {
 
 	val companyProcessor: CompanyProcessor by inject()
 
-	route("api/company") {
+	route("company") {
 		authenticate(OWNER) {
 			post("create") {
 				call.createCompany(companyProcessor)

@@ -3,29 +3,40 @@ package ru.medals.data.award.model
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
 import ru.medals.domain.award.model.Award
+import ru.medals.domain.award.model.AwardStatus
 import java.util.*
 
 data class AwardCol(
+	val name: String? = null,
+	val description: String? = null,
 	val createDate: Date? = null,
+	val companyId: String? = null,
 	val medalId: String? = null,
 	val criteria: String? = null,
-	val description: String? = null,
+	val status: AwardStatus? = null,
 
 	@BsonId
 	val id: String = ObjectId().toString()
 ) {
 	fun toAward() = Award(
-		createDate = createDate?.time ?: -1,
-		medalId = medalId ?: "",
-		criteria = criteria,
+		name = name,
 		description = description,
+		createDate = createDate?.time,
+		companyId = companyId,
+		medalId = medalId,
+		criteria = criteria,
+		status = status ?: AwardStatus.NONE,
 		id = id
 	)
 }
 
-fun Award.toAwardCol() = AwardCol(
-	createDate = Date(),
+fun Award.toAwardCol(create: Boolean = false) = AwardCol(
+	name = name,
+	description = description,
+	createDate = if (create) Date() else null,
+	companyId = companyId,
 	medalId = medalId,
 	criteria = criteria,
-	description = description
+	status = status,
+	id = if (create) ObjectId().toString() else id
 )

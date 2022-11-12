@@ -1,7 +1,7 @@
 package ru.medals.domain.department.bussines.workers
 
 import ru.medals.domain.core.bussines.ContextState
-import ru.medals.domain.core.bussines.helper.checkRepositoryResponseData
+import ru.medals.domain.core.bussines.helper.checkResponseData
 import ru.medals.domain.department.bussines.context.DepartmentContext
 import ru.otus.cor.ICorChainDsl
 import ru.otus.cor.worker
@@ -12,7 +12,7 @@ fun ICorChainDsl<DepartmentContext>.addDepartmentImageToDb(title: String) = work
 	on { state == ContextState.RUNNING }
 
 	handle {
-		checkRepositoryResponseData {
+		checkResponseData {
 			departmentRepository.addImage(
 				departmentId = companyIdValid,
 				fileData = fileData

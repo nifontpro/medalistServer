@@ -6,7 +6,7 @@ import ru.medals.domain.reward.model.Reward
 import ru.medals.domain.reward.model.RewardState
 import ru.medals.domain.reward.model.Signature
 
-data class RewardMedal(
+data class RewardMedalCol(
 	val name: String = "",
 	val description: String? = null,
 	val score: Int = 0,

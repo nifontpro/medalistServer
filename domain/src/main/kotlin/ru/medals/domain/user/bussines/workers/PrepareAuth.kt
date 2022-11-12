@@ -5,7 +5,7 @@ import ru.medals.domain.user.bussines.context.UserContext
 import ru.otus.cor.ICorChainDsl
 import ru.otus.cor.worker
 
-fun ICorChainDsl<UserContext>.prepareAuth(title: String) = worker {
+fun ICorChainDsl<UserContext>.prepareAuthFromUser(title: String) = worker {
 	this.title = title
 	on { state == ContextState.RUNNING }
 	handle {

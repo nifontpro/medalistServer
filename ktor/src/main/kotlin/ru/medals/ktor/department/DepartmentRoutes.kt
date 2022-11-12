@@ -12,7 +12,7 @@ fun Route.departmentRoutes() {
 
 	val departmentProcessor: DepartmentProcessor by inject()
 
-	route("api/department") {
+	route("department") {
 		authenticate(ADMIN) {
 			post("create") {
 				call.createDepartment(departmentProcessor)

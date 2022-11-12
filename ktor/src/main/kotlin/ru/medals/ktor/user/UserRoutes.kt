@@ -12,7 +12,7 @@ import ru.medals.domain.user.model.User.Companion.USER
 fun Route.userRoutes() {
 	val userProcessor: UserProcessor by inject()
 
-	route("api/user") {
+	route("user") {
 		authenticate(DIRECTOR) {
 			post("create") {
 				call.createUser(userProcessor)

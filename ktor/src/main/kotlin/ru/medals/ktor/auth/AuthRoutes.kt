@@ -10,7 +10,7 @@ fun Route.authRoutes() {
 
 	val authProcessor: AuthProcessor by inject()
 
-	route("api/auth") {
+	route("auth") {
 		post("register") {
 			call.registerOwner(authProcessor)
 		}

@@ -3,7 +3,7 @@ package ru.medals.data.reward.repository
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.*
 import ru.medals.data.reward.model.RewardCol
-import ru.medals.data.reward.model.RewardMedal
+import ru.medals.data.reward.model.RewardMedalCol
 import ru.medals.data.user.model.UserCol
 import ru.medals.domain.core.bussines.model.RepositoryData
 import ru.medals.domain.core.bussines.model.RepositoryError
@@ -99,7 +99,7 @@ class RewardRepositoryImpl(
 
 	// db.rewardCol.aggregate([{$lookup: {from:"medalCol", localField:"medalId",foreignField:"_id", as: "medals"}}, {$project: {name:1, medal: {$first: "$medals"}}}]).pretty()
 	override suspend fun getRewardsByUser(userId: String): List<Reward> {
-		return rewards.aggregate<RewardMedal>(
+		return rewards.aggregate<RewardMedalCol>(
 			"[" +
 							"{\$match : {userId : {\$eq: \"$userId\"}}}" +
 							"{\$lookup: {from:\"medalCol\", localField:\"medalId\",foreignField:\"_id\", as: \"medals\"}}, " +
@@ -116,7 +116,7 @@ class RewardRepositoryImpl(
 //		val reward = rewards.findOneById(rewardId)
 //		return reward?.toReward(medals.findOne(MedalCol::id eq reward.medalId)?.toMedal())
 
-		return rewards.aggregate<RewardMedal>(
+		return rewards.aggregate<RewardMedalCol>(
 			"[" +
 							"{\$match : {_id : {\$eq: \"$rewardId\"}}}" +
 							"{\$lookup: {from:\"medalCol\", localField:\"medalId\",foreignField:\"_id\", as: \"medals\"}}, " +
