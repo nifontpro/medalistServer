@@ -79,14 +79,17 @@ class CompanyRepositoryImpl(
 	override suspend fun updateCompanyProfile(
 		company: Company
 	): Boolean {
-		return companies.updateOneById(
-			id = company.id,
-			update = CompanyCol(
+		return try {
+			companies.updateOneById(
 				id = company.id,
-				name = company.name,
-				description = company.description,
-			)
-		).wasAcknowledged()
+				update = set(
+					CompanyCol::name setTo company.name,
+					CompanyCol::description setTo company.description,
+				)
+			).wasAcknowledged()
+		} catch (e: Exception) {
+			false
+		}
 	}
 
 	override suspend fun getCompanyCount(ownerId: String): Long {
@@ -143,20 +146,19 @@ class CompanyRepositoryImpl(
 		val imageKey = "C${companyId}/images/${fileData.filename}"
 		val imageUrl = s3repository.putObject(key = imageKey, fileData = fileData) ?: return errorS3()
 
-		val isSuccess = companies.updateOneById(
-			id = companyId,
-			push(
-				CompanyCol::images, ImageRef(
-					imageKey = imageKey,
-					imageUrl = imageUrl,
-					description = fileData.description
+		return try {
+			companies.updateOneById(
+				id = companyId,
+				push(
+					CompanyCol::images, ImageRef(
+						imageKey = imageKey,
+						imageUrl = imageUrl,
+						description = fileData.description
+					)
 				)
 			)
-		).wasAcknowledged()
-
-		return if (isSuccess) {
 			RepositoryData.success()
-		} else {
+		} catch (e: Exception) {
 			s3repository.deleteObject(imageKey)
 			errorBadUpdate()
 		}
@@ -164,7 +166,7 @@ class CompanyRepositoryImpl(
 
 	override suspend fun updateImage(companyId: String, imageKey: String, fileData: FileData): RepositoryData<Unit> {
 		val company = companies.findOneById(companyId) ?: return errorS3()
-		val images = company.images ?: return errorCompanyNotFound()
+		val images = company.images
 		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey(REPO)
 
 		s3repository.putObject(key = imageKey, fileData = fileData) ?: return errorBadImageKey(REPO)
@@ -180,7 +182,7 @@ class CompanyRepositoryImpl(
 	override suspend fun deleteImage(companyId: String, imageKey: String): RepositoryData<Unit> {
 		if (!s3repository.available()) return errorS3()
 		val company = companies.findOneById(companyId) ?: return errorCompanyNotFound()
-		val images = company.images ?: return errorBadImageKey(REPO)
+		val images = company.images
 		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey(REPO)
 
 		val isSuccess = companies.updateOneById(

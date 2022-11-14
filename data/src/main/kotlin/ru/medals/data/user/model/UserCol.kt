@@ -16,7 +16,7 @@ data class UserCol(
 
 	val profileImageUrl: String? = null,
 	val imageKey: String? = null,
-	val images: List<ImageRef>? = null,
+	val images: List<ImageRef> = emptyList(),
 
 	val bio: String? = null,
 	val companyId: String? = null,
@@ -41,6 +41,7 @@ data class UserCol(
 			hashPassword = if (clearHashPassword) null else hashPassword,
 			role = role ?: User.NONE,
 			imageUrl = profileImageUrl,
+			images = images,
 			bio = bio,
 			companyId = companyId,
 			departmentId = departmentId,
@@ -63,6 +64,7 @@ fun User.toUserCol(isNew: Boolean = false): UserCol {
 		lastname = lastname,
 		role = role,
 		profileImageUrl = imageUrl,
+		images = images,
 		bio = bio,
 		mnc = isMnc,
 		companyId = companyId,

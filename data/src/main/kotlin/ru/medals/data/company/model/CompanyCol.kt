@@ -12,7 +12,7 @@ data class CompanyCol(
 	val ownerId: String? = null, // id владельца компании
 	val imageUrl: String? = null,
 	val imageKey: String? = null,
-	val images: List<ImageRef>? = null,
+	val images: List<ImageRef> = emptyList(),
 
 	@BsonId
 	val id: String = ObjectId().toString()
@@ -22,6 +22,7 @@ data class CompanyCol(
 		description = description,
 		ownerId = ownerId ?: "",
 		imageUrl = imageUrl,
+		images = images,
 		id = id
 	)
 }

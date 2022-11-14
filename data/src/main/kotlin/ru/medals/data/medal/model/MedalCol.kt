@@ -13,7 +13,7 @@ data class MedalCol(
 	val score: Int? = null,
 	val imageUrl: String? = null,
 	val imageKey: String? = null,
-	val images: List<ImageRef>? = null,
+	val images: List<ImageRef> = emptyList(),
 
 	@BsonId
 	val id: String = ObjectId().toString()
@@ -26,6 +26,7 @@ data class MedalCol(
 		isSystem = isSystem,
 		score = score,
 		imageUrl = imageUrl,
+		images = images,
 		id = id
 	)
 }

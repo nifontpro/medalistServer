@@ -59,15 +59,17 @@ class DepartmentRepositoryImpl(
 	override suspend fun updateDepartment(
 		department: Department,
 	): Boolean {
-		return departments.updateOneById(
-			id = department.id,
-			update = DepartmentCol(
+		return try {
+			departments.updateOneById(
 				id = department.id,
-				name = department.name,
-				description = department.description,
-				companyId = null
-			)
-		).wasAcknowledged()
+				update = set(
+					DepartmentCol::name setTo department.name,
+					DepartmentCol::description setTo department.description,
+				)
+			).wasAcknowledged()
+		} catch (e: Exception) {
+			false
+		}
 	}
 
 	override suspend fun deleteDepartment(department: Department): Boolean {
@@ -118,20 +120,19 @@ class DepartmentRepositoryImpl(
 		val imageKey = "C${department.companyId}/departments/${fileData.filename}"
 		val imageUrl = s3repository.putObject(key = imageKey, fileData = fileData) ?: return errorS3()
 
-		val isSuccess = departments.updateOneById(
-			id = departmentId,
-			push(
-				DepartmentCol::images, ImageRef(
-					imageKey = imageKey,
-					imageUrl = imageUrl,
-					description = fileData.description
+		return try {
+			departments.updateOneById(
+				id = departmentId,
+				push(
+					DepartmentCol::images, ImageRef(
+						imageKey = imageKey,
+						imageUrl = imageUrl,
+						description = fileData.description
+					)
 				)
 			)
-		).wasAcknowledged()
-
-		return if (isSuccess) {
 			RepositoryData.success()
-		} else {
+		} catch (e: Exception) {
 			s3repository.deleteObject(imageKey)
 			errorBadUpdate()
 		}
@@ -140,7 +141,7 @@ class DepartmentRepositoryImpl(
 	override suspend fun updateImage(departmentId: String, imageKey: String, fileData: FileData): RepositoryData<Unit> {
 		if (!s3repository.available()) return errorS3()
 		val department = departments.findOneById(departmentId) ?: return errorDepartmentNotFound()
-		val images = department.images ?: return errorBadImageKey(REPO)
+		val images = department.images
 		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey(REPO)
 
 		s3repository.putObject(key = imageKey, fileData = fileData) ?: return errorS3()
@@ -155,7 +156,7 @@ class DepartmentRepositoryImpl(
 	override suspend fun deleteImage(departmentId: String, imageKey: String): RepositoryData<Unit> {
 		if (!s3repository.available()) return errorS3()
 		val department = departments.findOneById(departmentId) ?: return errorDepartmentNotFound()
-		val images = department.images ?: return errorBadImageKey(REPO)
+		val images = department.images
 		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey(REPO)
 
 		val isSuccess = departments.updateOneById(

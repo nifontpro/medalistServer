@@ -98,10 +98,21 @@ class UserRepositoryImpl(
 	}
 
 	override suspend fun updateProfile(user: User): Boolean {
-		return users.updateOneById(
-			id = user.id,
-			update = user.toUserCol()
-		).wasAcknowledged()
+		return try {
+			users.updateOneById(
+				id = user.id,
+				update = set(
+					UserCol::email setTo user.email,
+					UserCol::login setTo user.login,
+					UserCol::name setTo user.name,
+					UserCol::patronymic setTo user.patronymic,
+					UserCol::lastname setTo user.lastname,
+					UserCol::bio setTo user.bio,
+				)
+			).wasAcknowledged()
+		} catch (e: Exception) {
+			false
+		}
 	}
 
 	override suspend fun delete(user: User): Boolean {
@@ -187,20 +198,19 @@ class UserRepositoryImpl(
 		val imageKey = "$prefix/${fileData.filename}"
 		val imageUrl = s3repository.putObject(key = imageKey, fileData = fileData) ?: return errorS3()
 
-		val isSuccess = users.updateOneById(
-			id = userId,
-			push(
-				UserCol::images, ImageRef(
-					imageKey = imageKey,
-					imageUrl = imageUrl,
-					description = fileData.description
+		return try {
+			users.updateOneById(
+				id = userId,
+				push(
+					UserCol::images, ImageRef(
+						imageKey = imageKey,
+						imageUrl = imageUrl,
+						description = fileData.description
+					)
 				)
 			)
-		).wasAcknowledged()
-
-		return if (isSuccess) {
 			RepositoryData.success()
-		} else {
+		} catch (e: Exception) {
 			s3repository.deleteObject(imageKey)
 			errorBadUpdate()
 		}
@@ -209,7 +219,7 @@ class UserRepositoryImpl(
 	override suspend fun updateImage(userId: String, imageKey: String, fileData: FileData): RepositoryData<Unit> {
 		if (!s3repository.available()) return errorS3()
 		val user = users.findOneById(userId) ?: return errorUserNotFound()
-		val images = user.images ?: return errorBadImageKey(REPO)
+		val images = user.images
 		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey(REPO)
 
 		s3repository.putObject(key = imageKey, fileData = fileData) ?: return errorS3()
@@ -224,7 +234,7 @@ class UserRepositoryImpl(
 	override suspend fun deleteImage(userId: String, imageKey: String): RepositoryData<Unit> {
 		if (!s3repository.available()) return errorS3()
 		val user = users.findOneById(userId) ?: return errorUserNotFound()
-		val images = user.images ?: return errorBadImageKey(REPO)
+		val images = user.images
 		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey(REPO)
 
 		val isSuccess = users.updateOneById(

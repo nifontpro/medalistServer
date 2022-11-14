@@ -21,7 +21,7 @@ fun Route.awardRoutes() {
 				call.deleteAward(awardProcessor)
 			}
 
-			post("update") {
+			put {
 				call.updateAward(awardProcessor)
 			}
 		}

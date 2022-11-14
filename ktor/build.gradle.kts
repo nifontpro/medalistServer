@@ -76,6 +76,7 @@ dependencies {
 	implementation("org.apache.commons:commons-email:1.5")
 
 	implementation("ch.qos.logback:logback-classic:$logbackVersion")
+	implementation("io.github.microutils:kotlin-logging-jvm:3.0.4")
 
 //	testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 //	testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")

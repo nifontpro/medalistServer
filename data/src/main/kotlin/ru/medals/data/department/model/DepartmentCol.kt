@@ -11,7 +11,7 @@ data class DepartmentCol(
 	val companyId: String? = null, // id компании
 	val imageUrl: String? = null,
 	val imageKey: String? = null,
-	val images: List<ImageRef>? = null,
+	val images: List<ImageRef> = emptyList(),
 
 	@BsonId
 	val id: String = ObjectId().toString()
@@ -20,6 +20,7 @@ data class DepartmentCol(
 		name = name,
 		description = description,
 		imageUrl = imageUrl,
+		images = images,
 		companyId = companyId ?: "",
 		id = id,
 	)

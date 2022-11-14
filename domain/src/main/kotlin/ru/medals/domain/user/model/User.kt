@@ -1,5 +1,7 @@
 package ru.medals.domain.user.model
 
+import ru.medals.domain.image.model.ImageRef
+
 data class User(
 	val email: String? = null,
 	val login: String? = null,
@@ -9,6 +11,7 @@ data class User(
 	val hashPassword: String? = null,
 	val role: String? = null,
 	val imageUrl: String? = null,
+	val images: List<ImageRef> = emptyList(),
 	val bio: String? = null,
 	val companyId: String? = null,
 	val departmentId: String? = null,

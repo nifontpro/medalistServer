@@ -42,15 +42,18 @@ class MedalRepositoryImpl(
 	}
 
 	override suspend fun updateMedal(medal: Medal): Boolean {
-		return medals.updateOneById(
-			id = medal.id,
-			update = MedalCol(
+		return try {
+			medals.updateOneById(
 				id = medal.id,
-				name = medal.name,
-				description = medal.description,
-				score = medal.score,
-			)
-		).wasAcknowledged()
+				update = set(
+					MedalCol::name setTo medal.name,
+					MedalCol::description setTo medal.description,
+					MedalCol::score setTo medal.score,
+				)
+			).wasAcknowledged()
+		} catch (e: Exception) {
+			false
+		}
 	}
 
 	override suspend fun deleteMedal(medal: Medal): Boolean {
@@ -106,20 +109,19 @@ class MedalRepositoryImpl(
 		val imageKey = "C${medal.companyId}/medals/${fileData.filename}"
 		val imageUrl = s3repository.putObject(key = imageKey, fileData = fileData) ?: return errorS3()
 
-		val isSuccess = medals.updateOneById(
-			id = medalId,
-			push(
-				MedalCol::images, ImageRef(
-					imageKey = imageKey,
-					imageUrl = imageUrl,
-					description = fileData.description
+		return try {
+			medals.updateOneById(
+				id = medalId,
+				push(
+					MedalCol::images, ImageRef(
+						imageKey = imageKey,
+						imageUrl = imageUrl,
+						description = fileData.description
+					)
 				)
 			)
-		).wasAcknowledged()
-
-		return if (isSuccess) {
 			RepositoryData.success()
-		} else {
+		} catch (e: Exception) {
 			s3repository.deleteObject(imageKey)
 			errorBadUpdate()
 		}
@@ -128,7 +130,7 @@ class MedalRepositoryImpl(
 	override suspend fun updateImage(medalId: String, imageKey: String, fileData: FileData): RepositoryData<Unit> {
 		if (!s3repository.available()) return errorS3()
 		val medal = medals.findOneById(medalId) ?: return errorMedalNotFound()
-		val images = medal.images ?: return errorBadImageKey(REPO)
+		val images = medal.images
 		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey(REPO)
 
 		s3repository.putObject(key = imageKey, fileData = fileData) ?: return errorS3()
@@ -143,7 +145,7 @@ class MedalRepositoryImpl(
 	override suspend fun deleteImage(medalId: String, imageKey: String): RepositoryData<Unit> {
 		if (!s3repository.available()) return errorS3()
 		val medal = medals.findOneById(medalId) ?: return errorMedalNotFound()
-		val images = medal.images ?: return errorBadImageKey("medals")
+		val images = medal.images
 		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey("medals")
 
 		val isSuccess = medals.updateOneById(
@@ -177,6 +179,5 @@ class MedalRepositoryImpl(
 				description = "Ошибка обновления данных награды"
 			)
 		)
-
 	}
 }

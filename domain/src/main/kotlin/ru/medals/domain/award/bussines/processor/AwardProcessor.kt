@@ -30,6 +30,16 @@ class AwardProcessor : IBaseProcessor<AwardContext> {
 				createAward("Создаем награждение")
 			}
 
+			operation("Обновить данные награды", AwardContext.Command.UPDATE) {
+				validateAwardNameEmpty("Проверка на непустое наименование награды")
+				validateAwardIdEmpty("Проверяем на непустой id")
+				getCompanyIdByAwardId("Получаем companyId")
+				trimFieldCompanyIdAndCopyToValid("Очищаем companyId")
+				validateAdminLevel("Уровень доступа - администратор")
+				trimFieldAward("Очищаем поля награды")
+				updateAward("Обновляем данные")
+			}
+
 			operation("Удалить награждение", AwardContext.Command.DELETE) {
 				validateAwardIdEmpty("Проверяем на непустой id")
 				getCompanyIdByAwardId("Получаем companyId")
@@ -47,14 +57,6 @@ class AwardProcessor : IBaseProcessor<AwardContext> {
 			operation("Получить по id", AwardContext.Command.GET_BY_ID) {
 				validateAwardIdEmpty("Проверяем на непустой id")
 				getAwardMedalByIdFromDb("Получаем награду и companyId")
-			}
-
-			operation("Обновить данные награды", AwardContext.Command.UPDATE) {
-				validateAwardIdEmpty("Проверяем на непустой id")
-				getCompanyIdByAwardId("Получаем companyId")
-				trimFieldCompanyIdAndCopyToValid("Очищаем companyId")
-				validateAdminLevel("Уровень доступа - администратор")
-				updateAward("Обновляем данные")
 			}
 
 			finishOperation()

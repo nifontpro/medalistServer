@@ -48,15 +48,19 @@ class AwardRepositoryImpl(
 	}
 
 	override suspend fun update(award: Award): RepositoryData<Unit> {
-		val awardCol = award.toAwardCol()
-		println(awardCol)
-		return if (awards.updateOneById(
+		return try {
+			awards.updateOneById(
 				id = award.id,
-				update = awardCol
-			).wasAcknowledged()
-		) {
+				update = set(
+					AwardCol::name setTo award.name,
+					AwardCol::description setTo award.description,
+					AwardCol::medalId setTo award.medalId,
+					AwardCol::criteria setTo award.criteria,
+					AwardCol::status setTo award.status,
+				)
+			)
 			RepositoryData.success()
-		} else {
+		} catch (e: Exception) {
 			errorUpdate()
 		}
 	}
@@ -110,7 +114,7 @@ class AwardRepositoryImpl(
 	override suspend fun getAwardsByFilterMedal(companyId: String, filter: String?): RepositoryData<List<AwardMedal>> {
 		return try {
 
-				val filterBson = filter?.let {
+			val filterBson = filter?.let {
 				and(
 					AwardCol::companyId eq companyId,
 					AwardCol::name regex Regex("$filter", RegexOption.IGNORE_CASE)
