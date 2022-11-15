@@ -2,13 +2,14 @@ package ru.medals.data.appoint.model
 
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
-import ru.medals.domain.appoint.model.Appoint
+import ru.medals.data.user.model.UserCol
 import ru.medals.domain.appoint.model.AppointStatus
+import ru.medals.domain.appoint.model.AppointUser
 import java.util.*
 
-data class AppointCol(
+data class AppointUserCol(
 	val awardId: String,
-	val userId: String,
+	val user: UserCol,
 	val status: AppointStatus = AppointStatus.NONE,
 	val images: List<String> = emptyList(),
 	val nomineeDate: Date? = null,
@@ -17,9 +18,9 @@ data class AppointCol(
 	@BsonId
 	val id: String = ObjectId().toString()
 ) {
-	fun toAppoint() = Appoint(
+	fun toAppointUser() = AppointUser(
 		awardId = awardId,
-		userId = userId,
+		user = user.toUser(),
 		status = status,
 		images = images,
 		nomineeDate = nomineeDate?.time,

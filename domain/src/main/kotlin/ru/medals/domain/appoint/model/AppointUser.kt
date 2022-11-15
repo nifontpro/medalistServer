@@ -1,19 +1,14 @@
 package ru.medals.domain.appoint.model
 
-import java.util.*
+import ru.medals.domain.user.model.User
 
-data class Appoint(
+data class AppointUser(
 	val awardId: String,
-	val userId: String,
+	val user: User,
 	val status: AppointStatus = AppointStatus.NONE,
 	val images: List<String> = emptyList(),
 	val nomineeDate: Long? = null,
 	val rewardDate: Long? = null,
 
-	val id: String = ""
+	val id: String
 )
-
-@Suppress("unused")
-enum class AppointStatus {
-	NONE, NOMINEE, AWARD
-}

@@ -82,7 +82,8 @@ class AwardRepositoryImpl(
 		return try {
 			val awardMedalCol = awards.aggregate<AwardMedalCol>(
 				match(AwardCol::id eq id),
-				lookup(from = "medalCol", localField = "medalId", foreignField = "_id", newAs = "medals"),
+				lookup(from = "medalCol", localField = "medalId", foreignField = "_id", newAs = "medal"),
+				unwind("\$medal")
 			).toList().firstOrNull()
 
 			if (awardMedalCol != null) {
@@ -125,7 +126,8 @@ class AwardRepositoryImpl(
 
 			val awardList = awards.aggregate<AwardMedalCol>(
 				match(filterBson),
-				lookup(from = "medalCol", localField = "medalId", foreignField = "_id", newAs = "medals")
+				lookup(from = "medalCol", localField = "medalId", foreignField = "_id", newAs = "medal"),
+				unwind("\$medal")
 			).toList().map { it.toAwardMedal() }
 
 			RepositoryData.success(data = awardList)

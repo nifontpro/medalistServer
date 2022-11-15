@@ -12,7 +12,7 @@ data class AwardMedalCol(
 	val description: String? = null,
 	val createDate: Date? = null,
 	val companyId: String? = null,
-	val medals: List<MedalCol> = emptyList(),
+	val medal: MedalCol?,
 	val criteria: String? = null,
 	val status: AwardStatus? = null,
 
@@ -24,7 +24,7 @@ data class AwardMedalCol(
 		description = description,
 		createDate = createDate?.time ?: -1,
 		companyId = companyId,
-		medal = medals.firstOrNull()?.toMedal(),
+		medal = medal?.toMedal(),
 		criteria = criteria,
 		status = status ?: AwardStatus.NONE,
 		id = id

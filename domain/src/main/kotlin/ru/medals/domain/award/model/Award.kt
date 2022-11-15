@@ -3,7 +3,8 @@ package ru.medals.domain.award.model
 data class Award(
 	val name: String? = null,
 	val description: String? = null,
-	val createDate: Long? = null,
+	val nomineeDate: Long? = null,
+	val rewardDate: Long? = null,
 	val companyId: String? = null,
 	val medalId: String? = null,
 	val criteria: String? = null,

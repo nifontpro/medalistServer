@@ -8,19 +8,35 @@ interface AppointErrors {
 
 		private const val REPO = "appoint"
 
-		fun errorCreate() = RepositoryData.error(
+		fun errorAppointCreate() = RepositoryData.error(
 			error = RepositoryError(
 				repository = REPO,
-				violationCode = "create error",
-				description = "Ошибка создания связи с наградой"
+				violationCode = "i/o error",
+				description = "Ошибка создания ассоциации"
 			)
 		)
 
-		fun errorAwardNotFound() = RepositoryData.error(
+		fun errorAppointDelete() = RepositoryData.error(
+			error = RepositoryError(
+				repository = REPO,
+				violationCode = "i/o error",
+				description = "Ошибка удаления ассоциации"
+			)
+		)
+
+		fun errorAppointGet() = RepositoryData.error(
+			error = RepositoryError(
+				repository = REPO,
+				violationCode = "i/o error",
+				description = "Ошибка чтения ассоциации"
+			)
+		)
+
+		fun errorAppointNotFound() = RepositoryData.error(
 			error = RepositoryError(
 				repository = REPO,
 				violationCode = "not found",
-				description = "Награждение не найдено"
+				description = "Ассоциация не найдена"
 			)
 		)
 
@@ -36,7 +52,7 @@ interface AppointErrors {
 			error = RepositoryError(
 				repository = REPO,
 				violationCode = "delete error",
-				description = "Ошибка удаления награды"
+				description = "Ошибка удаления связи"
 			)
 		)
 
@@ -47,22 +63,5 @@ interface AppointErrors {
 				description = "Ошибка обновления награды"
 			)
 		)
-
-		fun errorIO() = RepositoryData.error(
-			error = RepositoryError(
-				repository = REPO,
-				violationCode = "I/O error",
-				description = "Ошибка обмена данными"
-			)
-		)
-
-		fun errorMedalNotFound() = RepositoryData.error(
-			error = RepositoryError(
-				repository = REPO,
-				violationCode = "Medal not found",
-				description = "Нет медали с заданным id"
-			)
-		)
-
 	}
 }

@@ -9,7 +9,8 @@ import java.util.*
 data class AwardCol(
 	val name: String? = null,
 	val description: String? = null,
-	val createDate: Date? = null,
+	val nomineeDate: Date? = null,
+	val rewardDate: Date? = null,
 	val companyId: String? = null,
 	val medalId: String? = null,
 	val criteria: String? = null,
@@ -21,7 +22,8 @@ data class AwardCol(
 	fun toAward() = Award(
 		name = name,
 		description = description,
-		createDate = createDate?.time,
+		nomineeDate = nomineeDate?.time,
+		rewardDate = rewardDate?.time,
 		companyId = companyId,
 		medalId = medalId,
 		criteria = criteria,
@@ -33,7 +35,7 @@ data class AwardCol(
 fun Award.toAwardCol(create: Boolean = false) = AwardCol(
 	name = name,
 	description = description,
-	createDate = if (create) Date() else null,
+	nomineeDate = if (create) Date() else null,
 	companyId = companyId,
 	medalId = medalId,
 	criteria = criteria,
