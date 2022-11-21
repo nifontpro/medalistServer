@@ -1,20 +1,18 @@
 package ru.medals.ktor.auth.mappers
 
+import mu.KotlinLogging
 import ru.medals.domain.auth.bussines.context.AuthContext
 import ru.medals.ktor.auth.model.request.LoginRequest
 import ru.medals.ktor.auth.model.request.RefreshRequest
-import ru.medals.ktor.auth.model.request.RegisterOwnerRequest
 
-fun AuthContext.fromTransport(request: RegisterOwnerRequest) {
-	command = AuthContext.Command.REGISTER_OWNER
-	email = request.email
-	password = request.password
-}
+private val log = KotlinLogging.logger {}
 
 fun AuthContext.fromTransport(request: LoginRequest) {
 	command = AuthContext.Command.LOGIN
 	email = request.email
 	password = request.password
+
+	log.info("LOGIN: $email")
 }
 
 @Suppress("UNUSED_PARAMETER")

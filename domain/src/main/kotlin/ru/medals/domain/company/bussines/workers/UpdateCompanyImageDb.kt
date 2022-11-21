@@ -2,7 +2,7 @@ package ru.medals.domain.company.bussines.workers
 
 import ru.medals.domain.company.bussines.context.CompanyContext
 import ru.medals.domain.core.bussines.ContextState
-import ru.medals.domain.core.bussines.helper.checkResponseData
+import ru.medals.domain.core.bussines.helper.checkRepositoryData
 import ru.otus.cor.ICorChainDsl
 import ru.otus.cor.worker
 
@@ -12,7 +12,7 @@ fun ICorChainDsl<CompanyContext>.updateCompanyImageDb(title: String) = worker {
 	on { state == ContextState.RUNNING }
 
 	handle {
-		checkResponseData {
+		checkRepositoryData {
 			companyRepository.updateImage(
 				companyId = companyIdValid,
 				imageKey = imageKeyValid,

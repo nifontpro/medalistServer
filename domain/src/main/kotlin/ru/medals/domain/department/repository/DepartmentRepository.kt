@@ -7,7 +7,7 @@ import ru.medals.domain.image.model.FileData
 interface DepartmentRepository {
 
 	suspend fun createDepartment(companyId: String): String?
-	suspend fun deleteDepartment(department: Department): Boolean
+	suspend fun deleteDepartment(department: Department): RepositoryData<Department>
 	suspend fun getDepartmentById(id: String): Department?
 	suspend fun getDepartmentsByCompany(companyId: String, filter: String? = null): List<Department>
 	suspend fun doesOtherDepartmentWithName(name: String, companyId: String, departmentId: String): Boolean

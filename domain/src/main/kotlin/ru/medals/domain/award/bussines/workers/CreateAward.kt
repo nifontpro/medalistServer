@@ -2,7 +2,7 @@ package ru.medals.domain.award.bussines.workers
 
 import ru.medals.domain.award.bussines.context.AwardContext
 import ru.medals.domain.core.bussines.ContextState
-import ru.medals.domain.core.bussines.helper.checkResponseData
+import ru.medals.domain.core.bussines.helper.checkRepositoryData
 import ru.otus.cor.ICorChainDsl
 import ru.otus.cor.worker
 
@@ -12,7 +12,7 @@ fun ICorChainDsl<AwardContext>.createAward(title: String) = worker {
 	on { state == ContextState.RUNNING }
 
 	handle {
-		checkResponseData {
+		checkRepositoryData {
 			awardRepository.create(award = award)
 		}?.let { newAward -> award = newAward }
 	}

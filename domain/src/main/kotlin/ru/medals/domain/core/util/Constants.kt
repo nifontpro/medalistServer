@@ -12,7 +12,7 @@ object Constants {
 //	const val LIFE_TIME_ACCESS_TOKEN = 30 * 60 * 1000L // 30 min
 	const val LIFE_TIME_ACCESS_TOKEN = 7 * 24 * 60 * 60 * 1000L // 7 day (dev)
 
-	const val LOCAL_FOLDER: String = "/app/files"
+	const val LOCAL_FOLDER: String = "logs"
 
 	const val S3_BUCKET_NAME = "medalist"
 }

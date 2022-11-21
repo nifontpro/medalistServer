@@ -8,7 +8,7 @@ import ru.medals.domain.user.bussines.processor.UserProcessor
 import ru.medals.domain.user.model.User
 import ru.medals.ktor.core.*
 import ru.medals.ktor.user.mappers.fromTransport
-import ru.medals.ktor.user.mappers.toTransportGetById
+import ru.medals.ktor.user.mappers.toTransportGetUser
 import ru.medals.ktor.user.mappers.toTransportGetUsers
 import ru.medals.ktor.user.model.request.*
 
@@ -23,7 +23,7 @@ suspend fun ApplicationCall.getUserById(processor: UserProcessor) =
 	process<GetUserByIdRequest, User, UserContext>(
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
-		toTransport = { toTransportGetById() }
+		toTransport = { toTransportGetUser() }
 	)
 
 suspend fun ApplicationCall.getUsersByDepartment(processor: UserProcessor) =
@@ -48,9 +48,10 @@ suspend fun ApplicationCall.getBosses(processor: UserProcessor) =
 	)
 
 suspend fun ApplicationCall.deleteUser(processor: UserProcessor) =
-	authProcess<DeleteUserRequest, Unit, UserContext>(
+	authProcess<DeleteUserRequest, User, UserContext>(
 		processor = processor,
-		fromTransport = { request -> fromTransport(request) }
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetUser() }
 	)
 
 suspend fun ApplicationCall.updateUser(processor: UserProcessor) =

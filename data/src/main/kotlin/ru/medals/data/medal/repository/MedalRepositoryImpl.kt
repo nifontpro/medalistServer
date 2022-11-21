@@ -2,12 +2,13 @@ package ru.medals.data.medal.repository
 
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineDatabase
-import ru.medals.data.core.deleteImageFile
 import ru.medals.data.core.errorBadImageKey
 import ru.medals.data.core.errorS3
 import ru.medals.data.medal.model.MedalCol
+import ru.medals.data.medal.repository.MedalRepoErrors.Companion.errorMedalUpdate
+import ru.medals.data.medal.repository.MedalRepoErrors.Companion.errorMedalDelete
+import ru.medals.data.medal.repository.MedalRepoErrors.Companion.errorMedalNotFound
 import ru.medals.domain.core.bussines.model.RepositoryData
-import ru.medals.domain.core.bussines.model.RepositoryError
 import ru.medals.domain.image.model.FileData
 import ru.medals.domain.image.model.ImageRef
 import ru.medals.domain.image.repository.S3Repository
@@ -56,12 +57,17 @@ class MedalRepositoryImpl(
 		}
 	}
 
-	override suspend fun deleteMedal(medal: Medal): Boolean {
-		val isSuccess = medals.deleteOneById(medal.id).wasAcknowledged()
-		if (isSuccess) {
-			deleteImageFile(medal.imageUrl)
+	override suspend fun deleteMedal(medal: Medal): RepositoryData<Medal> {
+
+		val medalCol = medals.findOneById(medal.id) ?: return errorMedalNotFound()
+		if (!s3repository.deleteAllImages(medalCol)) return errorS3()
+
+		return try {
+			medals.deleteOneById(medal.id)
+			RepositoryData.success(data = medalCol.toMedal())
+		} catch (e: Exception) {
+			errorMedalDelete()
 		}
-		return isSuccess
 	}
 
 	override suspend fun getCountByCompany(companyId: String): Long {
@@ -123,7 +129,7 @@ class MedalRepositoryImpl(
 			RepositoryData.success()
 		} catch (e: Exception) {
 			s3repository.deleteObject(imageKey)
-			errorBadUpdate()
+			errorMedalUpdate()
 		}
 	}
 
@@ -131,7 +137,7 @@ class MedalRepositoryImpl(
 		if (!s3repository.available()) return errorS3()
 		val medal = medals.findOneById(medalId) ?: return errorMedalNotFound()
 		val images = medal.images
-		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey(REPO)
+		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey("medals")
 
 		s3repository.putObject(key = imageKey, fileData = fileData) ?: return errorS3()
 
@@ -156,28 +162,8 @@ class MedalRepositoryImpl(
 			s3repository.deleteObject(imageKey)
 			RepositoryData.success()
 		} else {
-			errorBadUpdate()
+			errorMedalUpdate()
 		}
 	}
 
-	companion object {
-
-		const val REPO = "medal"
-
-		private fun errorMedalNotFound() = RepositoryData.error(
-			error = RepositoryError(
-				repository = REPO,
-				violationCode = "medal not found",
-				description = "Награда не найдена"
-			)
-		)
-
-		private fun errorBadUpdate() = RepositoryData.error(
-			error = RepositoryError(
-				repository = REPO,
-				violationCode = "bad update",
-				description = "Ошибка обновления данных награды"
-			)
-		)
-	}
 }

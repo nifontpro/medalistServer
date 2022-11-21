@@ -3,6 +3,7 @@ package ru.medals.s3.repository
 import com.amazonaws.services.s3.AmazonS3
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import ru.medals.domain.image.model.IImages
 import ru.medals.domain.core.util.Constants
 import ru.medals.domain.image.model.FileData
 import ru.medals.domain.image.repository.S3Repository
@@ -29,6 +30,24 @@ class S3RepositoryImpl(
 		return try {
 			withContext(Dispatchers.IO) {
 				s3.deleteObject(Constants.S3_BUCKET_NAME, key)
+			}
+			true
+		} catch (e: Exception) {
+			println(e.message)
+			false
+		}
+	}
+
+	// Удаляем все изображения сущности
+	override suspend fun deleteAllImages(entity: IImages): Boolean {
+		return try {
+			withContext(Dispatchers.IO) {
+				entity.imageKey?.let {
+					s3.deleteObject(Constants.S3_BUCKET_NAME, it)
+				}
+				entity.images.forEach { imageRef ->
+					s3.deleteObject(Constants.S3_BUCKET_NAME, imageRef.imageKey)
+				}
 			}
 			true
 		} catch (e: Exception) {

@@ -3,13 +3,14 @@ package ru.medals.data.company.repository
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import ru.medals.data.company.model.CompanyCol
-import ru.medals.data.core.deleteImageFile
+import ru.medals.data.company.repository.CompanyRepoErrors.Companion.errorCompanyUpdate
+import ru.medals.data.company.repository.CompanyRepoErrors.Companion.errorCompanyDelete
+import ru.medals.data.company.repository.CompanyRepoErrors.Companion.errorCompanyNotFound
 import ru.medals.data.core.errorBadImageKey
 import ru.medals.data.core.errorS3
 import ru.medals.domain.company.model.Company
 import ru.medals.domain.company.repository.CompanyRepository
 import ru.medals.domain.core.bussines.model.RepositoryData
-import ru.medals.domain.core.bussines.model.RepositoryError
 import ru.medals.domain.image.model.FileData
 import ru.medals.domain.image.model.ImageRef
 import ru.medals.domain.image.repository.S3Repository
@@ -35,13 +36,17 @@ class CompanyRepositoryImpl(
 		}
 	}
 
-	override suspend fun deleteCompany(id: String): Boolean {
-		val company = companies.findOneById(id) ?: return false
-		val isSuccess = companies.deleteOneById(id).wasAcknowledged()
-		if (isSuccess && company.imageUrl != null) {
-			deleteImageFile(company.imageUrl)
+	override suspend fun deleteCompany(id: String): RepositoryData<Company> {
+
+		val company = companies.findOneById(id) ?: return errorCompanyNotFound()
+		if (!s3repository.deleteAllImages(company)) return errorS3()
+
+		return try {
+			companies.deleteOneById(id)
+			RepositoryData.success(data = company.toCompany())
+		} catch (e: Exception) {
+			errorCompanyDelete()
 		}
-		return isSuccess
 	}
 
 	override suspend fun getCompanyById(id: String): Company? {
@@ -160,16 +165,16 @@ class CompanyRepositoryImpl(
 			RepositoryData.success()
 		} catch (e: Exception) {
 			s3repository.deleteObject(imageKey)
-			errorBadUpdate()
+			errorCompanyUpdate()
 		}
 	}
 
 	override suspend fun updateImage(companyId: String, imageKey: String, fileData: FileData): RepositoryData<Unit> {
 		val company = companies.findOneById(companyId) ?: return errorS3()
 		val images = company.images
-		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey(REPO)
+		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey("company")
 
-		s3repository.putObject(key = imageKey, fileData = fileData) ?: return errorBadImageKey(REPO)
+		s3repository.putObject(key = imageKey, fileData = fileData) ?: return errorS3()
 
 		companies.updateOne(
 			and(CompanyCol::id eq companyId, CompanyCol::images / ImageRef::imageKey eq imageKey),
@@ -183,7 +188,7 @@ class CompanyRepositoryImpl(
 		if (!s3repository.available()) return errorS3()
 		val company = companies.findOneById(companyId) ?: return errorCompanyNotFound()
 		val images = company.images
-		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey(REPO)
+		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey("company")
 
 		val isSuccess = companies.updateOneById(
 			id = companyId, pullByFilter(CompanyCol::images, ImageRef::imageKey eq imageKey)
@@ -193,29 +198,8 @@ class CompanyRepositoryImpl(
 			s3repository.deleteObject(imageKey)
 			RepositoryData.success()
 		} else {
-			errorBadUpdate()
+			errorCompanyUpdate()
 		}
 	}
 
-	companion object {
-
-		const val REPO = "company"
-
-		private fun errorCompanyNotFound() = RepositoryData.error(
-			error = RepositoryError(
-				repository = REPO,
-				violationCode = "company not found",
-				description = "Компания не найдена"
-			)
-		)
-
-		private fun errorBadUpdate() = RepositoryData.error(
-			error = RepositoryError(
-				repository = REPO,
-				violationCode = "bad update",
-				description = "Ошибка обновления данных организации"
-			)
-		)
-
-	}
 }

@@ -17,7 +17,7 @@ import ru.medals.data.appoint.repository.AppointErrors.Companion.errorAppointGet
 import ru.medals.data.appoint.repository.AppointErrors.Companion.errorAppointNotFound
 import ru.medals.data.appoint.repository.AppointErrors.Companion.errorUserNotFound
 import ru.medals.data.award.model.AwardCol
-import ru.medals.data.award.repository.AwardErrors.Companion.errorAwardNotFound
+import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardNotFound
 import ru.medals.data.user.model.UserCol
 import ru.medals.domain.appoint.model.Appoint
 import ru.medals.domain.appoint.model.AppointAward
@@ -99,12 +99,37 @@ class AppointRepositoryImpl(
 			val appointUsers = appoints.aggregate<AppointUserCol>(
 				match(AppointCol::awardId eq awardId),
 				lookup(from = "userCol", localField = "userId", foreignField = "_id", newAs = "user"),
-				unwind("\$user")
+				unwind("\$user"),
+
 			).toList().map { it.toAppointUser() }
 			RepositoryData.success(data = appointUsers)
 		} catch (e: Exception) {
 			errorAppointGet()
 		}
 	}
+
+	/*
+	group(RewardCol::id, RewardCol::signatures.push(RewardCol::signatures from RewardCol::dateActive))
+
+	db.orders.aggregate([
+    // Unwind the source
+    { "$unwind": "$products" },
+    // Do the lookup matching
+    { "$lookup": {
+       "from": "products",
+       "localField": "products",
+       "foreignField": "_id",
+       "as": "productObjects"
+    }},
+    // Unwind the result arrays ( likely one or none )
+    { "$unwind": "$productObjects" },
+    // Group back to arrays
+    { "$group": {
+        "_id": "$_id",
+        "products": { "$push": "$products" },
+        "productObjects": { "$push": "$productObjects" }
+    }}
+])
+	 */
 
 }

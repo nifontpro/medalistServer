@@ -6,7 +6,7 @@ import ru.medals.domain.image.model.FileData
 
 interface CompanyRepository {
 	suspend fun createEmptyCompany(ownerId: String): String?
-	suspend fun deleteCompany(id: String): Boolean
+	suspend fun deleteCompany(id: String): RepositoryData<Company>
 	suspend fun getCompanyByName(name: String): Company?
 	suspend fun getAll(): List<Company>
 	suspend fun getCompaniesByOwnerId(ownerId: String, filter: String? = null): List<Company>

@@ -6,7 +6,7 @@ import ru.medals.domain.medal.model.Medal
 
 interface MedalRepository {
 	suspend fun createEmptyMedal(isSystem: Boolean, companyId: String?): String?
-	suspend fun deleteMedal(medal: Medal): Boolean
+	suspend fun deleteMedal(medal: Medal): RepositoryData<Medal>
 	suspend fun getMedalById(id: String): Medal?
 	suspend fun getCompanyMedals(companyId: String, filter: String?): List<Medal>
 	suspend fun updateMedal(medal: Medal): Boolean

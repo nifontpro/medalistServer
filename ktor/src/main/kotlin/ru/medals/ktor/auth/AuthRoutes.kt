@@ -11,9 +11,7 @@ fun Route.authRoutes() {
 	val authProcessor: AuthProcessor by inject()
 
 	route("auth") {
-		post("register") {
-			call.registerOwner(authProcessor)
-		}
+
 		post("login") {
 			call.loginUser(authProcessor)
 		}

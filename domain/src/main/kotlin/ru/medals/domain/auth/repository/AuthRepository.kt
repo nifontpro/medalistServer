@@ -1,9 +1,13 @@
 package ru.medals.domain.auth.repository
 
-import ru.medals.domain.auth.model.TempReg
+import ru.medals.domain.auth.model.TokenLife
+import ru.medals.domain.user.model.User
 
 interface AuthRepository {
-    suspend fun createTempReg(tempReg: TempReg)
-    suspend fun getRegCodeByEmail(email: String): String?
-    suspend fun checkTempRegExist(email: String): Boolean
+
+	fun refreshToken(user: User): String
+	fun accessToken(user: User): String
+	fun emailJwtToken(email: String): TokenLife
+	fun sendEmail(message: String, toEmail: String): Boolean
+
 }

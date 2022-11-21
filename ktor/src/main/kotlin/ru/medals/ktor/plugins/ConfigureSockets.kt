@@ -9,7 +9,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.koin.ktor.ext.inject
-import ru.medals.ktor.auth.service.AuthVerify
+import ru.medals.ktor.auth.repository.AuthVerify
 import java.time.Duration
 import java.util.*
 

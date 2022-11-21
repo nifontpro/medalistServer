@@ -6,13 +6,13 @@ import org.litote.kmongo.coroutine.aggregate
 import ru.medals.data.award.model.AwardCol
 import ru.medals.data.award.model.AwardMedalCol
 import ru.medals.data.award.model.toAwardCol
-import ru.medals.data.award.repository.AwardErrors.Companion.errorAwardNotFound
-import ru.medals.data.award.repository.AwardErrors.Companion.errorCreate
-import ru.medals.data.award.repository.AwardErrors.Companion.errorDelete
-import ru.medals.data.award.repository.AwardErrors.Companion.errorIO
-import ru.medals.data.award.repository.AwardErrors.Companion.errorMedalNotFound
-import ru.medals.data.award.repository.AwardErrors.Companion.errorUpdate
+import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardNotFound
+import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorCreate
+import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorDelete
+import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorIO
+import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorUpdate
 import ru.medals.data.medal.model.MedalCol
+import ru.medals.data.medal.repository.MedalRepoErrors.Companion.errorMedalNotFound
 import ru.medals.domain.award.model.Award
 import ru.medals.domain.award.model.AwardMedal
 import ru.medals.domain.award.repository.AwardRepository
@@ -27,7 +27,7 @@ class AwardRepositoryImpl(
 
 	override suspend fun create(award: Award): RepositoryData<Award> {
 		award.medalId?.let {
-			if (medals.findOneById(it) == null) return errorMedalNotFound()
+			if (medals.countDocuments(MedalCol::id eq it) < 1) return errorMedalNotFound()
 		}
 
 		val awardCol = award.toAwardCol(create = true)

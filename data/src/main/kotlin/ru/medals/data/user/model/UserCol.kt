@@ -2,6 +2,7 @@ package ru.medals.data.user.model
 
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
+import ru.medals.domain.image.model.IImages
 import ru.medals.domain.image.model.ImageRef
 import ru.medals.domain.user.model.User
 
@@ -13,11 +14,6 @@ data class UserCol(
 	val lastname: String? = null,
 	val hashPassword: String? = null,
 	val role: String? = null,
-
-	val profileImageUrl: String? = null,
-	val imageKey: String? = null,
-	val images: List<ImageRef> = emptyList(),
-
 	val bio: String? = null,
 	val companyId: String? = null,
 	val departmentId: String? = null,
@@ -26,9 +22,15 @@ data class UserCol(
 	val rewardCount: Int? = null,
 	val mnc: Boolean? = null, // Является ли членом номинационной коммисии
 
+	val medalsInfo: List<MedalInfoCol> = emptyList(),
+
+	override val imageUrl: String? = null,
+	override val imageKey: String? = null,
+	override val images: List<ImageRef> = emptyList(),
+
 	@BsonId
 	val id: String = ObjectId().toString()
-) {
+) : IImages {
 
 	fun toUser(clearHashPassword: Boolean = true): User {
 		return User(
@@ -40,7 +42,8 @@ data class UserCol(
 			lastname = lastname,
 			hashPassword = if (clearHashPassword) null else hashPassword,
 			role = role ?: User.NONE,
-			imageUrl = profileImageUrl,
+			imageUrl = imageUrl,
+			imageKey = imageKey,
 			images = images,
 			bio = bio,
 			companyId = companyId,
@@ -63,14 +66,16 @@ fun User.toUserCol(isNew: Boolean = false): UserCol {
 		patronymic = patronymic,
 		lastname = lastname,
 		role = role,
-		profileImageUrl = imageUrl,
-		images = images,
 		bio = bio,
 		mnc = isMnc,
 		companyId = companyId,
 		departmentId = departmentId,
 		score = score,
 		currentScore = currentScore,
-		rewardCount = rewardCount
+		rewardCount = rewardCount,
+
+		imageUrl = imageUrl,
+		imageKey = imageKey,
+		images = images,
 	)
 }

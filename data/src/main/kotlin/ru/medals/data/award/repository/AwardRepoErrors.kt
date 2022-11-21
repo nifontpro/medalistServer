@@ -3,7 +3,7 @@ package ru.medals.data.award.repository
 import ru.medals.domain.core.bussines.model.RepositoryData
 import ru.medals.domain.core.bussines.model.RepositoryError
 
-interface AwardErrors {
+interface AwardRepoErrors {
 	companion object {
 
 		private const val REPO = "award"
@@ -47,14 +47,5 @@ interface AwardErrors {
 				description = "Ошибка обмена данными"
 			)
 		)
-
-		fun errorMedalNotFound() = RepositoryData.error(
-			error = RepositoryError(
-				repository = REPO,
-				violationCode = "Medal not found",
-				description = "Нет медали с заданным id"
-			)
-		)
-
 	}
 }

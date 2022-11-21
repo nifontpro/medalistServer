@@ -9,7 +9,7 @@ fun ICorChainDsl<AuthContext>.generateTokens(title: String) = worker {
 	this.title = title
 	on { state == ContextState.RUNNING }
 	handle {
-		refreshToken = authService.refreshToken(user)
-		accessToken = authService.accessToken(user)
+		refreshToken = authRepository.refreshToken(user)
+		accessToken = authRepository.accessToken(user)
 	}
 }

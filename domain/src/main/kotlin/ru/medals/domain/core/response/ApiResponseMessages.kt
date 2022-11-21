@@ -2,8 +2,10 @@ package ru.medals.domain.core.response
 
 object ApiResponseMessages {
 
-    const val USER_EMAIL_EXISTS = "Пользователь с такой почтой уже существует!"
-    const val USER_LOGIN_EXISTS = "Пользователь с таким логином уже существует!"
+	const val USER_EMAIL_EXISTS = "Пользователь с такой почтой уже существует!"
+	const val TEMP_REG_USER_EMAIL_EXISTS =
+		"Пользователь с такой почтой сейчас регистрирутся, если это Вы, подождите и повторите попытку!"
+	const val USER_LOGIN_EXISTS = "Пользователь с таким логином уже существует!"
 //    const val USER_ALREADY_REGISTER = "Пользователь с такой почтой сейчас регистрируется!"
 ////    const val CODE_NOT_VALID = "Неверный код регистрации!"
 //    const val USER_NOT_FOUND = "Пользователь не найден!"

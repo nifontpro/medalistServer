@@ -23,7 +23,7 @@ fun BaseContext.fail(error: ContextError) {
 	state = ContextState.FAILING
 }
 
-suspend fun <T> BaseContext.checkResponseData(operation: suspend () -> RepositoryData<T>): T? {
+suspend fun <T> BaseContext.checkRepositoryData(operation: suspend () -> RepositoryData<T>): T? {
 	val result = operation()
 	return if (result.success) {
 		result.data

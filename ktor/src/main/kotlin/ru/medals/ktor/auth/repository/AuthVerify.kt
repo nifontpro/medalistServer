@@ -1,4 +1,4 @@
-package ru.medals.ktor.auth.service
+package ru.medals.ktor.auth.repository
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier

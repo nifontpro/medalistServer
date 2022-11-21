@@ -2,12 +2,13 @@ package ru.medals.data.department.repository
 
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineDatabase
-import ru.medals.data.core.deleteImageFile
 import ru.medals.data.core.errorBadImageKey
 import ru.medals.data.core.errorS3
 import ru.medals.data.department.model.DepartmentCol
+import ru.medals.data.department.repository.CompanyRepoErrors.Companion.errorDepartmentDelete
+import ru.medals.data.department.repository.CompanyRepoErrors.Companion.errorDepartmentNotFound
+import ru.medals.data.department.repository.CompanyRepoErrors.Companion.errorDepartmentUpdate
 import ru.medals.domain.core.bussines.model.RepositoryData
-import ru.medals.domain.core.bussines.model.RepositoryError
 import ru.medals.domain.department.model.Department
 import ru.medals.domain.department.repository.DepartmentRepository
 import ru.medals.domain.image.model.FileData
@@ -72,12 +73,16 @@ class DepartmentRepositoryImpl(
 		}
 	}
 
-	override suspend fun deleteDepartment(department: Department): Boolean {
-		val isSuccess = departments.deleteOne(DepartmentCol::id eq department.id).wasAcknowledged()
-		if (isSuccess && department.imageUrl != null) {
-			deleteImageFile(department.imageUrl)
+	override suspend fun deleteDepartment(department: Department): RepositoryData<Department> {
+		val departmentCol = departments.findOneById(department.id) ?: return errorDepartmentNotFound()
+		if (!s3repository.deleteAllImages(department)) return errorS3()
+
+		return try {
+			departments.deleteOneById(department.id)
+			RepositoryData.success(data = departmentCol.toDepartment())
+		} catch (e: Exception) {
+			errorDepartmentDelete()
 		}
-		return isSuccess
 	}
 
 	override suspend fun getDepartmentsCount(companyId: String): Long {
@@ -134,7 +139,7 @@ class DepartmentRepositoryImpl(
 			RepositoryData.success()
 		} catch (e: Exception) {
 			s3repository.deleteObject(imageKey)
-			errorBadUpdate()
+			errorDepartmentUpdate()
 		}
 	}
 
@@ -142,7 +147,7 @@ class DepartmentRepositoryImpl(
 		if (!s3repository.available()) return errorS3()
 		val department = departments.findOneById(departmentId) ?: return errorDepartmentNotFound()
 		val images = department.images
-		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey(REPO)
+		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey("department")
 
 		s3repository.putObject(key = imageKey, fileData = fileData) ?: return errorS3()
 
@@ -157,7 +162,7 @@ class DepartmentRepositoryImpl(
 		if (!s3repository.available()) return errorS3()
 		val department = departments.findOneById(departmentId) ?: return errorDepartmentNotFound()
 		val images = department.images
-		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey(REPO)
+		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey("department")
 
 		val isSuccess = departments.updateOneById(
 			id = departmentId, pullByFilter(DepartmentCol::images, ImageRef::imageKey eq imageKey)
@@ -167,28 +172,7 @@ class DepartmentRepositoryImpl(
 			s3repository.deleteObject(imageKey)
 			RepositoryData.success()
 		} else {
-			errorBadUpdate()
+			errorDepartmentUpdate()
 		}
-	}
-
-	companion object {
-
-		const val REPO = "department"
-
-		private fun errorDepartmentNotFound() = RepositoryData.error(
-			error = RepositoryError(
-				repository = REPO,
-				violationCode = "department not found",
-				description = "Отдел не найден"
-			)
-		)
-
-		private fun errorBadUpdate() = RepositoryData.error(
-			error = RepositoryError(
-				repository = REPO,
-				violationCode = "bad update",
-				description = "Ошибка обновления данных отдела"
-			)
-		)
 	}
 }

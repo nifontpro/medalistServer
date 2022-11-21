@@ -3,6 +3,7 @@ package ru.medals.domain.user.repository
 import ru.medals.domain.core.bussines.model.RepositoryData
 import ru.medals.domain.image.model.FileData
 import ru.medals.domain.user.model.User
+import ru.medals.domain.user.model.UserMedals
 
 interface UserRepository {
 
@@ -13,7 +14,7 @@ interface UserRepository {
 	suspend fun getUsersByDepartment(departmentId: String, filter: String? = null): List<User>
 	suspend fun updateProfile(user: User): Boolean
 	suspend fun getDirectorDepartment(departmentId: String): User?
-	suspend fun delete(user: User): Boolean
+	suspend fun delete(user: User): RepositoryData<User>
 	suspend fun getUsersCountByCompany(companyId: String): Long
 	suspend fun getUsersCountByDepartment(departmentId: String): Long
 	suspend fun getAllMnc(companyId: String): List<User>
@@ -26,4 +27,9 @@ interface UserRepository {
 	suspend fun addImage(userId: String, fileData: FileData): RepositoryData<Unit>
 	suspend fun updateImage(userId: String, imageKey: String, fileData: FileData): RepositoryData<Unit>
 	suspend fun deleteImage(userId: String, imageKey: String): RepositoryData<Unit>
+	suspend fun addMedal(userId: String, medalId: String): RepositoryData<Unit>
+	suspend fun getUserByIdWithMedals(userId: String): RepositoryData<UserMedals>
+	suspend fun getUserByIdWithMedalsFilter(userId: String, medalId: String): RepositoryData<List<UserMedals>>
+	suspend fun verifyUserByEmailExist(email: String): Boolean
+	suspend fun verifyUserByLoginExist(login: String): Boolean
 }

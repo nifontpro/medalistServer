@@ -8,8 +8,8 @@ import ru.medals.domain.department.bussines.processor.DepartmentProcessor
 import ru.medals.domain.department.model.Department
 import ru.medals.ktor.core.*
 import ru.medals.ktor.department.mappers.fromTransport
-import ru.medals.ktor.department.mappers.toTransportGetByCompany
-import ru.medals.ktor.department.mappers.toTransportGetById
+import ru.medals.ktor.department.mappers.toTransportGetDepartment
+import ru.medals.ktor.department.mappers.toTransportGetDepartments
 import ru.medals.ktor.department.model.request.*
 
 suspend fun ApplicationCall.createDepartment(processor: DepartmentProcessor) =
@@ -20,23 +20,24 @@ suspend fun ApplicationCall.createDepartment(processor: DepartmentProcessor) =
 	)
 
 suspend fun ApplicationCall.deleteDepartment(processor: DepartmentProcessor) =
-	authProcess<DeleteDepartmentRequest, IdResponse, DepartmentContext>(
+	authProcess<DeleteDepartmentRequest, Department, DepartmentContext>(
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetDepartment() }
 	)
 
 suspend fun ApplicationCall.getDepartmentById(processor: DepartmentProcessor) =
 	process<GetDepartmentByIdRequest, Department, DepartmentContext>(
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
-		toTransport = { toTransportGetById() }
+		toTransport = { toTransportGetDepartment() }
 	)
 
 suspend fun ApplicationCall.getDepartmentsByCompany(processor: DepartmentProcessor) =
 	process<GetDepartmentsByCompanyRequest, List<Department>, DepartmentContext>(
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
-		toTransport = { toTransportGetByCompany() }
+		toTransport = { toTransportGetDepartments() }
 	)
 
 suspend fun ApplicationCall.getDepartmentCount(processor: DepartmentProcessor) =

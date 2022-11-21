@@ -1,7 +1,7 @@
 package ru.medals.domain.reward.bussines.workers
 
 import ru.medals.domain.core.bussines.ContextState
-import ru.medals.domain.core.bussines.helper.checkResponseData
+import ru.medals.domain.core.bussines.helper.checkRepositoryData
 import ru.medals.domain.core.bussines.helper.errorDb
 import ru.medals.domain.core.bussines.helper.fail
 import ru.medals.domain.reward.bussines.context.RewardContext
@@ -22,7 +22,7 @@ fun ICorChainDsl<RewardContext>.rewardUser(title: String) = worker {
 		)
 	}
 	handle {
-		checkResponseData {
+		checkRepositoryData {
 			rewardRepository.rewardUser(rewardId = rewardId)
 		}
 	}

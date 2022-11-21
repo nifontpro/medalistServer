@@ -14,8 +14,7 @@ import ru.medals.domain.user.model.User.Companion.ROOT
 import ru.medals.domain.user.model.User.Companion.USER
 import ru.medals.domain.user.model.User.Companion.USER_PRIORITY
 import ru.medals.domain.user.repository.UserRepository
-import ru.medals.ktor.auth.model.request.RegisterOwnerRequest
-import ru.medals.ktor.auth.service.AuthVerify
+import ru.medals.ktor.auth.repository.AuthVerify
 import ru.medals.ktor.user.toPrincipalUser
 
 fun Application.configureSecurity() {
@@ -24,7 +23,7 @@ fun Application.configureSecurity() {
 	val userRepository: UserRepository by inject()
 	val config: HoconApplicationConfig by inject()
 
-	val audience = config.property("jwt.audience").getString()
+//	val audience = config.property("jwt.audience").getString()
 	val jwtRealm = config.property("jwt.realm").getString()
 
 	authentication {
@@ -132,7 +131,7 @@ fun Application.configureSecurity() {
 		}
 
 
-		jwt("register") {
+	/*	jwt("register") {
 			realm = jwtRealm
 			verifier(authVerify.verifyJwtToken)
 			validate { jwtCredential ->
@@ -146,6 +145,6 @@ fun Application.configureSecurity() {
 					null
 				}
 			}
-		}
+		}*/
 	}
 }

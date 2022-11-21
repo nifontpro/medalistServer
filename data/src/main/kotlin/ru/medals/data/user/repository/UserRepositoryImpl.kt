@@ -2,20 +2,26 @@ package ru.medals.data.user.repository
 
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineDatabase
-import ru.medals.data.core.deleteImageFile
+import org.litote.kmongo.coroutine.aggregate
+import ru.medals.data.appoint.repository.AppointErrors
 import ru.medals.data.core.errorBadImageKey
 import ru.medals.data.core.errorS3
+import ru.medals.data.medal.model.MedalCol
+import ru.medals.data.medal.repository.MedalRepoErrors.Companion.errorMedalNotFound
+import ru.medals.data.user.model.MedalInfoCol
 import ru.medals.data.user.model.UserCol
+import ru.medals.data.user.model.UserMedalsCol
 import ru.medals.data.user.model.toUserCol
 import ru.medals.domain.core.bussines.model.RepositoryData
-import ru.medals.domain.core.bussines.model.RepositoryError
 import ru.medals.domain.image.model.FileData
 import ru.medals.domain.image.model.ImageRef
 import ru.medals.domain.image.repository.S3Repository
 import ru.medals.domain.user.model.User
 import ru.medals.domain.user.model.User.Companion.ADMIN
 import ru.medals.domain.user.model.User.Companion.DIRECTOR
+import ru.medals.domain.user.model.UserMedals
 import ru.medals.domain.user.repository.UserRepository
+import java.util.*
 
 class UserRepositoryImpl(
 	db: CoroutineDatabase,
@@ -23,6 +29,7 @@ class UserRepositoryImpl(
 ) : UserRepository {
 
 	private val users = db.getCollection<UserCol>()
+	private val medals = db.getCollection<MedalCol>()
 
 	override suspend fun createUser(user: User): String? {
 		val userCol = user.toUserCol(isNew = true)
@@ -53,10 +60,22 @@ class UserRepositoryImpl(
 		)?.toUser(clearHashPassword = false)
 	}
 
+	override suspend fun verifyUserByEmailExist(email: String): Boolean {
+		return users.countDocuments(
+			UserCol::email regex Regex("^$email\$", RegexOption.IGNORE_CASE),
+		) > 0
+	}
+
 	override suspend fun getUserByLogin(login: String): User? {
 		return users.findOne(
 			UserCol::login eq login,
 		)?.toUser()
+	}
+
+	override suspend fun verifyUserByLoginExist(login: String): Boolean {
+		return users.countDocuments(
+			UserCol::login eq login,
+		) > 0
 	}
 
 	override suspend fun getCompanyAdmins(companyId: String, filter: String?): List<User> {
@@ -115,19 +134,17 @@ class UserRepositoryImpl(
 		}
 	}
 
-	override suspend fun delete(user: User): Boolean {
-		val isSuccess = users.deleteOne(UserCol::id eq user.id).wasAcknowledged()
-		if (isSuccess && user.imageUrl != null) {
-			deleteImageFile(user.imageUrl)
-		}
-		return isSuccess
-	}
+	override suspend fun delete(user: User): RepositoryData<User> {
 
-	/*	override suspend fun getUsersContainsMedal(medalId: String): List<UserResponse> {
-			return users.aggregate<User>(match(User::medals contains medalId)).toList().map {
-				it.toUserResponse()
-			}
-		}*/
+		if (!s3repository.deleteAllImages(user)) return errorS3()
+
+		return try {
+			users.deleteOne(UserCol::id eq user.id)
+			RepositoryData.success(data = user)
+		} catch (e: Exception) {
+			errorUserDelete()
+		}
+	}
 
 	override suspend fun getUsersCountByCompany(companyId: String): Long {
 		return users.countDocuments(UserCol::companyId eq companyId)
@@ -172,7 +189,7 @@ class UserRepositoryImpl(
 		val isSuccess = users.updateOneById(
 			id = userId,
 			update = set(
-				UserCol::profileImageUrl setTo imageUrl,
+				UserCol::imageUrl setTo imageUrl,
 				UserCol::imageKey setTo imageKey
 			),
 		).wasAcknowledged()
@@ -212,7 +229,7 @@ class UserRepositoryImpl(
 			RepositoryData.success()
 		} catch (e: Exception) {
 			s3repository.deleteObject(imageKey)
-			errorBadUpdate()
+			errorUserUpdate()
 		}
 	}
 
@@ -220,7 +237,7 @@ class UserRepositoryImpl(
 		if (!s3repository.available()) return errorS3()
 		val user = users.findOneById(userId) ?: return errorUserNotFound()
 		val images = user.images
-		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey(REPO)
+		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey("user")
 
 		s3repository.putObject(key = imageKey, fileData = fileData) ?: return errorS3()
 
@@ -235,7 +252,7 @@ class UserRepositoryImpl(
 		if (!s3repository.available()) return errorS3()
 		val user = users.findOneById(userId) ?: return errorUserNotFound()
 		val images = user.images
-		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey(REPO)
+		if (images.find { imageRef -> imageRef.imageKey == imageKey } == null) return errorBadImageKey("user")
 
 		val isSuccess = users.updateOneById(
 			id = userId, pullByFilter(UserCol::images, ImageRef::imageKey eq imageKey)
@@ -245,29 +262,51 @@ class UserRepositoryImpl(
 			s3repository.deleteObject(imageKey)
 			RepositoryData.success()
 		} else {
-			errorBadUpdate()
+			errorUserUpdate()
 		}
 	}
 
-	companion object {
+	override suspend fun addMedal(userId: String, medalId: String): RepositoryData<Unit> {
+		if (medals.countDocuments(MedalCol::id eq medalId) < 1) return errorMedalNotFound()
 
-		const val REPO = "user"
-
-		private fun errorUserNotFound() = RepositoryData.error(
-			error = RepositoryError(
-				repository = REPO,
-				violationCode = "user not found",
-				description = "Сотрудник не найден"
+		users.updateOneById(
+			id = userId,
+			update = push(
+				UserCol::medalsInfo, MedalInfoCol(medalId = medalId, createDate = Date())
 			)
 		)
-
-		private fun errorBadUpdate() = RepositoryData.error(
-			error = RepositoryError(
-				repository = REPO,
-				violationCode = "bad update",
-				description = "Ошибка обновления данных сотрудника"
-			)
-		)
-
+		return RepositoryData.success()
 	}
+
+	override suspend fun getUserByIdWithMedals(userId: String): RepositoryData<UserMedals> {
+		return try {
+			val userMedals = users.aggregate<UserMedalsCol>(
+				match(UserCol::id eq userId),
+				lookup(from = "medalCol", localField = "medalsInfo.medalId", "_id", newAs = "medals"),
+			).toList().firstOrNull()?.toUserMedal() ?: return errorUserNotFound()
+			RepositoryData.success(data = userMedals)
+		} catch (e: Exception) {
+			AppointErrors.errorAppointGet()
+		}
+	}
+
+	override suspend fun getUserByIdWithMedalsFilter(userId: String, medalId: String): RepositoryData<List<UserMedals>> {
+		return try {
+			val userMedals = users.aggregate<UserMedalsCol>(
+				//			"[{\$match : {_id : {\$eq: '$userId'}}}]"
+				"[{\$match: {'_id': '$userId', 'medalsInfo.medalId': '$medalId'}}," +
+						"{\$project:{" +
+						"_id: 1, email:1, login:1, name: 1, patronymic: 1, lastname: 1, role: 1, bio: 1, companyId: 1, departmentId: 1, score: 1, currentScore: 1, rewardCount: 1," +
+						"medalsInfo: {\$filter: {input: '\$medalsInfo', as: 'infos'," +
+						"cond: {\$eq: ['\$\$infos.medalId', '$medalId']}}}}" +
+						"}," +
+						"{\$lookup: {from: 'medalCol', localField: 'medalsInfo.medalId', foreignField: '_id', as: 'medals'}}" +
+						"]"
+			).toList().map { it.toUserMedal() }
+			RepositoryData.success(data = userMedals)
+		} catch (e: Exception) {
+			errorUserGet()
+		}
+	}
+
 }

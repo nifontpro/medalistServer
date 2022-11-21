@@ -7,8 +7,8 @@ import ru.medals.domain.company.model.Company
 import ru.medals.domain.core.response.IdResponse
 import ru.medals.domain.core.response.baseResponseId
 import ru.medals.ktor.company.mappers.fromTransport
-import ru.medals.ktor.company.mappers.toTransportGetAllCompany
-import ru.medals.ktor.company.mappers.toTransportGetCompanyById
+import ru.medals.ktor.company.mappers.toTransportGetCompanies
+import ru.medals.ktor.company.mappers.toTransportGetCompany
 import ru.medals.ktor.company.model.request.*
 import ru.medals.ktor.core.*
 
@@ -20,30 +20,31 @@ suspend fun ApplicationCall.createCompany(processor: CompanyProcessor) =
 	)
 
 suspend fun ApplicationCall.deleteCompany(processor: CompanyProcessor) =
-	authProcess<DeleteCompanyRequest, IdResponse, CompanyContext>(
+	authProcess<DeleteCompanyRequest, Company, CompanyContext>(
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetCompany() }
 	)
 
 suspend fun ApplicationCall.getAllCompany(processor: CompanyProcessor) =
 	process<GetAllCompanyRequest, List<Company>, CompanyContext>(
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
-		toTransport = { toTransportGetAllCompany() }
+		toTransport = { toTransportGetCompanies() }
 	)
 
 suspend fun ApplicationCall.getCompanyById(processor: CompanyProcessor) =
 	process<GetCompanyByIdRequest, Company, CompanyContext>(
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
-		toTransport = { toTransportGetCompanyById() }
+		toTransport = { toTransportGetCompany() }
 	)
 
 suspend fun ApplicationCall.getCompaniesByOwner(processor: CompanyProcessor) =
 	authProcess<GetCompaniesByOwnerRequest, List<Company>, CompanyContext>(
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
-		toTransport = { toTransportGetAllCompany() }
+		toTransport = { toTransportGetCompanies() }
 	)
 
 suspend fun ApplicationCall.updateCompanyProfile(processor: CompanyProcessor) =

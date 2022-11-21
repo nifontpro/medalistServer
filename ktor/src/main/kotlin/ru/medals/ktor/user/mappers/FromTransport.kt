@@ -11,7 +11,7 @@ fun UserContext.fromTransport(request: CreateUserRequest) {
 		login = request.login,
 		hashPassword = request.password,
 		email = request.email,
-		name = request.firstname,
+		name = request.name,
 		patronymic = request.patronymic,
 		lastname = request.lastname,
 		bio = request.bio,

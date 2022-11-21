@@ -1,5 +1,6 @@
 package ru.medals.domain.user.model
 
+import ru.medals.domain.image.model.IImages
 import ru.medals.domain.image.model.ImageRef
 
 data class User(
@@ -10,8 +11,6 @@ data class User(
 	val lastname: String? = null,
 	val hashPassword: String? = null,
 	val role: String? = null,
-	val imageUrl: String? = null,
-	val images: List<ImageRef> = emptyList(),
 	val bio: String? = null,
 	val companyId: String? = null,
 	val departmentId: String? = null,
@@ -20,8 +19,12 @@ data class User(
 	val rewardCount: Int? = null,
 	val isMnc: Boolean? = null, // Является ли членом номинационной коммисии
 
+	override val imageUrl: String? = null,
+	override val imageKey: String? = null,
+	override val images: List<ImageRef> = emptyList(),
+
 	val id: String = ""
-) {
+) : IImages {
 
 	companion object {
 

@@ -1,24 +1,21 @@
-package ru.medals.ktor.auth.service
+package ru.medals.ktor.auth.repository
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import io.ktor.server.config.*
 import org.apache.commons.mail.DefaultAuthenticator
 import org.apache.commons.mail.SimpleEmail
-import ru.medals.domain.auth.model.TempReg
 import ru.medals.domain.auth.model.TokenLife
 import ru.medals.domain.auth.repository.AuthRepository
-import ru.medals.domain.auth.repository.AuthService
 import ru.medals.domain.core.util.Constants.LIFE_TIME_ACCESS_TOKEN
 import ru.medals.domain.core.util.Constants.LIFE_TIME_REFRESH_TOKEN
 import ru.medals.domain.core.util.Constants.LIFE_TIME_REGISTER_TOKEN
 import ru.medals.domain.user.model.User
 import java.util.*
 
-class AuthServiceImpl(
+class AuthRepositoryImpl(
 	private val config: HoconApplicationConfig,
-	private val authRepository: AuthRepository
-) : AuthService {
+) : AuthRepository {
 
 	private val issuer = config.property("jwt.issuer").getString()
 	private val audience = config.property("jwt.audience").getString()
@@ -60,45 +57,30 @@ class AuthServiceImpl(
 			.sign(algorithm)
 		return TokenLife(token = token, expirationDate = expirationDate)
 	}
+	/**
+	 * Настройка почты:
+	 * https://mail.yandex.ru/?uid=1707294862#setup/client
+	 */
+	override fun sendEmail(message: String, toEmail: String): Boolean {
 
-	override fun sendEmail(
-		message: String,
-		toEmail: String
-	) {
-
-		/*val email = config.property("smtp.email").getString()
-        val password = config.property("smtp.password").getString()*/
-
-		val email = System.getenv("SMTP_EMAIL")
-		val password = System.getenv("SMTP_PASSWORD")
-		SimpleEmail().apply {
-			hostName = config.property("smtp.hostName").getString()
-			setSmtpPort(config.property("smtp.smtpPort").getString().toInt())
-			setAuthenticator(DefaultAuthenticator(email, password))
-			isSSLOnConnect = true
-			setFrom(email)
-			subject = config.property("smtp.subject").getString()
-			setMsg(message)
-			addTo(toEmail)
-			send()
+		return try {
+			val fromEmail = System.getenv("SMTP_EMAIL")
+			val password = System.getenv("SMTP_PASSWORD")
+			SimpleEmail().apply {
+				hostName = config.property("smtp.hostName").getString()
+				setSmtpPort(config.property("smtp.smtpPort").getString().toInt())
+				setAuthenticator(DefaultAuthenticator(fromEmail, password))
+				isSSLOnConnect = true
+				setFrom(fromEmail)
+				subject = config.property("smtp.subject").getString()
+				setMsg(message)
+				addTo(toEmail)
+				send()
+			}
+			true
+		} catch (e: Exception) {
+			println(e.message)
+			false
 		}
-	}
-
-	override suspend fun checkTempRegExist(email: String): Boolean {
-		return authRepository.checkTempRegExist(email)
-	}
-
-	override suspend fun saveTempRegistrationEmail(email: String, code: String) {
-		authRepository.createTempReg(
-			TempReg(
-				email = email,
-				code = code,
-				expDate = System.currentTimeMillis() + LIFE_TIME_REGISTER_TOKEN
-			)
-		)
-	}
-
-	override suspend fun getRegCodeByEmail(email: String): String? {
-		return authRepository.getRegCodeByEmail(email)
 	}
 }

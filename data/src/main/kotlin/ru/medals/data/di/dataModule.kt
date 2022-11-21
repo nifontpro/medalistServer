@@ -2,7 +2,7 @@ package ru.medals.data.di
 
 import org.koin.dsl.module
 import ru.medals.data.appoint.repository.AppointRepositoryImpl
-import ru.medals.data.auth.repository.AuthRepositoryImpl
+import ru.medals.data.auth.repository.RegisterRepositoryImpl
 import ru.medals.data.award.repository.AwardRepositoryImpl
 import ru.medals.data.company.repository.CompanyRepositoryImpl
 import ru.medals.data.department.repository.DepartmentRepositoryImpl
@@ -11,7 +11,7 @@ import ru.medals.data.message.repository.MessageRepositoryImpl
 import ru.medals.data.reward.repository.RewardRepositoryImpl
 import ru.medals.data.user.repository.UserRepositoryImpl
 import ru.medals.domain.appoint.repository.AppointRepository
-import ru.medals.domain.auth.repository.AuthRepository
+import ru.medals.domain.register.repository.RegisterRepository
 import ru.medals.domain.award.repository.AwardRepository
 import ru.medals.domain.company.repository.CompanyRepository
 import ru.medals.domain.department.repository.DepartmentRepository
@@ -25,8 +25,9 @@ import ru.medals.domain.user.repository.UserRepository
  * Dependency Inversion & Dependency Injection
  */
 val dataModule = module {
-	single<AuthRepository> {
-		AuthRepositoryImpl(db = get())
+
+	single<RegisterRepository> {
+		RegisterRepositoryImpl(db = get())
 	}
 
 	single<CompanyRepository> {

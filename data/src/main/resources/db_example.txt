@@ -1,0 +1,25 @@
+// Добавить пустой массив во все элементы
+db.userCol.updateMany({}, {$set: {"medalInfo":[]}})
+
+// Обновить
+db.userCol.updateMany( {}, { $rename: { "medalInfo": "medalsInfo" } } )
+
+db.userCol.aggregate([{$match: {'_id': '63641774e81cbd0b5c5a8419', 'medalsInfo.medalId': '63641662e81cbd0b5c5a8414'}},
+											{$project:{
+												_id: 1, email:1, login:1, name: 1, patronymic: 1, lastname: 1, role: 1, bio: 1, companyId: 1,
+												departmentId: 1, score: 1,  currentScore: 1, rewardCount: 1,
+												medalsInfo: {$filter: {input: '$medalsInfo', as: 'infos',
+												cond: {$eq: ['$$infos.medalId', '63641662e81cbd0b5c5a8414']}}}}
+											}
+											]
+										)
+
+db.userCol.find(
+	{'medalsInfo.medalId': '63641662e81cbd0b5c5a8414'},
+	{_id:1, medalsInfo: {$elemMatch : {medalId : "63641662e81cbd0b5c5a8414"}}}
+)
+
+db.userCol.find(
+	{medalsInfo.medalId: '63641662e81cbd0b5c5a8414'},
+	{_id:1, medalsInfo: {$elemMatch : {medalId : "63641662e81cbd0b5c5a8414"}}}
+)

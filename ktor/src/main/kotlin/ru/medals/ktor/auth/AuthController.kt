@@ -7,17 +7,9 @@ import ru.medals.ktor.auth.mappers.fromTransport
 import ru.medals.ktor.auth.mappers.toTransportAuthResponse
 import ru.medals.ktor.auth.model.request.LoginRequest
 import ru.medals.ktor.auth.model.request.RefreshRequest
-import ru.medals.ktor.auth.model.request.RegisterOwnerRequest
 import ru.medals.ktor.auth.model.response.AuthResponse
 import ru.medals.ktor.core.authProcess
 import ru.medals.ktor.core.process
-
-suspend fun ApplicationCall.registerOwner(processor: AuthProcessor) =
-	process<RegisterOwnerRequest, AuthResponse, AuthContext>(
-		processor = processor,
-		fromTransport = { request -> fromTransport(request) },
-		toTransport = { toTransportAuthResponse() }
-	)
 
 suspend fun ApplicationCall.loginUser(processor: AuthProcessor) =
 	process<LoginRequest, AuthResponse, AuthContext>(
