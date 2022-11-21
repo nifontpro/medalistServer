@@ -131,20 +131,20 @@ fun Application.configureSecurity() {
 		}
 
 
-	/*	jwt("register") {
-			realm = jwtRealm
-			verifier(authVerify.verifyJwtToken)
-			validate { jwtCredential ->
-				val payload = jwtCredential.payload
-				if (payload.audience.contains(audience)) {
-					val type = payload.getClaim("type").asString()
-					if (type != "register") return@validate null
-					val email = payload.getClaim("email").asString()
-					RegisterOwnerRequest(email = email)
-				} else {
-					null
+		/*	jwt("register") {
+				realm = jwtRealm
+				verifier(authVerify.verifyJwtToken)
+				validate { jwtCredential ->
+					val payload = jwtCredential.payload
+					if (payload.audience.contains(audience)) {
+						val type = payload.getClaim("type").asString()
+						if (type != "register") return@validate null
+						val email = payload.getClaim("email").asString()
+						RegisterOwnerRequest(email = email)
+					} else {
+						null
+					}
 				}
-			}
-		}*/
+			}*/
 	}
 }

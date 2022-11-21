@@ -4,6 +4,7 @@ import org.koin.java.KoinJavaComponent.inject
 import ru.medals.domain.auth.repository.AuthRepository
 import ru.medals.domain.core.bussines.BaseContext
 import ru.medals.domain.core.bussines.IBaseCommand
+import ru.medals.domain.register.model.TempReg
 import ru.medals.domain.register.repository.RegisterRepository
 import ru.medals.domain.user.model.User
 import ru.medals.domain.user.repository.UserRepository
@@ -11,8 +12,9 @@ import ru.medals.domain.user.repository.UserRepository
 data class RegisterContext(
 
 	var user: User = User(),
+	var tempReg: TempReg = TempReg(), // Данные временной регистрации
 
-	var code: String = "",
+	var code: String = "", // Код подтверждения, высланный на email
 	var refreshToken: String = "",
 	var accessToken: String = "",
 

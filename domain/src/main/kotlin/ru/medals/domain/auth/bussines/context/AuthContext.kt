@@ -12,7 +12,6 @@ data class AuthContext(
 	var login: String = "",
 	var email: String = "",
 	var password: String = "",
-	var code: String = "",
 
 	var user: User = User(),
 	var refreshToken: String = "",

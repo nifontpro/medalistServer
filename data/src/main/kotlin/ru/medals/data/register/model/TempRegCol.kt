@@ -1,4 +1,4 @@
-package ru.medals.data.auth.model
+package ru.medals.data.register.model
 
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
@@ -8,7 +8,7 @@ data class TempRegCol(
 	val name: String,
 	val login: String,
 	val email: String,
-	val password: String,
+	val hashPassword: String,
 	val code: String,
 	val expDate: Long,
 
@@ -19,7 +19,7 @@ data class TempRegCol(
 		name = name,
 		login = login,
 		email = email,
-		password = password,
+		hashPassword = hashPassword,
 		code = code,
 		expDate = expDate
 	)
@@ -29,7 +29,7 @@ fun TempReg.toTempRegCol() = TempRegCol(
 	name = name,
 	login = login,
 	email = email,
-	password = password,
+	hashPassword = hashPassword,
 	code = code,
 	expDate = expDate
 )

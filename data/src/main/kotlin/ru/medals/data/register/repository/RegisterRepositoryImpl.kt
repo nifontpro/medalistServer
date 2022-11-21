@@ -1,12 +1,11 @@
-package ru.medals.data.auth.repository
+package ru.medals.data.register.repository
 
 import org.litote.kmongo.coroutine.CoroutineDatabase
-import org.litote.kmongo.eq
 import org.litote.kmongo.gt
 import org.litote.kmongo.lt
 import org.litote.kmongo.regex
-import ru.medals.data.auth.model.TempRegCol
-import ru.medals.data.auth.model.toTempRegCol
+import ru.medals.data.register.model.TempRegCol
+import ru.medals.data.register.model.toTempRegCol
 import ru.medals.domain.register.model.TempReg
 import ru.medals.domain.register.repository.RegisterRepository
 
@@ -38,12 +37,11 @@ class RegisterRepositoryImpl(
 		}
 	}
 
-	override suspend fun getRegCodeByEmail(email: String): String? {
-		val tempRegCol = tempRegsCol.findOne(
-			TempRegCol::email eq email,
+	override suspend fun getTempRegByEmail(email: String): TempReg? {
+		return tempRegsCol.findOne(
+			TempRegCol::email regex Regex("^$email\$", RegexOption.IGNORE_CASE),
 			TempRegCol::expDate gt System.currentTimeMillis() // >
-		)
-		return tempRegCol?.code
+		)?.toTempReg()
 	}
 
 }

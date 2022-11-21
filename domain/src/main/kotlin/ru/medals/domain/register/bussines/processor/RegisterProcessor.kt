@@ -32,6 +32,11 @@ class RegisterProcessor : IBaseProcessor<RegisterContext> {
 			}
 
 			operation("Регистрация владельца компаний", RegisterContext.Command.VALID_REGISTER_OWNER) {
+				validateUserEmailEmpty("Проверка, не пустой ли email")
+				validateRegCodeEmpty("Проверка, не пустой ли код подтверждения")
+				trimFieldCode("Очищаем код подтверждения")
+				getTempRegByEmail("Получаем регистрационные данные")
+				validateRegCode("Сопоставляем полученный код с кодом, высланным ранее на почту")
 				createOwner("Создаем профиль владельца компаний в БД")
 				generateTokens("Генерируем токены")
 			}

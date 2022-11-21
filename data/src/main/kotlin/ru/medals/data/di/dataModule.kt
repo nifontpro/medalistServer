@@ -2,7 +2,7 @@ package ru.medals.data.di
 
 import org.koin.dsl.module
 import ru.medals.data.appoint.repository.AppointRepositoryImpl
-import ru.medals.data.auth.repository.RegisterRepositoryImpl
+import ru.medals.data.register.repository.RegisterRepositoryImpl
 import ru.medals.data.award.repository.AwardRepositoryImpl
 import ru.medals.data.company.repository.CompanyRepositoryImpl
 import ru.medals.data.department.repository.DepartmentRepositoryImpl

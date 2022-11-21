@@ -1,5 +1,6 @@
 package ru.medals.domain.register.bussines.workers
 
+import ru.medals.domain.auth.util.hashPassword
 import ru.medals.domain.core.bussines.ContextState
 import ru.medals.domain.core.bussines.helper.checkRepositoryBool
 import ru.medals.domain.core.util.Constants
@@ -21,7 +22,7 @@ fun ICorChainDsl<RegisterContext>.saveTempRegUserToDb(title: String) = worker {
 					name = user.name ?: "",
 					login = user.login ?: "",
 					email = user.email ?: "",
-					password = user.hashPassword ?: "",
+					hashPassword = hashPassword(user.hashPassword ?: ""),
 					code = code,
 					expDate = System.currentTimeMillis() + Constants.LIFE_TIME_REGISTER_TOKEN
 				)

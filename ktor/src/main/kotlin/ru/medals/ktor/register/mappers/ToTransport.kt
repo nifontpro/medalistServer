@@ -5,7 +5,7 @@ import ru.medals.ktor.auth.model.response.AuthResponse
 
 fun RegisterContext.toTransportAuthResponse(): AuthResponse {
 	return AuthResponse(
-		user = user.copy(hashPassword = null),
+		user = user,
 		refreshToken = refreshToken,
 		accessToken = accessToken
 	)
