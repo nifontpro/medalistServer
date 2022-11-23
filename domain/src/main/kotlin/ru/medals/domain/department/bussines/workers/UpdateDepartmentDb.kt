@@ -13,7 +13,7 @@ fun ICorChainDsl<DepartmentContext>.updateDepartmentDb(title: String) = worker {
 
 	handle {
 		checkRepositoryBool(repository = "department", "Сбой обновления данных отдела") {
-			departmentRepository.updateDepartment(departmentUpdate)
+			departmentRepository.updateDepartment(department)
 		}
 	}
 }

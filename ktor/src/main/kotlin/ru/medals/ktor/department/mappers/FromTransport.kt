@@ -42,7 +42,7 @@ fun DepartmentContext.fromTransport(request: GetDepartmentsCountRequest) {
 
 fun DepartmentContext.fromTransport(request: UpdateDepartmentRequest) {
 	command = DepartmentContext.Command.UPDATE
-	departmentUpdate = Department(
+	department = Department(
 		id = request.id ?: "",
 		name = request.name ?: "",
 		description = request.description,

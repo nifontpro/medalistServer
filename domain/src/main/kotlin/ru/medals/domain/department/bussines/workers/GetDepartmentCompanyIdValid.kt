@@ -1,14 +1,14 @@
 package ru.medals.domain.department.bussines.workers
 
 import ru.medals.domain.core.bussines.ContextState
+import ru.medals.domain.core.bussines.helper.ContextError
 import ru.medals.domain.core.bussines.helper.errorDb
 import ru.medals.domain.core.bussines.helper.fail
-import ru.medals.domain.core.bussines.helper.otherError
 import ru.medals.domain.department.bussines.context.DepartmentContext
 import ru.otus.cor.ICorChainDsl
 import ru.otus.cor.worker
 
-fun ICorChainDsl<DepartmentContext>.doesDepartmentWithNameExist(title: String) = worker {
+fun ICorChainDsl<DepartmentContext>.getDepartmentCompanyIdValid(title: String) = worker {
 
 	this.title = title
 	on { state == ContextState.RUNNING }
@@ -17,23 +17,22 @@ fun ICorChainDsl<DepartmentContext>.doesDepartmentWithNameExist(title: String) =
 			errorDb(
 				repository = "department",
 				violationCode = "internal",
-				description = "Внутренний сбой БД"
+				description = "Сбой получения отдела"
 			)
 		)
 	}
 	handle {
-		if (departmentRepository.doesDepartmentWithName(
-				name = department.name,
-				companyId = companyIdValid,
-			)
-		) {
+		val departmentFind = departmentRepository.getDepartmentById(departmentIdValid) ?: run {
 			fail(
-				otherError(
-					code = "exist",
-					field = "department",
-					description = "В Вашей компании уже есть отдел с таким наименованием"
+				errorDb(
+					repository = "department",
+					violationCode = "not found",
+					description = "Отдел не найден",
+					level = ContextError.Levels.INFO
 				)
 			)
+			return@handle
 		}
+		companyIdValid = departmentFind.companyId
 	}
 }

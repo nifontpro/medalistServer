@@ -8,7 +8,7 @@ import ru.otus.cor.worker
 
 fun ICorChainDsl<DepartmentContext>.validateDepartmentNameEmpty(title: String) = worker {
 	this.title = title
-	on { departmentUpdate.name.isBlank() }
+	on { department.name.isBlank() }
 	handle {
 		fail(
 			errorValidation(

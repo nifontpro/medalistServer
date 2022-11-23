@@ -27,20 +27,20 @@ class DepartmentProcessor : IBaseProcessor<DepartmentContext> {
 				createEmptyDepartment("Создаем отдел с пустыми полями")
 			}
 
-			operation("Создать отдел с пустыми полями", DepartmentContext.Command.CREATE) {
+			operation("Создать отдел", DepartmentContext.Command.CREATE) {
 				validateDepartmentNameEmpty("Проверка на непустое наименование отдела")
 				validateCompanyIdEmpty("Проверка на непустой companyId")
-				trimFieldDepartment("Очистка полей")
 				trimFieldCompanyIdAndCopyToValid("Подготовка к авторизации")
+				trimFieldDepartment("Очистка полей")
+				doesDepartmentWithNameExist("Есть ли другой отдел с таким наименованием?")
 				validateAdminLevel("Уровень доступа - не ниже администратор компании")
-				createEmptyDepartment("Создаем отдел с пустыми полями")
+				createDepartment("Создаем отдел")
 			}
-
 
 			operation("Удалить отдел", DepartmentContext.Command.DELETE) {
 				validateDepartmentIdEmpty("Проверка на непустой departmentId")
 				trimFieldDepartmentIdAndCopyToValid("Очистка departmentId")
-				getDepartmentByIdFromDb("Получаем отдел из БД и готовим companyIdValid для авторизации")
+				getDepartmentCompanyIdValid("Получаем companyId для авторизации")
 				validateAdminLevel("Уровень доступа - не ниже администратор компании")
 				doesDepartmentContainUsers("Проверяем, не содержит ли отдел сотрудников")
 				deleteDepartment("Удаляем отдел")
@@ -69,9 +69,9 @@ class DepartmentProcessor : IBaseProcessor<DepartmentContext> {
 				validateDepartmentNameEmpty("Проверка на непустое наименование отдела")
 				validateDepartmentIdLocalEmpty("Проверка на непустой id отдела")
 				trimFieldDepartment("Очистка полей")
-				getDepartmentByIdFromDb("Получаем отдел из БД и готовим companyIdValid для авторизации")
+				getDepartmentCompanyIdValid("Получаем companyId для авторизации")
 				validateAdminLevel("Уровень доступа - не ниже администратор компании")
-				doesDepartmentWithNameExist("Есть ли другой отдел с таким наименованием?")
+				doesOtherDepartmentWithNameExist("Есть ли другой отдел с таким наименованием?")
 				updateDepartmentDb("Обновляем данные отдела")
 			}
 
@@ -85,7 +85,7 @@ class DepartmentProcessor : IBaseProcessor<DepartmentContext> {
 			operation("Добавить изображение отдела", DepartmentContext.Command.IMAGE_ADD) {
 				validateDepartmentIdEmpty("Проверка на непустой departmentId")
 				trimFieldDepartmentIdAndCopyToValid("Очистка departmentId")
-				getDepartmentByIdFromDb("Получаем отдел из БД и готовим companyIdValid для авторизации")
+				getDepartmentCompanyIdValid("Получаем companyId для авторизации")
 				validateAdminLevel("Уровень доступа - не ниже администратор компании")
 				trimFieldFileData("Очищаем данные изображения")
 				addDepartmentImageToDb("Добавляем изображение в БД")
@@ -95,7 +95,7 @@ class DepartmentProcessor : IBaseProcessor<DepartmentContext> {
 				validateDepartmentIdEmpty("Проверка на непустой departmentId")
 				validateImageKeyEmpty("Проверяем imageKey")
 				trimFieldDepartmentIdAndCopyToValid("Очистка departmentId")
-				getDepartmentByIdFromDb("Получаем отдел из БД и готовим companyIdValid для авторизации")
+				getDepartmentCompanyIdValid("Получаем companyId для авторизации")
 				validateAdminLevel("Уровень доступа - не ниже администратор компании")
 				trimFieldImageKeyAndCopyToValid("Очищаем imageKey")
 				trimFieldFileData("Очищаем данные изображения")
@@ -106,7 +106,7 @@ class DepartmentProcessor : IBaseProcessor<DepartmentContext> {
 				validateDepartmentIdEmpty("Проверка на непустой departmentId")
 				validateImageKeyEmpty("Проверяем imageKey")
 				trimFieldDepartmentIdAndCopyToValid("Очистка departmentId")
-				getDepartmentByIdFromDb("Получаем отдел из БД и готовим companyIdValid для авторизации")
+				getDepartmentCompanyIdValid("Получаем companyId для авторизации")
 				validateAdminLevel("Уровень доступа - не ниже администратор компании")
 				trimFieldImageKeyAndCopyToValid("imageKey")
 				deleteDepartmentImageDb("Удаляем изображение")

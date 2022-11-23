@@ -9,10 +9,10 @@ fun ICorChainDsl<DepartmentContext>.trimFieldDepartment(title: String) = worker 
 	this.title = title
 	on { state == ContextState.RUNNING }
 	handle {
-		departmentUpdate = departmentUpdate.copy(
-			name = departmentUpdate.name.trim(),
-			description = departmentUpdate.description?.trim(),
+		department = department.copy(
+			name = department.name.trim(),
+			description = department.description?.trim(),
 		)
-		departmentIdValid = departmentUpdate.id // Для получения отдела в следующей операции
+		departmentIdValid = department.id // Для получения отдела в следующей операции
 	}
 }

@@ -10,7 +10,6 @@ import ru.medals.domain.user.repository.UserRepository
 data class DepartmentContext(
 
 	var department: Department = Department(),
-	var departmentUpdate: Department = Department(),
 	var departments: List<Department> = emptyList(),
 
 	) : BaseContext(command = Command.NONE) {

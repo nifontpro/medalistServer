@@ -19,4 +19,6 @@ interface DepartmentRepository {
 	suspend fun addImage(departmentId: String, fileData: FileData): RepositoryData<Unit>
 	suspend fun updateImage(departmentId: String, imageKey: String, fileData: FileData): RepositoryData<Unit>
 	suspend fun deleteImage(departmentId: String, imageKey: String): RepositoryData<Unit>
+	suspend fun createDepartment(department: Department): RepositoryData<Department>
+	suspend fun doesDepartmentWithName(name: String, companyId: String): Boolean
 }

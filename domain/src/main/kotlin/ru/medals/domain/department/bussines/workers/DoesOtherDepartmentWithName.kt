@@ -8,7 +8,7 @@ import ru.medals.domain.department.bussines.context.DepartmentContext
 import ru.otus.cor.ICorChainDsl
 import ru.otus.cor.worker
 
-fun ICorChainDsl<DepartmentContext>.doesDepartmentWithNameExist(title: String) = worker {
+fun ICorChainDsl<DepartmentContext>.doesOtherDepartmentWithNameExist(title: String) = worker {
 
 	this.title = title
 	on { state == ContextState.RUNNING }
@@ -22,9 +22,10 @@ fun ICorChainDsl<DepartmentContext>.doesDepartmentWithNameExist(title: String) =
 		)
 	}
 	handle {
-		if (departmentRepository.doesDepartmentWithName(
+		if (departmentRepository.doesOtherDepartmentWithName(
 				name = department.name,
 				companyId = companyIdValid,
+				departmentId = department.id
 			)
 		) {
 			fail(

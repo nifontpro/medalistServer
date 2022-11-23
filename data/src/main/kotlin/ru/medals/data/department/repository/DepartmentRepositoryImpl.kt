@@ -33,7 +33,7 @@ class DepartmentRepositoryImpl(
 		}
 	}
 
-	suspend fun createDepartment(department: Department): RepositoryData<Department> {
+	override suspend fun createDepartment(department: Department): RepositoryData<Department> {
 		val departmentCol = department.toDepartmentCol()
 		return try {
 			departments.insertOne(departmentCol)
@@ -54,11 +54,26 @@ class DepartmentRepositoryImpl(
 		name: String,
 		companyId: String,
 		departmentId: String
-	): Boolean = departments.findOne(
-		DepartmentCol::companyId eq companyId,
-		DepartmentCol::id ne departmentId,
-		DepartmentCol::name regex Regex("^$name\$", RegexOption.IGNORE_CASE)
-	) != null
+	): Boolean = departments.countDocuments(
+		and(
+			DepartmentCol::companyId eq companyId,
+			DepartmentCol::id ne departmentId,
+			DepartmentCol::name regex Regex("^$name\$", RegexOption.IGNORE_CASE)
+		)
+	) > 0
+
+	/**
+	 * Проверка, есть ли отдел с таким наименованием в компании
+	 */
+	override suspend fun doesDepartmentWithName(
+		name: String,
+		companyId: String,
+	): Boolean = departments.countDocuments(
+		and(
+			DepartmentCol::companyId eq companyId,
+			DepartmentCol::name regex Regex("^$name\$", RegexOption.IGNORE_CASE)
+		)
+	) > 0
 
 	override suspend fun getDepartmentsByCompany(companyId: String, filter: String?): List<Department> {
 		return departments.find(
