@@ -32,4 +32,5 @@ interface UserRepository {
 	suspend fun getUserByIdWithMedalsFilter(userId: String, medalId: String): RepositoryData<List<UserMedals>>
 	suspend fun verifyUserByEmailExist(email: String): Boolean
 	suspend fun verifyUserByLoginExist(login: String): Boolean
+	suspend fun getUsersByCompany(companyId: String, filter: String?): List<User>
 }

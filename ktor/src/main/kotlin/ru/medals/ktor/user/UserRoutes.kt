@@ -63,6 +63,13 @@ fun Route.userRoutes() {
 		}
 
 		/**
+		 * Получить сотрудников компании
+		 */
+		post("get_company") {
+			call.getUsersByCompany(userProcessor)
+		}
+
+		/**
 		 * Получить лучших сотрудников компании
 		 */
 		post("get_best") {

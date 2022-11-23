@@ -107,7 +107,20 @@ class UserRepositoryImpl(
 			filter?.let {
 				or(
 					UserCol::name regex Regex("$filter", RegexOption.IGNORE_CASE),
-					UserCol::patronymic regex Regex("$filter", RegexOption.IGNORE_CASE),
+					UserCol::lastname regex Regex("$filter", RegexOption.IGNORE_CASE),
+				)
+			}
+		)
+			.ascendingSort(UserCol::lastname)
+			.toList().map { it.toUser().copy(hashPassword = null) }
+	}
+
+	override suspend fun getUsersByCompany(companyId: String, filter: String?): List<User> {
+		return users.find(
+			UserCol::companyId eq companyId,
+			filter?.let {
+				or(
+					UserCol::name regex Regex("$filter", RegexOption.IGNORE_CASE),
 					UserCol::lastname regex Regex("$filter", RegexOption.IGNORE_CASE),
 				)
 			}

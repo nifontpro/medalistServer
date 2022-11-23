@@ -44,6 +44,13 @@ suspend fun ApplicationCall.getUsersByDepartment(processor: UserProcessor) =
 		toTransport = { toTransportGetUsers() }
 	)
 
+suspend fun ApplicationCall.getUsersByCompany(processor: UserProcessor) =
+	process<GetUsersByCompanyRequest, List<User>, UserContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetUsers() }
+	)
+
 suspend fun ApplicationCall.getBestUsersByCompany(processor: UserProcessor) =
 	process<GetBestUsersByCompanyRequest, List<User>, UserContext>(
 		processor = processor,

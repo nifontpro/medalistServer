@@ -22,6 +22,7 @@ data class UserContext(
 		CREATE,
 		GET_BY_ID,
 		GET_BY_DEPARTMENT,
+		GET_BY_COMPANY,
 		GET_BOSSES,
 		GET_BEST,
 		UPDATE,
