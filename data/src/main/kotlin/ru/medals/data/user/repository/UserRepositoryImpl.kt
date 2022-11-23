@@ -31,13 +31,13 @@ class UserRepositoryImpl(
 	private val users = db.getCollection<UserCol>()
 	private val medals = db.getCollection<MedalCol>()
 
-	override suspend fun createUser(user: User): String? {
+	override suspend fun createUser(user: User): RepositoryData<User> {
 		val userCol = user.toUserCol(isNew = true)
-		return if (users.insertOne(userCol).wasAcknowledged()
-		) {
-			userCol.id
-		} else {
-			null
+		return try {
+			users.insertOne(userCol)
+			RepositoryData.success(data = user.copy(id = userCol.id))
+		} catch (e: Exception) {
+			errorUserCreate()
 		}
 	}
 
@@ -127,6 +127,10 @@ class UserRepositoryImpl(
 					UserCol::patronymic setTo user.patronymic,
 					UserCol::lastname setTo user.lastname,
 					UserCol::bio setTo user.bio,
+					UserCol::post setTo user.post,
+					UserCol::phone setTo user.phone,
+					UserCol::gender setTo user.gender,
+					UserCol::description setTo user.description,
 				)
 			).wasAcknowledged()
 		} catch (e: Exception) {

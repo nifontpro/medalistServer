@@ -1,7 +1,7 @@
 package ru.medals.domain.register.bussines.workers
 
 import ru.medals.domain.core.bussines.ContextState
-import ru.medals.domain.core.bussines.helper.checkRepositoryResponseId
+import ru.medals.domain.core.bussines.helper.checkRepositoryData
 import ru.medals.domain.core.bussines.helper.errorDb
 import ru.medals.domain.core.bussines.helper.fail
 import ru.medals.domain.register.bussines.context.RegisterContext
@@ -36,10 +36,9 @@ fun ICorChainDsl<RegisterContext>.createOwner(title: String) = worker {
 			rewardCount = 0,
 		)
 
-		checkRepositoryResponseId(repository = "user", "Сбой создания владельца компаний") {
+		user = checkRepositoryData {
 			userRepository.createUser(user = user)
-		}
+		} ?: return@handle
 
-		user = user.copy(id = responseId, hashPassword = null)
 	}
 }

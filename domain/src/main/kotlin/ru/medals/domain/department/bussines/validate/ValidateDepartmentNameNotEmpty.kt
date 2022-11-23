@@ -14,7 +14,7 @@ fun ICorChainDsl<DepartmentContext>.validateDepartmentNameEmpty(title: String) =
 			errorValidation(
 				field = "name",
 				violationCode = "empty",
-				description = "Не должно быть пустым"
+				description = "Наименование отдела не должно быть пустым"
 			)
 		)
 	}

@@ -7,7 +7,7 @@ import ru.medals.domain.user.model.UserMedals
 
 interface UserRepository {
 
-	suspend fun createUser(user: User): String?
+	suspend fun createUser(user: User): RepositoryData<User>
 	suspend fun getUserById(id: String): User?
 	suspend fun getUserByEmail(email: String): User?
 	suspend fun getUserByLogin(login: String): User?

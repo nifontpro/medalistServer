@@ -1,8 +1,6 @@
 package ru.medals.ktor.user
 
 import io.ktor.server.application.*
-import ru.medals.domain.core.response.IdResponse
-import ru.medals.domain.core.response.baseResponseId
 import ru.medals.domain.user.bussines.context.UserContext
 import ru.medals.domain.user.bussines.processor.UserProcessor
 import ru.medals.domain.user.model.User
@@ -13,10 +11,23 @@ import ru.medals.ktor.user.mappers.toTransportGetUsers
 import ru.medals.ktor.user.model.request.*
 
 suspend fun ApplicationCall.createUser(processor: UserProcessor) =
-	authProcess<CreateUserRequest, IdResponse, UserContext>(
+	authProcess<CreateUserRequest, User, UserContext>(
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
-		toTransport = { baseResponseId() }
+		toTransport = { toTransportGetUser() }
+	)
+
+suspend fun ApplicationCall.deleteUser(processor: UserProcessor) =
+	authProcess<DeleteUserRequest, User, UserContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetUser() }
+	)
+
+suspend fun ApplicationCall.updateUser(processor: UserProcessor) =
+	authProcess<UpdateUserRequest, Unit, UserContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) }
 	)
 
 suspend fun ApplicationCall.getUserById(processor: UserProcessor) =
@@ -45,19 +56,6 @@ suspend fun ApplicationCall.getBosses(processor: UserProcessor) =
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
 		toTransport = { toTransportGetUsers() }
-	)
-
-suspend fun ApplicationCall.deleteUser(processor: UserProcessor) =
-	authProcess<DeleteUserRequest, User, UserContext>(
-		processor = processor,
-		fromTransport = { request -> fromTransport(request) },
-		toTransport = { toTransportGetUser() }
-	)
-
-suspend fun ApplicationCall.updateUser(processor: UserProcessor) =
-	authProcess<UpdateUserRequest, Unit, UserContext>(
-		processor = processor,
-		fromTransport = { request -> fromTransport(request) }
 	)
 
 suspend fun ApplicationCall.getUserCountByCompany(processor: UserProcessor) =

@@ -5,6 +5,8 @@ import org.litote.kmongo.coroutine.CoroutineDatabase
 import ru.medals.data.core.errorBadImageKey
 import ru.medals.data.core.errorS3
 import ru.medals.data.department.model.DepartmentCol
+import ru.medals.data.department.model.toDepartmentCol
+import ru.medals.data.department.repository.CompanyRepoErrors.Companion.errorDepartmentCreate
 import ru.medals.data.department.repository.CompanyRepoErrors.Companion.errorDepartmentDelete
 import ru.medals.data.department.repository.CompanyRepoErrors.Companion.errorDepartmentNotFound
 import ru.medals.data.department.repository.CompanyRepoErrors.Companion.errorDepartmentUpdate
@@ -22,12 +24,22 @@ class DepartmentRepositoryImpl(
 
 	private val departments = db.getCollection<DepartmentCol>()
 
-	override suspend fun createDepartment(companyId: String): String? {
+	override suspend fun createEmptyDepartment(companyId: String): String? {
 		val departmentCol = DepartmentCol(name = "", companyId = companyId)
 		return if (departments.insertOne(departmentCol).wasAcknowledged()) {
 			departmentCol.id
 		} else {
 			null
+		}
+	}
+
+	suspend fun createDepartment(department: Department): RepositoryData<Department> {
+		val departmentCol = department.toDepartmentCol()
+		return try {
+			departments.insertOne(departmentCol)
+			RepositoryData.success(data = departmentCol.toDepartment())
+		} catch (e: Exception) {
+			errorDepartmentCreate()
 		}
 	}
 

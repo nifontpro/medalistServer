@@ -14,7 +14,7 @@ fun <T : BaseContext> ICorChainDsl<T>.validateDepartmentIdEmpty(title: String) =
 			errorValidation(
 				field = "departmentId",
 				violationCode = "empty",
-				description = "Не должно быть пустым"
+				description = "departmentId не должно быть пустым"
 			)
 		)
 	}

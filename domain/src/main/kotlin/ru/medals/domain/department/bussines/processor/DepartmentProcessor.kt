@@ -20,12 +20,22 @@ class DepartmentProcessor : IBaseProcessor<DepartmentContext> {
 		private val businessChain = rootChain<DepartmentContext> {
 			initStatus("Инициализация статуса")
 
-			operation("Создать отдел", DepartmentContext.Command.CREATE) {
+			operation("Создать отдел с пустыми полями", DepartmentContext.Command.CREATE_EMPTY) {
 				validateCompanyIdEmpty("Проверка на непустой companyId")
 				trimFieldCompanyIdAndCopyToValid("Подготовка к авторизации")
 				validateAdminLevel("Уровень доступа - не ниже администратор компании")
-				createDepartment("Создаем отдел")
+				createEmptyDepartment("Создаем отдел с пустыми полями")
 			}
+
+			operation("Создать отдел с пустыми полями", DepartmentContext.Command.CREATE) {
+				validateDepartmentNameEmpty("Проверка на непустое наименование отдела")
+				validateCompanyIdEmpty("Проверка на непустой companyId")
+				trimFieldDepartment("Очистка полей")
+				trimFieldCompanyIdAndCopyToValid("Подготовка к авторизации")
+				validateAdminLevel("Уровень доступа - не ниже администратор компании")
+				createEmptyDepartment("Создаем отдел с пустыми полями")
+			}
+
 
 			operation("Удалить отдел", DepartmentContext.Command.DELETE) {
 				validateDepartmentIdEmpty("Проверка на непустой departmentId")

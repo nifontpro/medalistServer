@@ -16,7 +16,7 @@ fun ICorChainDsl<ru.medals.domain.user.bussines.context.UserContext>.validateUse
 			errorValidation(
 				field = "password",
 				violationCode = "empty",
-				description = "Не должно быть пустым"
+				description = "Пароль не должен быть пустым"
 			)
 		)
 	}

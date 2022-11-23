@@ -14,7 +14,7 @@ fun <T : BaseContext> ICorChainDsl<T>.validateCompanyIdEmpty(title: String) = wo
 			errorValidation(
 				field = "companyId",
 				violationCode = "empty",
-				description = "Не должно быть пустым"
+				description = "Поле companyId не должно быть пустым"
 			)
 		)
 	}

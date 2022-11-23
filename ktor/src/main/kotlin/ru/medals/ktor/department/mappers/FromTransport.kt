@@ -4,8 +4,18 @@ import ru.medals.domain.department.bussines.context.DepartmentContext
 import ru.medals.domain.department.model.Department
 import ru.medals.ktor.department.model.request.*
 
+fun DepartmentContext.fromTransport(request: CreateEmptyDepartmentRequest) {
+	command = DepartmentContext.Command.CREATE_EMPTY
+	companyId = request.companyId
+}
+
 fun DepartmentContext.fromTransport(request: CreateDepartmentRequest) {
 	command = DepartmentContext.Command.CREATE
+	department = Department(
+		name = request.name ?: "",
+		description = request.description,
+		companyId = request.companyId ?: ""
+	)
 	companyId = request.companyId
 }
 

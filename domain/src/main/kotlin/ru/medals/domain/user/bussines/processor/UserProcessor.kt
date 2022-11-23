@@ -48,7 +48,7 @@ class UserProcessor : IBaseProcessor<UserContext> {
 
 			operation("Обновить профиль сотрудника", UserContext.Command.UPDATE) {
 				validateUserIdEmptyLocal("Проверяем на непустой userId")
-				validateUserLoginEmpty("Проверка на непустой login")
+				validateUserLoginBlank("Проверка login, может быть null, если не меняем")
 				validateUserPasswordBlank("Проверка пароля, может быть null, если не меняем")
 				trimFieldUser("Очищаем поля")
 				worker("Подготовка к авторизации") { userIdValid = user.id }

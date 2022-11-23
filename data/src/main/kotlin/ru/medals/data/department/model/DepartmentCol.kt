@@ -30,13 +30,11 @@ data class DepartmentCol(
 		images = images,
 	)
 }
-/*
 
-fun Department.toDepartmentCol(isNew: Boolean = false) = DepartmentCol(
+fun Department.toDepartmentCol(isNew: Boolean = true) = DepartmentCol(
 	name = name,
 	description = description,
 	imageUrl = imageUrl,
 	companyId = companyId,
 	id = if (isNew) ObjectId().toString() else id
 )
-*/

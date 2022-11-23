@@ -17,6 +17,9 @@ fun ICorChainDsl<UserContext>.trimFieldUser(title: String) = worker {
 			patronymic = user.patronymic?.trim(),
 			lastname = user.lastname?.trim(),
 			bio = user.bio?.trim(),
+			post = user.post?.trim(),
+			phone = user.phone?.trim(),
+			description = user.description?.trim(),
 		)
 	}
 }

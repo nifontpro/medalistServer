@@ -14,7 +14,7 @@ fun <T : BaseContext> ICorChainDsl<T>.validateUserIdEmpty(title: String) = worke
 			errorValidation(
 				field = "userId",
 				violationCode = "empty",
-				description = "Не должно быть пустым"
+				description = "userId не должно быть пустым"
 			)
 		)
 	}

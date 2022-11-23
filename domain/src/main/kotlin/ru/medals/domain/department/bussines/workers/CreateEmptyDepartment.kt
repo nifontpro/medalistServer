@@ -6,7 +6,7 @@ import ru.medals.domain.department.bussines.context.DepartmentContext
 import ru.otus.cor.ICorChainDsl
 import ru.otus.cor.worker
 
-fun ICorChainDsl<DepartmentContext>.createDepartment(title: String) = worker {
+fun ICorChainDsl<DepartmentContext>.createEmptyDepartment(title: String) = worker {
 
 	this.title = title
 	on { state == ContextState.RUNNING }
@@ -14,7 +14,7 @@ fun ICorChainDsl<DepartmentContext>.createDepartment(title: String) = worker {
 	handle {
 
 		checkRepositoryResponseId(repository = "department", "Внутрення ошибка при создании отдела") {
-			departmentRepository.createDepartment(companyIdValid)
+			departmentRepository.createEmptyDepartment(companyIdValid)
 		}
 	}
 }

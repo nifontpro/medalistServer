@@ -4,6 +4,7 @@ import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
 import ru.medals.domain.image.model.IImages
 import ru.medals.domain.image.model.ImageRef
+import ru.medals.domain.user.model.Gender
 import ru.medals.domain.user.model.User
 
 data class UserCol(
@@ -15,6 +16,10 @@ data class UserCol(
 	val hashPassword: String? = null,
 	val role: String? = null,
 	val bio: String? = null,
+	val post: String? = null,
+	val phone: String? = null,
+	val gender: Gender? = null,
+	val description: String? = null,
 	val companyId: String? = null,
 	val departmentId: String? = null,
 	val score: Int? = null,
@@ -46,6 +51,10 @@ data class UserCol(
 			imageKey = imageKey,
 			images = images,
 			bio = bio,
+			post = post,
+			phone = phone,
+			gender = gender ?: Gender.UNDEFINED,
+			description = description,
 			companyId = companyId,
 			departmentId = departmentId,
 			score = score,
@@ -67,6 +76,10 @@ fun User.toUserCol(isNew: Boolean = false): UserCol {
 		lastname = lastname,
 		role = role,
 		bio = bio,
+		post = post,
+		phone = phone,
+		gender = gender,
+		description = description,
 		mnc = isMnc,
 		companyId = companyId,
 		departmentId = departmentId,

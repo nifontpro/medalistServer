@@ -14,7 +14,7 @@ fun ICorChainDsl<UserContext>.validateUserPasswordEmpty(title: String) = worker 
 			errorValidation(
 				field = "password",
 				violationCode = "empty",
-				description = "Не должно быть пустым"
+				description = "Пароль не должен быть пустым"
 			)
 		)
 	}

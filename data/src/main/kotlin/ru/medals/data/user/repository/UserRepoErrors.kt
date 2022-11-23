@@ -29,6 +29,14 @@ fun errorUserNotFound() = RepositoryData.error(
 	)
 )
 
+fun errorUserCreate() = RepositoryData.error(
+	error = RepositoryError(
+		repository = REPO,
+		violationCode = "bad create",
+		description = "Ошибка создания профиля сотрудника"
+	)
+)
+
 fun errorUserUpdate() = RepositoryData.error(
 	error = RepositoryError(
 		repository = REPO,

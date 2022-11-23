@@ -15,6 +15,10 @@ fun Route.departmentRoutes() {
 	route("department") {
 		authenticate(ADMIN) {
 			post("create") {
+				call.createEmptyDepartment(departmentProcessor)
+			}
+
+			post {
 				call.createDepartment(departmentProcessor)
 			}
 

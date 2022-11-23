@@ -8,6 +8,14 @@ interface CompanyRepoErrors {
 
 		private const val REPO = "department"
 
+		fun errorDepartmentCreate() = RepositoryData.error(
+			error = RepositoryError(
+				repository = REPO,
+				violationCode = "$REPO i/o create error",
+				description = "Ошибка создания отдела"
+			)
+		)
+
 		fun errorDepartmentDelete() = RepositoryData.error(
 			error = RepositoryError(
 				repository = REPO,

@@ -12,11 +12,18 @@ import ru.medals.ktor.department.mappers.toTransportGetDepartment
 import ru.medals.ktor.department.mappers.toTransportGetDepartments
 import ru.medals.ktor.department.model.request.*
 
-suspend fun ApplicationCall.createDepartment(processor: DepartmentProcessor) =
-	authProcess<CreateDepartmentRequest, IdResponse, DepartmentContext>(
+suspend fun ApplicationCall.createEmptyDepartment(processor: DepartmentProcessor) =
+	authProcess<CreateEmptyDepartmentRequest, IdResponse, DepartmentContext>(
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
 		toTransport = { baseResponseId() }
+	)
+
+suspend fun ApplicationCall.createDepartment(processor: DepartmentProcessor) =
+	authProcess<CreateDepartmentRequest, Department, DepartmentContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetDepartment() }
 	)
 
 suspend fun ApplicationCall.deleteDepartment(processor: DepartmentProcessor) =

@@ -6,9 +6,9 @@ import ru.medals.domain.user.bussines.context.UserContext
 import ru.otus.cor.ICorChainDsl
 import ru.otus.cor.worker
 
-fun ICorChainDsl<UserContext>.validateUserLoginEmpty(title: String) = worker {
+fun ICorChainDsl<UserContext>.validateUserLoginBlank(title: String) = worker {
 	this.title = title
-	on { user.login.isNullOrBlank() }
+	on { user.login?.isBlank() ?: false }
 	handle {
 		fail(
 			errorValidation(
