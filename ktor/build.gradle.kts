@@ -103,6 +103,14 @@ tasks.withType<ShadowJar> {
 	}
 }
 
+task("Local copy docker") {
+	dependsOn("clean", "shadowJar")
+	copy {
+		from("build/libs/server.jar")
+		into("../dockers/server")
+	}
+}
+
 ant.withGroovyBuilder {
 	"taskdef"(
 		"name" to "scp",
