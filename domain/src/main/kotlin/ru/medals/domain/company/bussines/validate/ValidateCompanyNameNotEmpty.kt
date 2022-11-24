@@ -14,7 +14,7 @@ fun ICorChainDsl<CompanyContext>.validateCompanyNameEmpty(title: String) = worke
 			errorValidation(
 				field = "name",
 				violationCode = "empty",
-				description = "Не должно быть пустым"
+				description = "Наименование не должно быть пустым"
 			)
 		)
 	}

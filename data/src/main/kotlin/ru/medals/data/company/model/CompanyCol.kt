@@ -9,6 +9,9 @@ import ru.medals.domain.image.model.ImageRef
 data class CompanyCol(
 	val name: String,
 	val description: String? = null,
+	val phone: String? = null,
+	val email: String? = null,
+	val address: String? = null,
 	val ownerId: String? = null, // id владельца компании
 
 	override val imageUrl: String? = null,
@@ -23,6 +26,9 @@ data class CompanyCol(
 		name = name,
 		description = description,
 		ownerId = ownerId ?: "",
+		phone = phone,
+		email = email,
+		address = address,
 
 		imageUrl = imageUrl,
 		imageKey = imageKey,

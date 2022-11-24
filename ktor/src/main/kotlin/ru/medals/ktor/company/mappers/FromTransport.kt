@@ -5,8 +5,19 @@ import ru.medals.domain.company.model.Company
 import ru.medals.ktor.company.model.request.*
 
 @Suppress("UNUSED_PARAMETER")
+fun CompanyContext.fromTransport(request: CreateEmptyCompanyRequest) {
+	command = CompanyContext.Command.CREATE_EMPTY
+}
+
 fun CompanyContext.fromTransport(request: CreateCompanyRequest) {
 	command = CompanyContext.Command.CREATE
+	company = Company(
+		name = request.name ?: "",
+		description = request.description,
+		phone = request.phone,
+		email = request.email,
+		address = request.address
+	)
 }
 
 fun CompanyContext.fromTransport(request: DeleteCompanyRequest) {

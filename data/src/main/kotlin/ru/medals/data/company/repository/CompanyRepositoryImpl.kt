@@ -3,9 +3,10 @@ package ru.medals.data.company.repository
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import ru.medals.data.company.model.CompanyCol
-import ru.medals.data.company.repository.CompanyRepoErrors.Companion.errorCompanyUpdate
+import ru.medals.data.company.repository.CompanyRepoErrors.Companion.errorCompanyCreate
 import ru.medals.data.company.repository.CompanyRepoErrors.Companion.errorCompanyDelete
 import ru.medals.data.company.repository.CompanyRepoErrors.Companion.errorCompanyNotFound
+import ru.medals.data.company.repository.CompanyRepoErrors.Companion.errorCompanyUpdate
 import ru.medals.data.core.errorBadImageKey
 import ru.medals.data.core.errorS3
 import ru.medals.domain.company.model.Company
@@ -36,6 +37,43 @@ class CompanyRepositoryImpl(
 		}
 	}
 
+	override suspend fun createCompany(company: Company): RepositoryData<Company> {
+
+		val companyCol = CompanyCol(
+			name = company.name,
+			description = company.description,
+			phone = company.phone,
+			email = company.email,
+			address = company.address,
+			ownerId = company.ownerId,
+		)
+		return try {
+			companies.insertOne(companyCol)
+			RepositoryData.success(data = companyCol.toCompany())
+		} catch (e: Exception) {
+			errorCompanyCreate()
+		}
+	}
+
+	override suspend fun updateCompanyProfile(
+		company: Company
+	): Boolean {
+		return try {
+			companies.updateOneById(
+				id = company.id,
+				update = set(
+					CompanyCol::name setTo company.name,
+					CompanyCol::description setTo company.description,
+					CompanyCol::phone setTo company.phone,
+					CompanyCol::email setTo company.email,
+					CompanyCol::address setTo company.address,
+				)
+			).wasAcknowledged()
+		} catch (e: Exception) {
+			false
+		}
+	}
+
 	override suspend fun deleteCompany(id: String): RepositoryData<Company> {
 
 		val company = companies.findOneById(id) ?: return errorCompanyNotFound()
@@ -59,13 +97,6 @@ class CompanyRepositoryImpl(
 		)?.toCompany()
 	}
 
-	override suspend fun getOtherCompanyByName(name: String, companyId: String): Company? {
-		return companies.findOne(
-			CompanyCol::id ne companyId,
-			CompanyCol::name regex Regex("^$name\$", RegexOption.IGNORE_CASE)
-		)?.toCompany()
-	}
-
 	override suspend fun getAll(): List<Company> {
 		return companies.find().toList().map {
 			it.toCompany()
@@ -81,38 +112,38 @@ class CompanyRepositoryImpl(
 			.toList().map { it.toCompany() }
 	}
 
-	override suspend fun updateCompanyProfile(
-		company: Company
-	): Boolean {
-		return try {
-			companies.updateOneById(
-				id = company.id,
-				update = set(
-					CompanyCol::name setTo company.name,
-					CompanyCol::description setTo company.description,
-				)
-			).wasAcknowledged()
-		} catch (e: Exception) {
-			false
-		}
-	}
-
 	override suspend fun getCompanyCount(ownerId: String): Long {
 		return companies.countDocuments(CompanyCol::ownerId eq ownerId)
 	}
 
 	/**
+	 * Проверка, есть ли у владельца компания с таким наименованием
+	 * (проверка при создании новой компании)
+	 */
+	override suspend fun doesCompanyByOwnerWithName(name: String, ownerId: String): Boolean {
+		return companies.countDocuments(
+			and(
+				CompanyCol::ownerId eq ownerId,
+				CompanyCol::name regex Regex("^$name\$", RegexOption.IGNORE_CASE)
+			)
+		) > 0
+	}
+
+	/**
 	 * Проверка, есть ли другая компания у владельца с таким наименованием
+	 * (проверка при обновлении данных)
 	 */
 	override suspend fun doesOtherCompanyByOwnerWithName(
 		name: String,
 		companyId: String,
 		ownerId: String
-	): Boolean = companies.findOne(
-		CompanyCol::id ne companyId,
-		CompanyCol::ownerId eq ownerId,
-		CompanyCol::name regex Regex("^$name\$", RegexOption.IGNORE_CASE)
-	) != null
+	): Boolean = companies.countDocuments(
+		and(
+			CompanyCol::id ne companyId,
+			CompanyCol::ownerId eq ownerId,
+			CompanyCol::name regex Regex("^$name\$", RegexOption.IGNORE_CASE)
+		)
+	) > 0
 
 	@Deprecated("Удалить в будущем")
 	override suspend fun updateImage(

@@ -14,6 +14,10 @@ fun Route.companyRoutes() {
 	route("company") {
 		authenticate(OWNER) {
 			post("create") {
+				call.createEmptyCompany(companyProcessor)
+			}
+
+			post {
 				call.createCompany(companyProcessor)
 			}
 
@@ -45,7 +49,7 @@ fun Route.companyRoutes() {
 				call.updateCompanyImage(companyProcessor)
 			}
 
-			delete ("image") {
+			delete("image") {
 				call.deleteCompanyImage(companyProcessor)
 			}
 

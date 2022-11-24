@@ -8,7 +8,7 @@ import ru.medals.domain.core.bussines.helper.otherError
 import ru.otus.cor.ICorChainDsl
 import ru.otus.cor.worker
 
-fun ICorChainDsl<CompanyContext>.doesCompanyWithNameExist(title: String) = worker {
+fun ICorChainDsl<CompanyContext>.doesOtherCompanyWithNameExist(title: String) = worker {
 
 	this.title = title
 	on { state == ContextState.RUNNING }
@@ -22,8 +22,9 @@ fun ICorChainDsl<CompanyContext>.doesCompanyWithNameExist(title: String) = worke
 		)
 	}
 	handle {
-		if (companyRepository.doesCompanyByOwnerWithName(
+		if (companyRepository.doesOtherCompanyByOwnerWithName(
 				name = company.name,
+				companyId = company.id,
 				ownerId = principalUser.id
 			)
 		) {

@@ -21,6 +21,7 @@ data class CompanyContext(
 
 	enum class Command : IBaseCommand {
 		NONE,
+		CREATE_EMPTY,
 		CREATE,
 		DELETE,
 		GET_BY_ID,

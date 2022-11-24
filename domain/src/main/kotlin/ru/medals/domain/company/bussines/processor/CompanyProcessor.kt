@@ -2,6 +2,7 @@ package ru.medals.domain.company.bussines.processor
 
 import ru.medals.domain.company.bussines.context.CompanyContext
 import ru.medals.domain.company.bussines.validate.validateCompanyNameEmpty
+import ru.medals.domain.company.bussines.validate.validateOwnerPrincipalUser
 import ru.medals.domain.company.bussines.workers.*
 import ru.medals.domain.core.bussines.IBaseProcessor
 import ru.medals.domain.core.bussines.workers.*
@@ -19,8 +20,26 @@ class CompanyProcessor : IBaseProcessor<CompanyContext> {
 		private val businessChain = rootChain<CompanyContext> {
 			initStatus("Инициализация статуса")
 
+			operation("Создать компанию с пустыми полями", CompanyContext.Command.CREATE_EMPTY) {
+				validateOwnerPrincipalUser("Проверка на владельца")
+				createEmptyCompany("Создаем компанию")
+			}
+
 			operation("Создать компанию", CompanyContext.Command.CREATE) {
+				validateOwnerPrincipalUser("Проверка на владельца")
+				validateCompanyNameEmpty("Проверка наименования компании")
+				doesCompanyWithNameExist("Проверка, есть ли компания с таким наименованием")
 				createCompany("Создаем компанию")
+			}
+
+			operation("Обновить данные компании", CompanyContext.Command.UPDATE) {
+				validateCompanyIdEmpty("Проверка на непустой companyId")
+				validateCompanyNameEmpty("Проверка наименования компании")
+				trimFieldCompanyIdAndCopyToValid("Подготовка к авторизации")
+				validateOwnerLevel("Уровень доступа - владелец компаний")
+				trimFieldCompany("Очищаем поля")
+				doesOtherCompanyWithNameExist("Проверка, есть ли у Владельца компания с таким наименованием")
+				updateCompany("Обновляем данные")
 			}
 
 			operation("Удалить компанию", CompanyContext.Command.DELETE) {
@@ -48,16 +67,6 @@ class CompanyProcessor : IBaseProcessor<CompanyContext> {
 
 			operation("Получить количество компаний владельца", CompanyContext.Command.GET_COUNT_BY_OWNER) {
 				getOwnerCompanyCount("Получаем количество компаний из БД")
-			}
-
-			operation("Обновить данные компании", CompanyContext.Command.UPDATE) {
-				validateCompanyIdEmpty("Проверка на непустой companyId")
-				validateCompanyNameEmpty("Проверка наименования отдела")
-				trimFieldCompanyIdAndCopyToValid("Подготовка к авторизации")
-				validateOwnerLevel("Уровень доступа - владелец компаний")
-				trimFieldCompany("Очищаем поля")
-				doesCompanyWithNameExist("Проверка, есть ли у Владельца компания с таким наименованием")
-				updateCompany("Обновляем данные")
 			}
 
 			operation("Обновить изображение компании", CompanyContext.Command.UPDATE_IMAGE) {

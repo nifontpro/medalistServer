@@ -12,11 +12,18 @@ import ru.medals.ktor.company.mappers.toTransportGetCompany
 import ru.medals.ktor.company.model.request.*
 import ru.medals.ktor.core.*
 
-suspend fun ApplicationCall.createCompany(processor: CompanyProcessor) =
-	authProcess<CreateCompanyRequest, IdResponse, CompanyContext>(
+suspend fun ApplicationCall.createEmptyCompany(processor: CompanyProcessor) =
+	authProcess<CreateEmptyCompanyRequest, IdResponse, CompanyContext>(
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
 		toTransport = { baseResponseId() }
+	)
+
+suspend fun ApplicationCall.createCompany(processor: CompanyProcessor) =
+	authProcess<CreateCompanyRequest, Company, CompanyContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetCompany() }
 	)
 
 suspend fun ApplicationCall.deleteCompany(processor: CompanyProcessor) =
