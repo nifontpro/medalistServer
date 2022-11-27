@@ -68,7 +68,7 @@ class MedalProcessor : IBaseProcessor<MedalContext> {
 				updateMedal("Обновляем данные")
 			}
 
-			operation("Обновить изображение медали", MedalContext.Command.UPDATE_IMAGE) {
+			operation("Обновить изображение медали", MedalContext.Command.UPDATE_IMAGE_OLD) {
 				worker("Подготовка к получению из БД") { medalId = imageEntityId }
 				getMedalByIdFromDb("Получаем из БД, получаем companyId для авторизации")
 				validateSystemMedal("Проверка, не является ли системной или пусто companyId")

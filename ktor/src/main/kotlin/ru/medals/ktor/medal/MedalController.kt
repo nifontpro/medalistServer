@@ -53,7 +53,7 @@ suspend fun ApplicationCall.getCountMedalsByCompany(processor: MedalProcessor) =
 	)
 
 suspend fun ApplicationCall.updateMedalImageOld(processor: MedalProcessor) {
-	val context = MedalContext().apply { command = MedalContext.Command.UPDATE_IMAGE }
+	val context = MedalContext().apply { command = MedalContext.Command.UPDATE_IMAGE_OLD }
 	processImageSingle(context = context, processor = processor)
 }
 

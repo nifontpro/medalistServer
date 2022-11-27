@@ -12,7 +12,8 @@ fun AuthContext.fromTransport(request: LoginRequest) {
 	email = request.email
 	password = request.password
 
-	log.info("LOGIN: $email")
+	log.info("LOGIN: $email", request)
+
 }
 
 @Suppress("UNUSED_PARAMETER")

@@ -13,7 +13,7 @@ fun Route.awardRoutes() {
 
 	route("award") {
 		authenticate(ADMIN) {
-			post("create") {
+			post {
 				call.createAward(awardProcessor)
 			}
 
@@ -24,14 +24,26 @@ fun Route.awardRoutes() {
 			put {
 				call.updateAward(awardProcessor)
 			}
+
+			put("update/image") {
+				call.updateAwardImageOld(awardProcessor)
+			}
 		}
 
 		post("get_id") {
 			call.getAwardById(awardProcessor)
 		}
 
-		post("get") {
+		post("get_idu") {
+			call.getAwardByIdWithUsers(awardProcessor)
+		}
+
+		post("get_c") {
 			call.getAwardsByCompany(awardProcessor)
+		}
+
+		post("get_cu") {
+			call.getAwardsByCompanyWithUsers(awardProcessor)
 		}
 
 	}

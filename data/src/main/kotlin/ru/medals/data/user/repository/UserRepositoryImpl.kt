@@ -3,7 +3,6 @@ package ru.medals.data.user.repository
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.coroutine.aggregate
-import ru.medals.data.appoint.repository.AppointErrors
 import ru.medals.data.core.errorBadImageKey
 import ru.medals.data.core.errorS3
 import ru.medals.data.medal.model.MedalCol
@@ -303,7 +302,7 @@ class UserRepositoryImpl(
 			).toList().firstOrNull()?.toUserMedal() ?: return errorUserNotFound()
 			RepositoryData.success(data = userMedals)
 		} catch (e: Exception) {
-			AppointErrors.errorAppointGet()
+			errorUserGet()
 		}
 	}
 

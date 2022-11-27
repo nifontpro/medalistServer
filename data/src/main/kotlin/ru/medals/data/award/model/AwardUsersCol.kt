@@ -2,13 +2,16 @@ package ru.medals.data.award.model
 
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
-import ru.medals.domain.award.model.Award
+import ru.medals.data.user.model.UserCol
 import ru.medals.domain.award.model.AwardRelate
+import ru.medals.domain.award.model.AwardRelateUser
+import ru.medals.domain.award.model.AwardUsers
 import ru.medals.domain.image.model.IImages
 import ru.medals.domain.image.model.ImageRef
+import ru.medals.domain.user.model.User
 import java.util.*
 
-data class AwardCol(
+data class AwardUsersCol(
 	val name: String,
 	val description: String? = null,
 	val criteria: String? = null,
@@ -17,6 +20,8 @@ data class AwardCol(
 	val score: Int? = null,
 	val companyId: String,
 	val relations: List<AwardRelate> = emptyList(),
+	val users: List<UserCol> = emptyList(),
+	val fromUser: UserCol? = null,
 
 	override val imageUrl: String? = null,
 	override val imageKey: String? = null,
@@ -25,7 +30,7 @@ data class AwardCol(
 	@BsonId
 	val id: String = ObjectId().toString()
 ) : IImages {
-	fun toAward() = Award(
+	fun toAwardUser() = AwardUsers(
 		name = name,
 		description = description,
 		criteria = criteria,
@@ -33,17 +38,17 @@ data class AwardCol(
 		endDate = endDate?.time,
 		companyId = companyId,
 		score = score,
+
+		relateUsers = relations.map { awardRelate ->
+			AwardRelateUser(
+				user = users.find { user -> awardRelate.userId == user.id }?.toUser() ?: User(),
+				state = awardRelate.state,
+				date = awardRelate.date,
+				fromUserId = awardRelate.fromUserId,
+			)
+		},
+		fromUser = fromUser?.toUser(),
+
 		id = id
 	)
 }
-
-fun Award.toAwardColCreate() = AwardCol(
-	name = name,
-	description = description,
-	criteria = criteria,
-	startDate = startDate?.let { Date(it) },
-	endDate = endDate?.let { Date(it) },
-	companyId = companyId,
-	score = score,
-	id = ObjectId().toString()
-)

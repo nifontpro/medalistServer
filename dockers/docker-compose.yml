@@ -3,14 +3,14 @@ networks:
   net:
 services:
   server:
-    build: server/.
+    build: main/.
     restart: always
     networks:
       - net
     ports:
       - "8080:8080"
     volumes:
-      - files:/app/files
+      - ./volumes/logs:/app/files
     env_file:
       - .env
     container_name: medals-server

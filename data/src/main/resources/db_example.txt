@@ -23,3 +23,24 @@ db.userCol.find(
 	{medalsInfo.medalId: '63641662e81cbd0b5c5a8414'},
 	{_id:1, medalsInfo: {$elemMatch : {medalId : "63641662e81cbd0b5c5a8414"}}}
 )
+
+https://www.mongodb.com/community/forums/t/update-all-objects-in-nested-array-with-values-from-other-collection/128015/4
+
+db.orders.aggregate([
+    // Unwind the source
+    { "$unwind": "$products" },
+    // Do the lookup matching
+    { "$lookup": {
+       "from": "products",
+       "localField": "products",
+       "foreignField": "_id",
+       "as": "productObjects"
+    }},
+    // Unwind the result arrays ( likely one or none )
+    { "$unwind": "$productObjects" },
+    // Group back to arrays
+    { "$group": {
+        "_id": "$_id",
+        "products": { "$push": "$products" },
+        "productObjects": { "$push": "$productObjects" }
+    }}

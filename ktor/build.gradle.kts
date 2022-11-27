@@ -107,7 +107,7 @@ task("Local copy docker") {
 	dependsOn("clean", "shadowJar")
 	copy {
 		from("build/libs/server.jar")
-		into("../dockers/server")
+		into("../dockers/main")
 	}
 }
 
@@ -149,7 +149,7 @@ task("deploy") {
 }
 
 task("docker") {
-	dependsOn(/*"clean", */"shadowJar")
+	dependsOn("clean", "shadowJar")
 	ant.withGroovyBuilder {
 		doLast {
 			val knownHosts = File.createTempFile("knownhosts", "txt")

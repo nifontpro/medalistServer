@@ -2,8 +2,9 @@ package ru.medals.domain.award.model
 
 import ru.medals.domain.image.model.IImages
 import ru.medals.domain.image.model.ImageRef
+import ru.medals.domain.user.model.User
 
-data class Award(
+data class AwardUsers(
 	val name: String = "",
 	val description: String? = null,
 	val criteria: String? = null,
@@ -11,6 +12,8 @@ data class Award(
 	val endDate: Long? = null,
 	val score: Int? = null,
 	val companyId: String = "",
+	val relateUsers: List<AwardRelateUser> = emptyList(),
+	val fromUser: User? = null,
 
 	override val imageUrl: String? = null,
 	override val imageKey: String? = null,
@@ -18,8 +21,3 @@ data class Award(
 
 	val id: String = ""
 ) : IImages
-
-/*@Suppress("unused")
-enum class AwardStatus {
-	NONE, START, END
-}*/

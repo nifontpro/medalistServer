@@ -4,37 +4,34 @@ import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.coroutine.aggregate
 import ru.medals.data.award.model.AwardCol
-import ru.medals.data.award.model.AwardMedalCol
-import ru.medals.data.award.model.toAwardCol
+import ru.medals.data.award.model.AwardUsersCol
+import ru.medals.data.award.model.toAwardColCreate
+import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardCreate
+import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardDelete
+import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardIO
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardNotFound
-import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorCreate
-import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorDelete
-import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorIO
-import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorUpdate
-import ru.medals.data.medal.model.MedalCol
-import ru.medals.data.medal.repository.MedalRepoErrors.Companion.errorMedalNotFound
-import ru.medals.domain.award.model.Award
-import ru.medals.domain.award.model.AwardMedal
+import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardUpdate
+import ru.medals.domain.award.model.*
 import ru.medals.domain.award.repository.AwardRepository
 import ru.medals.domain.core.bussines.model.RepositoryData
+import ru.medals.domain.image.model.FileData
+import ru.medals.domain.image.repository.S3Repository
+import java.util.*
 
 class AwardRepositoryImpl(
-	db: CoroutineDatabase
+	db: CoroutineDatabase,
+	private val s3repository: S3Repository
 ) : AwardRepository {
 
 	private val awards = db.getCollection<AwardCol>()
-	private val medals = db.getCollection<MedalCol>()
 
 	override suspend fun create(award: Award): RepositoryData<Award> {
-		award.medalId?.let {
-			if (medals.countDocuments(MedalCol::id eq it) < 1) return errorMedalNotFound()
-		}
 
-		val awardCol = award.toAwardCol(create = true)
+		val awardCol = award.toAwardColCreate()
 		return if (awards.insertOne(awardCol).wasAcknowledged()) {
 			RepositoryData.success(data = awardCol.toAward())
 		} else {
-			errorCreate()
+			errorAwardCreate()
 		}
 	}
 
@@ -43,7 +40,7 @@ class AwardRepositoryImpl(
 		return if (awards.deleteOneById(id).wasAcknowledged()) {
 			RepositoryData.success(data = awardCol.toAward())
 		} else {
-			errorDelete()
+			errorAwardDelete()
 		}
 	}
 
@@ -54,14 +51,15 @@ class AwardRepositoryImpl(
 				update = set(
 					AwardCol::name setTo award.name,
 					AwardCol::description setTo award.description,
-					AwardCol::medalId setTo award.medalId,
 					AwardCol::criteria setTo award.criteria,
-					AwardCol::status setTo award.status,
+					AwardCol::startDate setTo award.startDate?.let { Date(it) },
+					AwardCol::endDate setTo award.endDate?.let { Date(it) },
+					AwardCol::criteria setTo award.criteria,
 				)
 			)
 			RepositoryData.success()
 		} catch (e: Exception) {
-			errorUpdate()
+			errorAwardUpdate()
 		}
 	}
 
@@ -74,29 +72,29 @@ class AwardRepositoryImpl(
 				errorAwardNotFound()
 			}
 		} catch (e: Exception) {
-			errorIO()
+			errorAwardIO()
 		}
 	}
 
-	override suspend fun getAwardByIdWithMedal(id: String): RepositoryData<AwardMedal> {
+	/**
+	 * Получить награду с прикреплеными сотрудниками
+	 * и от кто назначил награду (fromUser)
+	 */
+	override suspend fun getByIdWithUser(awardId: String): RepositoryData<AwardUsers> {
 		return try {
-			val awardMedalCol = awards.aggregate<AwardMedalCol>(
-				match(AwardCol::id eq id),
-				lookup(from = "medalCol", localField = "medalId", foreignField = "_id", newAs = "medal"),
-				unwind("\$medal")
-			).toList().firstOrNull()
-
-			if (awardMedalCol != null) {
-				RepositoryData.success(data = awardMedalCol.toAwardMedal())
-			} else {
-				errorAwardNotFound()
-			}
+			val awardUsers = awards.aggregate<AwardUsersCol>(
+				match(AwardCol::id eq awardId),
+				lookup(from = "userCol", localField = "relations.userId", foreignField = "_id", newAs = "users"),
+				lookup(from = "userCol", localField = "relations.fromUserId", foreignField = "_id", newAs = "fromUser"),
+				unwind("\$fromUser")
+			).toList().firstOrNull()?.toAwardUser()
+			RepositoryData.success(data = awardUsers)
 		} catch (e: Exception) {
-			errorIO()
+			errorAwardIO()
 		}
 	}
 
-	override suspend fun getByFilter(companyId: String, filter: String?): RepositoryData<List<Award>> {
+	override suspend fun getByCompany(companyId: String, filter: String?): RepositoryData<List<Award>> {
 		return try {
 			val awardList = awards.find(
 				AwardCol::companyId eq companyId,
@@ -108,31 +106,86 @@ class AwardRepositoryImpl(
 				.toList().map { it.toAward() }
 			RepositoryData.success(data = awardList)
 		} catch (e: Exception) {
-			errorIO()
+			errorAwardIO()
 		}
 	}
 
-	override suspend fun getAwardsByFilterMedal(companyId: String, filter: String?): RepositoryData<List<AwardMedal>> {
+	override suspend fun getAwardsWithUsers(
+		companyId: String,
+		filter: String?
+	): RepositoryData<List<AwardUsers>> {
 		return try {
+			val awardsUsers = awards.aggregate<AwardUsersCol>(
+				match(
+					and(
+						AwardCol::companyId eq companyId,
+						filter?.let {
+							AwardCol::name regex Regex("$filter", RegexOption.IGNORE_CASE)
+						}
+					)
+				),
+				lookup(from = "userCol", localField = "relations.userId", foreignField = "_id", newAs = "users")
+			).toList().map { it.toAwardUser() }
+			RepositoryData.success(data = awardsUsers)
+		} catch (e: Exception) {
+			errorAwardIO()
+		}
+	}
 
-			val filterBson = filter?.let {
-				and(
-					AwardCol::companyId eq companyId,
-					AwardCol::name regex Regex("$filter", RegexOption.IGNORE_CASE)
+	/**
+	 * Приставляем сотрудника к награде
+	 */
+	override suspend fun awardUser(awardId: String, userId: String, fromUserId: String, state: AwardState) {
+		awards.updateOneById(
+			id = awardId,
+			pullByFilter(AwardCol::relations, AwardRelate::userId eq userId)
+		)
+		awards.updateOneById(
+			id = awardId,
+			addToSet(
+				AwardCol::relations, AwardRelate(
+					userId = userId,
+					state = state,
+					date = System.currentTimeMillis(),
+					fromUserId = fromUserId
 				)
-			} ?: kotlin.run {
-				AwardCol::companyId eq companyId
+			)
+		)
+	}
+
+	@Deprecated("Удалить в будущем")
+	override suspend fun updateImage(
+		awardId: String,
+		fileData: FileData,
+	): Boolean {
+		try {
+			val awardCol = awards.findOneById(awardId) ?: return false
+			val imageKey = "C${awardCol.companyId}/awards/${fileData.filename}"
+			val imageUrl = s3repository.putObject(key = imageKey, fileData = fileData) ?: return false
+
+			val isSuccess = awards.updateOneById(
+				id = awardId,
+				update = set(
+					AwardCol::imageUrl setTo imageUrl,
+					AwardCol::imageKey setTo imageKey
+				),
+			).wasAcknowledged()
+
+			if (isSuccess) {
+				// Удаляем старое изображение в s3
+				awardCol.imageKey?.let {
+					s3repository.deleteObject(key = it)
+				}
+			} else {
+				// Удаляем новое изображение в s3, если не обновились данные в БД
+				s3repository.deleteObject(key = imageKey)
 			}
 
-			val awardList = awards.aggregate<AwardMedalCol>(
-				match(filterBson),
-				lookup(from = "medalCol", localField = "medalId", foreignField = "_id", newAs = "medal"),
-				unwind("\$medal")
-			).toList().map { it.toAwardMedal() }
-
-			RepositoryData.success(data = awardList)
+			return isSuccess
 		} catch (e: Exception) {
-			errorIO()
+			println(e.stackTrace)
+			return false
 		}
 	}
+
 }

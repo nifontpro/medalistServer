@@ -8,7 +8,7 @@ interface AwardRepoErrors {
 
 		private const val REPO = "award"
 
-		fun errorCreate() = RepositoryData.error(
+		fun errorAwardCreate() = RepositoryData.error(
 			error = RepositoryError(
 				repository = REPO,
 				violationCode = "create error",
@@ -24,7 +24,7 @@ interface AwardRepoErrors {
 			)
 		)
 
-		fun errorDelete() = RepositoryData.error(
+		fun errorAwardDelete() = RepositoryData.error(
 			error = RepositoryError(
 				repository = REPO,
 				violationCode = "delete error",
@@ -32,7 +32,7 @@ interface AwardRepoErrors {
 			)
 		)
 
-		fun errorUpdate() = RepositoryData.error(
+		fun errorAwardUpdate() = RepositoryData.error(
 			error = RepositoryError(
 				repository = REPO,
 				violationCode = "update error",
@@ -40,7 +40,7 @@ interface AwardRepoErrors {
 			)
 		)
 
-		fun errorIO() = RepositoryData.error(
+		fun errorAwardIO() = RepositoryData.error(
 			error = RepositoryError(
 				repository = REPO,
 				violationCode = "I/O error",
