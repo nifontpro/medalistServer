@@ -8,9 +8,10 @@ import ru.medals.data.award.model.AwardUsersCol
 import ru.medals.data.award.model.toAwardColCreate
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardCreate
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardDelete
-import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardIO
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardNotFound
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardUpdate
+import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardUser
+import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorGetAward
 import ru.medals.domain.award.model.*
 import ru.medals.domain.award.repository.AwardRepository
 import ru.medals.domain.core.bussines.model.RepositoryData
@@ -72,7 +73,7 @@ class AwardRepositoryImpl(
 				errorAwardNotFound()
 			}
 		} catch (e: Exception) {
-			errorAwardIO()
+			errorGetAward()
 		}
 	}
 
@@ -80,8 +81,9 @@ class AwardRepositoryImpl(
 	 * Получить награду с прикреплеными сотрудниками
 	 * и от кто назначил награду (fromUser)
 	 */
-	override suspend fun getByIdWithUser(awardId: String): RepositoryData<AwardUsers> {
+	override suspend fun getByIdWithUsers(awardId: String): RepositoryData<AwardUsers> {
 		return try {
+			// Исправить ошибку - from -> list
 			val awardUsers = awards.aggregate<AwardUsersCol>(
 				match(AwardCol::id eq awardId),
 				lookup(from = "userCol", localField = "relations.userId", foreignField = "_id", newAs = "users"),
@@ -90,7 +92,7 @@ class AwardRepositoryImpl(
 			).toList().firstOrNull()?.toAwardUser()
 			RepositoryData.success(data = awardUsers)
 		} catch (e: Exception) {
-			errorAwardIO()
+			errorGetAward()
 		}
 	}
 
@@ -106,7 +108,7 @@ class AwardRepositoryImpl(
 				.toList().map { it.toAward() }
 			RepositoryData.success(data = awardList)
 		} catch (e: Exception) {
-			errorAwardIO()
+			errorGetAward()
 		}
 	}
 
@@ -124,33 +126,59 @@ class AwardRepositoryImpl(
 						}
 					)
 				),
-				lookup(from = "userCol", localField = "relations.userId", foreignField = "_id", newAs = "users")
+				lookup(from = "userCol", localField = "relations.userId", foreignField = "_id", newAs = "users"),
 			).toList().map { it.toAwardUser() }
 			RepositoryData.success(data = awardsUsers)
 		} catch (e: Exception) {
-			errorAwardIO()
+			errorGetAward()
 		}
 	}
 
 	/**
 	 * Приставляем сотрудника к награде
 	 */
-	override suspend fun awardUser(awardId: String, userId: String, fromUserId: String, state: AwardState) {
-		awards.updateOneById(
-			id = awardId,
-			pullByFilter(AwardCol::relations, AwardRelate::userId eq userId)
-		)
-		awards.updateOneById(
-			id = awardId,
-			addToSet(
-				AwardCol::relations, AwardRelate(
-					userId = userId,
-					state = state,
-					date = System.currentTimeMillis(),
-					fromUserId = fromUserId
+	override suspend fun awardUser(awardId: String, awardRelate: AwardRelate, isNew: Boolean): RepositoryData<Unit> {
+//		awards.updateOneById(
+//			id =  awardId,
+//			pullByFilter(AwardCol::relations, AwardRelate::userId eq userId)
+//		)
+
+		return try {
+			if (isNew) {
+				awards.updateOneById(
+					id = awardId,
+					update = addToSet(AwardCol::relations, awardRelate)
 				)
-			)
-		)
+			} else {
+				awards.updateOne(
+					filter = and(AwardCol::id eq awardId, AwardCol::relations / AwardRelate::userId eq awardRelate.userId),
+					update = setValue(AwardCol::relations.posOp, awardRelate)
+				)
+			}
+			RepositoryData.success()
+		} catch (e: Exception) {
+			errorAwardUser()
+		}
+	}
+
+	/**
+	 * Получить информацию о награждении сотрудника определенной наградой
+	 */
+	override suspend fun getAwardRelateFromUser(awardId: String, userId: String): RepositoryData<AwardRelate> {
+		return try {
+			val awardCol = awards.aggregate<AwardCol>(
+				"[" +
+						"{\$match: {'_id': '$awardId', 'relations.userId': '$userId'}}" +
+						"{\$project:{'_id': 1, 'name': 1, 'companyId': 1, " +
+						"relations: {\$filter: {input: '\$relations', as: 'rel', cond: {\$eq: ['\$\$rel.userId', '$userId']}}}" +
+						"}}" +
+						"]"
+			).toList().firstOrNull()
+			val relate = awardCol?.relations?.firstOrNull()
+			RepositoryData.success(relate)
+		} catch (e: Exception) {
+			errorGetAward()
+		}
 	}
 
 	@Deprecated("Удалить в будущем")
@@ -187,5 +215,4 @@ class AwardRepositoryImpl(
 			return false
 		}
 	}
-
 }

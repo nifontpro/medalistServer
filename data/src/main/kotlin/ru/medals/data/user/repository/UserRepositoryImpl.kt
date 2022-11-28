@@ -258,8 +258,8 @@ class UserRepositoryImpl(
 		s3repository.putObject(key = imageKey, fileData = fileData) ?: return errorS3()
 
 		users.updateOne(
-			and(UserCol::id eq userId, UserCol::images / ImageRef::imageKey eq imageKey),
-			setValue(UserCol::images.posOp / ImageRef::description, fileData.description)
+			filter = and(UserCol::id eq userId, UserCol::images / ImageRef::imageKey eq imageKey),
+			update = setValue(UserCol::images.posOp / ImageRef::description, fileData.description)
 		)
 		return RepositoryData.success()
 	}

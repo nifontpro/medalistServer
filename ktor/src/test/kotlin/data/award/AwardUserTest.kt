@@ -9,6 +9,7 @@ import org.koin.java.KoinJavaComponent.inject
 import org.koin.test.KoinTest
 import ru.medals.data.di.dataModule
 import ru.medals.data.di.dbModule
+import ru.medals.domain.award.model.AwardRelate
 import ru.medals.domain.award.model.AwardState
 import ru.medals.domain.award.repository.AwardRepository
 import ru.medals.s3.di.s3Module
@@ -27,18 +28,24 @@ class AwardUserTest : KoinTest {
 				modules(dbModule, dataModule, s3Module)
 			}
 
-//			val awardId = "638257447323956c9b6ec380"
-			val awardId = "63826d83c004cb0e1a0b4b29" // 2
-//			val userId = "63639ce5d08088291dfe538b" // Владелец
-			val userId = "6380b3d2cd265368bbb23634" // Киселева
+			val awardId = "6384fb75fb0baf41c3b2a10b"
+//			val awardId = "6384fba9fb0baf41c3b2a10c" // 2
+			val userId = "63639ce5d08088291dfe538b" // Владелец
+//			val userId = "6380b3d2cd265368bbb23634" // Киселева
 			val fromUserId = "63639ce5d08088291dfe538b"
 			val state = AwardState.NOMINEE
 
-			val award = awardRepository.awardUser(
-				awardId = awardId,
+			val awardRelate = AwardRelate(
 				userId = userId,
-				fromUserId = fromUserId,
-				state = state
+				state = state,
+				nomineeUserId = fromUserId,
+				awardUserId = "User FF"
+			)
+
+			awardRepository.awardUser(
+				awardId = awardId,
+				awardRelate = awardRelate,
+				isNew = false
 			)
 
 			stopKoin()

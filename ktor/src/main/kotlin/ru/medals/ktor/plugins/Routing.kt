@@ -11,7 +11,6 @@ import ru.medals.ktor.company.companyRoutes
 import ru.medals.ktor.department.departmentRoutes
 import ru.medals.ktor.medal.medalRoutes
 import ru.medals.ktor.register.registerRoutes
-import ru.medals.ktor.reward.rewardRoutes
 import ru.medals.ktor.user.userRoutes
 import java.io.File
 
@@ -26,7 +25,6 @@ fun Application.configureRouting() {
 			companyRoutes()
 			departmentRoutes()
 			medalRoutes()
-			rewardRoutes()
 			awardRoutes()
 
 			get("/") {

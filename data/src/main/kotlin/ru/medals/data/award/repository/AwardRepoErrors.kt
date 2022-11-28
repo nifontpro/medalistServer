@@ -40,11 +40,19 @@ interface AwardRepoErrors {
 			)
 		)
 
-		fun errorAwardIO() = RepositoryData.error(
+		fun errorAwardUser() = RepositoryData.error(
+			error = RepositoryError(
+				repository = REPO,
+				violationCode = "award error",
+				description = "Ошибка награждения сотрудника"
+			)
+		)
+
+		fun errorGetAward() = RepositoryData.error(
 			error = RepositoryError(
 				repository = REPO,
 				violationCode = "I/O error",
-				description = "Ошибка обмена данными"
+				description = "Ошибка получения данных о награде"
 			)
 		)
 	}

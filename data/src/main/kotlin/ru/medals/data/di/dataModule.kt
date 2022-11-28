@@ -7,7 +7,6 @@ import ru.medals.data.department.repository.DepartmentRepositoryImpl
 import ru.medals.data.medal.repository.MedalRepositoryImpl
 import ru.medals.data.message.repository.MessageRepositoryImpl
 import ru.medals.data.register.repository.RegisterRepositoryImpl
-import ru.medals.data.reward.repository.RewardRepositoryImpl
 import ru.medals.data.user.repository.UserRepositoryImpl
 import ru.medals.domain.award.repository.AwardRepository
 import ru.medals.domain.company.repository.CompanyRepository
@@ -15,7 +14,6 @@ import ru.medals.domain.department.repository.DepartmentRepository
 import ru.medals.domain.medal.repository.MedalRepository
 import ru.medals.domain.message.repository.MessageRepository
 import ru.medals.domain.register.repository.RegisterRepository
-import ru.medals.domain.reward.repository.RewardRepository
 import ru.medals.domain.user.repository.UserRepository
 
 /**
@@ -38,10 +36,6 @@ val dataModule = module {
 
 	single<MedalRepository> {
 		MedalRepositoryImpl(db = get(), s3repository = get())
-	}
-
-	single<RewardRepository> {
-		RewardRepositoryImpl(db = get(), client = get())
 	}
 
 	single<UserRepository> {

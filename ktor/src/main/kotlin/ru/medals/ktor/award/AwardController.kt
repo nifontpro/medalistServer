@@ -60,6 +60,12 @@ suspend fun ApplicationCall.updateAward(processor: AwardProcessor) =
 		fromTransport = { request -> fromTransport(request) },
 	)
 
+suspend fun ApplicationCall.awardUser(processor: AwardProcessor) =
+	authProcess<AwardUserRequest, Unit, AwardContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+	)
+
 suspend fun ApplicationCall.updateAwardImageOld(processor: AwardProcessor) {
 	val context = AwardContext().apply { command = AwardCommand.UPDATE_IMAGE_OLD }
 	processImageSingle(context = context, processor = processor)

@@ -28,6 +28,10 @@ fun Route.awardRoutes() {
 			put("update/image") {
 				call.updateAwardImageOld(awardProcessor)
 			}
+
+			post("user") {
+				call.awardUser(awardProcessor)
+			}
 		}
 
 		post("get_id") {

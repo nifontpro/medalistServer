@@ -43,8 +43,10 @@ data class AwardUsersCol(
 			AwardRelateUser(
 				user = users.find { user -> awardRelate.userId == user.id }?.toUser() ?: User(),
 				state = awardRelate.state,
-				date = awardRelate.date,
-				fromUserId = awardRelate.fromUserId,
+				nomineeDate = awardRelate.nomineeDate,
+				awardDate = awardRelate.awardDate,
+				nomineeUserId = awardRelate.nomineeUserId,
+				awardUserId = awardRelate.awardUserId,
 			)
 		},
 		fromUser = fromUser?.toUser(),

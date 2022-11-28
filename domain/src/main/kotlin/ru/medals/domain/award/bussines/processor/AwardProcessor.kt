@@ -2,16 +2,16 @@ package ru.medals.domain.award.bussines.processor
 
 import ru.medals.domain.award.bussines.context.AwardCommand
 import ru.medals.domain.award.bussines.context.AwardContext
+import ru.medals.domain.award.bussines.validate.validateAward
 import ru.medals.domain.award.bussines.validate.validateAwardIdEmpty
 import ru.medals.domain.award.bussines.validate.validateAwardNameEmpty
+import ru.medals.domain.award.bussines.validate.validateNominee
 import ru.medals.domain.award.bussines.workers.*
 import ru.medals.domain.core.bussines.IBaseProcessor
-import ru.medals.domain.core.bussines.workers.finishOperation
-import ru.medals.domain.core.bussines.workers.initStatus
-import ru.medals.domain.core.bussines.workers.operation
-import ru.medals.domain.core.bussines.workers.trimFieldCompanyIdAndCopyToValid
+import ru.medals.domain.core.bussines.workers.*
 import ru.medals.domain.core.bussines.workers.validation.validateAdminLevel
 import ru.medals.domain.core.bussines.workers.validation.validateCompanyIdEmpty
+import ru.medals.domain.core.bussines.workers.validation.validateUserIdEmpty
 import ru.otus.cor.rootChain
 import ru.otus.cor.worker
 
@@ -79,6 +79,19 @@ class AwardProcessor : IBaseProcessor<AwardContext> {
 				trimFieldCompanyIdAndCopyToValid("Очищаем companyId")
 				validateAdminLevel("Уровень доступа - администратор")
 				updateAwardImageS3("Обновляем изображение в S3")
+			}
+
+			operation("Наградить сотрудника", AwardCommand.AWARD_USER) {
+				// checkAwardStateNone
+				validateUserIdEmpty("Проверяем userId")
+				trimFieldUserIdAndCopyToValid("Очищаем userId")
+				validateAwardIdEmpty("Проверяем на непустой id")
+				//validateAdminLevel
+				getAwardRelateUserFromDb("Получаем награждение сотрудника")
+				validateNominee("Проверяем возможность номинировать на премию")
+				validateAward("Проверяем возможность награждения этой премией")
+				prepareAwardRelate("Подготовка данных награждения")
+				awardUserDb("Награждаем сотрудника")
 			}
 
 			finishOperation()

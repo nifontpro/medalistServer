@@ -15,7 +15,7 @@
         <file>${LOG_PATH}/logfile.html</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>${LOG_PATCH}/logfile.%d{yyyy-MM-dd}.%i.html</fileNamePattern>
+            <fileNamePattern>${LOG_PATH}/logfile.%d{yyyy-MM-dd}.%i.html</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                     class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <!-- or whenever the file size reaches 1MB -->

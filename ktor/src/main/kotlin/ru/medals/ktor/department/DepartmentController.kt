@@ -61,7 +61,7 @@ suspend fun ApplicationCall.departmentUpdate(processor: DepartmentProcessor) =
 	)
 
 suspend fun ApplicationCall.updateDepartmentImageOld(processor: DepartmentProcessor) {
-	val context = DepartmentContext().apply { command = DepartmentContext.Command.UPDATE_IMAGE }
+	val context = DepartmentContext().apply { command = DepartmentContext.Command.UPDATE_IMAGE_OLD }
 	processImageSingle(context = context, processor = processor)
 }
 

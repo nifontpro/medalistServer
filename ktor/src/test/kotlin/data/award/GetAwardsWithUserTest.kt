@@ -26,7 +26,7 @@ class GetAwardsWithUserTest : KoinTest {
 				modules(dbModule, dataModule, s3Module)
 			}
 
-			awardRepository.getAwardsWithUsers()
+			awardRepository.getAwardsWithUsers(companyId = "", filter = null)
 			stopKoin()
 		}
 	}

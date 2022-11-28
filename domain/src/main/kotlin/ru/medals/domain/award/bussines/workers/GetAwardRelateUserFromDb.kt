@@ -6,12 +6,18 @@ import ru.medals.domain.core.bussines.helper.checkRepositoryData
 import ru.otus.cor.ICorChainDsl
 import ru.otus.cor.worker
 
-fun ICorChainDsl<AwardContext>.getAwardByIdWithUsersFromDb(title: String) = worker {
+fun ICorChainDsl<AwardContext>.getAwardRelateUserFromDb(title: String) = worker {
 
 	this.title = title
 	on { state == ContextState.RUNNING }
 	handle {
-		awardUsers = checkRepositoryData { awardRepository.getByIdWithUsers(awardId) } ?: return@handle
+		awardRelate = checkRepositoryData {
+			awardRepository.getAwardRelateFromUser(
+				awardId = awardId,
+				userId = userIdValid,
+			)
+		}
+		isNew = awardRelate == null
 	}
 
 }

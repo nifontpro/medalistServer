@@ -52,7 +52,10 @@ fun CompanyContext.fromTransport(request: UpdateCompanyRequest) {
 	company = Company(
 		id = request.id ?: "",
 		name = request.name ?: "",
-		description = request.description ?: ""
+		description = request.description,
+		phone = request.phone,
+		email = request.email,
+		address = request.address,
 	)
 }
 

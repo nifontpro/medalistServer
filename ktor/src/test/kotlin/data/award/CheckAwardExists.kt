@@ -10,28 +10,26 @@ import org.koin.test.KoinTest
 import ru.medals.data.di.dataModule
 import ru.medals.data.di.dbModule
 import ru.medals.domain.award.repository.AwardRepository
-import kotlin.test.assertEquals
+import ru.medals.s3.di.s3Module
 
 @ExperimentalCoroutinesApi
 @Suppress("NonAsciiCharacters")
-class GetAwardsByFilterWithMedalTest : KoinTest {
+class CheckAwardExists : KoinTest {
 
 	private val awardRepository by inject<AwardRepository>(AwardRepository::class.java)
 
 	@Test
-	fun `Получение наград с медалью`() {
+	fun `Получение массива наград с сотрудником`() {
 
 		testApplication {
 			startKoin {
-				modules(dbModule, dataModule)
+				modules(dbModule, dataModule, s3Module)
 			}
 
-			val companyId = "63641544e81cbd0b5c5a8412"
+			val awardId = "638257447323956c9b6ec380"
+			val userId = "6380b3d2cd265368bbb23634" // Киселева
 
-			val awards = awardRepository.getAwardsByFilterMedal(companyId = companyId).data
-			println(awards)
-
-			assertEquals("Бронзовая", awards?.first()?.medal?.name)
+			awardRepository.getAwardRelateFromUser(awardId, userId)
 			stopKoin()
 		}
 	}

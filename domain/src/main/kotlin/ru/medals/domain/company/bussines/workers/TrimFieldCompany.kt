@@ -12,6 +12,9 @@ fun ICorChainDsl<CompanyContext>.trimFieldCompany(title: String) = worker {
 		company = company.copy(
 			name = company.name.trim(),
 			description = company.description?.trim(),
+			phone = company.phone?.trim(),
+			email = company.email?.trim(),
+			address = company.address?.trim(),
 		)
 	}
 }

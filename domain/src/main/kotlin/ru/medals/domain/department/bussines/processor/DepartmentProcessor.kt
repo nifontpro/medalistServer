@@ -40,7 +40,7 @@ class DepartmentProcessor : IBaseProcessor<DepartmentContext> {
 			operation("Удалить отдел", DepartmentContext.Command.DELETE) {
 				validateDepartmentIdEmpty("Проверка на непустой departmentId")
 				trimFieldDepartmentIdAndCopyToValid("Очистка departmentId")
-				getDepartmentCompanyIdValid("Получаем companyId для авторизации")
+				getDepartmentByIdFromDb("Получаем отдел из БД и companyId для авторизации")
 				validateAdminLevel("Уровень доступа - не ниже администратор компании")
 				doesDepartmentContainUsers("Проверяем, не содержит ли отдел сотрудников")
 				deleteDepartment("Удаляем отдел")
@@ -75,7 +75,7 @@ class DepartmentProcessor : IBaseProcessor<DepartmentContext> {
 				updateDepartmentDb("Обновляем данные отдела")
 			}
 
-			operation("Обновить изображение отдела", DepartmentContext.Command.UPDATE_IMAGE) {
+			operation("Обновить изображение отдела", DepartmentContext.Command.UPDATE_IMAGE_OLD) {
 				worker("Подготовка") { departmentIdValid = imageEntityId }
 				getDepartmentByIdFromDb("Получаем отдел из БД и готовим companyIdValid для авторизации")
 				validateAdminLevel("Уровень доступа - не ниже администратор компании")

@@ -59,3 +59,10 @@ fun AwardContext.fromTransport(request: GetAwardByIdUsersRequest) {
 	command = AwardCommand.GET_BY_ID_WITH_USERS
 	awardId = request.awardId ?: ""
 }
+
+fun AwardContext.fromTransport(request: AwardUserRequest) {
+	command = AwardCommand.AWARD_USER
+	awardId = request.awardId ?: ""
+	userId = request.userId
+	awardState = request.awardState
+}

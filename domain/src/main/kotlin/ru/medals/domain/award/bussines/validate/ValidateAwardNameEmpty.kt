@@ -14,7 +14,7 @@ fun ICorChainDsl<AwardContext>.validateAwardIdEmpty(title: String) = worker {
 			errorValidation(
 				field = "awardId",
 				violationCode = "empty",
-				description = "id не должен быть пустым"
+				description = "awardId не должно быть пустым"
 			)
 		)
 	}
