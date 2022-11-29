@@ -2,10 +2,7 @@ package ru.medals.domain.award.bussines.processor
 
 import ru.medals.domain.award.bussines.context.AwardCommand
 import ru.medals.domain.award.bussines.context.AwardContext
-import ru.medals.domain.award.bussines.validate.validateAward
-import ru.medals.domain.award.bussines.validate.validateAwardIdEmpty
-import ru.medals.domain.award.bussines.validate.validateAwardNameEmpty
-import ru.medals.domain.award.bussines.validate.validateNominee
+import ru.medals.domain.award.bussines.validate.*
 import ru.medals.domain.award.bussines.workers.*
 import ru.medals.domain.core.bussines.IBaseProcessor
 import ru.medals.domain.core.bussines.workers.*
@@ -82,12 +79,15 @@ class AwardProcessor : IBaseProcessor<AwardContext> {
 			}
 
 			operation("Наградить сотрудника", AwardCommand.AWARD_USER) {
-				// checkAwardStateNone
+				validateAwardState("Проверяем сотстояние")
 				validateUserIdEmpty("Проверяем userId")
 				trimFieldUserIdAndCopyToValid("Очищаем userId")
+				checkUserExist("Проверяем наличие сотрудника")
+				// Добавить расширенную проверку сторудника, чтоб не был из другой компании
 				validateAwardIdEmpty("Проверяем на непустой id")
-				//validateAdminLevel
-				getAwardRelateUserFromDb("Получаем награждение сотрудника")
+				getAwardByIdFromDb("Получаем награду")
+				getRelateUserFromAward("Получаем запись о награждении сотрудника и companyId для авторизации")
+				validateAdminLevel("Уровень доступа - администратор")
 				validateNominee("Проверяем возможность номинировать на премию")
 				validateAward("Проверяем возможность награждения этой премией")
 				prepareAwardRelate("Подготовка данных награждения")

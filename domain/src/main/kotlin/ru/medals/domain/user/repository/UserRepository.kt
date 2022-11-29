@@ -33,4 +33,5 @@ interface UserRepository {
 	suspend fun verifyUserByEmailExist(email: String): Boolean
 	suspend fun verifyUserByLoginExist(login: String): Boolean
 	suspend fun getUsersByCompany(companyId: String, filter: String?): List<User>
+	suspend fun checkExist(userId: String): RepositoryData<Unit>
 }

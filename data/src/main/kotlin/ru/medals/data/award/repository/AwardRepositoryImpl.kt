@@ -87,8 +87,13 @@ class AwardRepositoryImpl(
 			val awardUsers = awards.aggregate<AwardUsersCol>(
 				match(AwardCol::id eq awardId),
 				lookup(from = "userCol", localField = "relations.userId", foreignField = "_id", newAs = "users"),
-				lookup(from = "userCol", localField = "relations.fromUserId", foreignField = "_id", newAs = "fromUser"),
-				unwind("\$fromUser")
+				lookup(
+					from = "userCol",
+					localField = "relations.nomineeUserId",
+					foreignField = "_id",
+					newAs = "fromNomineeUsers"
+				),
+				lookup(from = "userCol", localField = "relations.awardUserId", foreignField = "_id", newAs = "fromAwardUsers"),
 			).toList().firstOrNull()?.toAwardUser()
 			RepositoryData.success(data = awardUsers)
 		} catch (e: Exception) {
@@ -162,9 +167,13 @@ class AwardRepositoryImpl(
 	}
 
 	/**
-	 * Получить информацию о награждении сотрудника определенной наградой
+	 * Получить запись о награждении сотрудника определенной наградой
+	 * и companyId
 	 */
-	override suspend fun getAwardRelateFromUser(awardId: String, userId: String): RepositoryData<AwardRelate> {
+	override suspend fun getAwardRelateFromUser(
+		awardId: String,
+		userId: String
+	): RepositoryData<AwardRelate> {
 		return try {
 			val awardCol = awards.aggregate<AwardCol>(
 				"[" +
@@ -175,7 +184,7 @@ class AwardRepositoryImpl(
 						"]"
 			).toList().firstOrNull()
 			val relate = awardCol?.relations?.firstOrNull()
-			RepositoryData.success(relate)
+			RepositoryData.success(data = relate)
 		} catch (e: Exception) {
 			errorGetAward()
 		}

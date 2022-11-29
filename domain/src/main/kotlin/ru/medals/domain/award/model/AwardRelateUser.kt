@@ -7,6 +7,6 @@ data class AwardRelateUser(
 	val state: AwardState = AwardState.NONE,
 	val nomineeDate: Long? = null,
 	val awardDate: Long? = null,
-	val nomineeUserId: String? = null,
-	val awardUserId: String? = null,
+	val fromNomineeUser: User? = null,
+	val fromAwardUser: User? = null,
 )

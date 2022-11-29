@@ -2,7 +2,6 @@ package ru.medals.domain.award.model
 
 import ru.medals.domain.image.model.IImages
 import ru.medals.domain.image.model.ImageRef
-import ru.medals.domain.user.model.User
 
 data class AwardUsers(
 	val name: String = "",
@@ -13,7 +12,6 @@ data class AwardUsers(
 	val score: Int? = null,
 	val companyId: String = "",
 	val relateUsers: List<AwardRelateUser> = emptyList(),
-	val fromUser: User? = null,
 
 	override val imageUrl: String? = null,
 	override val imageKey: String? = null,

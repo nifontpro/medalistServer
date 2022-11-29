@@ -1,0 +1,16 @@
+val chain = rootChain<MyContext> {
+    chain {
+        on { condition == 0 }
+        worker() {...}
+        worker() {...}
+        chain {
+            on { subCondition == 1 }
+            worker() {...}
+            worker() {...}        }
+    }
+    chain {
+        on { condition != 0 }
+        worker() {...}
+        worker() {...}
+    }
+}

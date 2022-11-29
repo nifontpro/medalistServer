@@ -31,8 +31,9 @@ data class AwardCol(
 		criteria = criteria,
 		startDate = startDate?.time,
 		endDate = endDate?.time,
-		companyId = companyId,
 		score = score,
+		companyId = companyId,
+		relations = relations,
 		id = id
 	)
 }

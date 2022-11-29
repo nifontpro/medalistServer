@@ -11,6 +11,7 @@ data class Award(
 	val endDate: Long? = null,
 	val score: Int? = null,
 	val companyId: String = "",
+	val relations: List<AwardRelate> = emptyList(),
 
 	override val imageUrl: String? = null,
 	override val imageKey: String? = null,

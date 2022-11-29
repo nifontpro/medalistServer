@@ -162,6 +162,18 @@ class UserRepositoryImpl(
 		}
 	}
 
+	override suspend fun checkExist(userId: String): RepositoryData<Unit> {
+		return try {
+			if (users.countDocuments(UserCol::id eq userId) > 0) {
+				RepositoryData.success()
+			} else {
+				errorUserNotFound()
+			}
+		} catch (e: Exception) {
+			errorUserGet()
+		}
+	}
+
 	override suspend fun getUsersCountByCompany(companyId: String): Long {
 		return users.countDocuments(UserCol::companyId eq companyId)
 	}

@@ -8,6 +8,7 @@ import ru.medals.domain.award.model.AwardUsers
 import ru.medals.domain.award.repository.AwardRepository
 import ru.medals.domain.core.bussines.BaseContext
 import ru.medals.domain.core.bussines.IBaseCommand
+import ru.medals.domain.user.repository.UserRepository
 
 data class AwardContext(
 
@@ -25,6 +26,7 @@ data class AwardContext(
 	) : BaseContext(command = AwardCommand.NONE) {
 
 	val awardRepository: AwardRepository by inject(AwardRepository::class.java)
+	val userRepository: UserRepository by inject(UserRepository::class.java)
 }
 
 enum class AwardCommand : IBaseCommand {

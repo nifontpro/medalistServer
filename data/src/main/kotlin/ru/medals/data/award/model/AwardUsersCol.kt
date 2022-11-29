@@ -21,7 +21,8 @@ data class AwardUsersCol(
 	val companyId: String,
 	val relations: List<AwardRelate> = emptyList(),
 	val users: List<UserCol> = emptyList(),
-	val fromUser: UserCol? = null,
+	val fromNomineeUsers: List<UserCol> = emptyList(),
+	val fromAwardUsers: List<UserCol> = emptyList(),
 
 	override val imageUrl: String? = null,
 	override val imageKey: String? = null,
@@ -45,11 +46,10 @@ data class AwardUsersCol(
 				state = awardRelate.state,
 				nomineeDate = awardRelate.nomineeDate,
 				awardDate = awardRelate.awardDate,
-				nomineeUserId = awardRelate.nomineeUserId,
-				awardUserId = awardRelate.awardUserId,
+				fromNomineeUser = fromNomineeUsers.find { user -> awardRelate.nomineeUserId == user.id }?.toUser(),
+				fromAwardUser = fromAwardUsers.find { user -> awardRelate.awardUserId == user.id }?.toUser(),
 			)
 		},
-		fromUser = fromUser?.toUser(),
 
 		id = id
 	)

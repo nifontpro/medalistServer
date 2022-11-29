@@ -17,8 +17,8 @@ fun ICorChainDsl<AwardContext>.validateAward(title: String) = worker {
 	handle {
 		fail(
 			errorValidation(
-				field = "name",
-				violationCode = "empty",
+				field = "award",
+				violationCode = "already award",
 				description = "Сотрудник уже награжден этой премией"
 			)
 		)
