@@ -2,6 +2,7 @@ package ru.medals.data.user.model
 
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
+import ru.medals.data.department.model.DepartmentCol
 import ru.medals.domain.image.model.IImages
 import ru.medals.domain.image.model.ImageRef
 import ru.medals.domain.user.model.Gender
@@ -26,6 +27,8 @@ data class UserCol(
 	val currentScore: Int? = null,
 	val rewardCount: Int? = null,
 	val mnc: Boolean? = null, // Является ли членом номинационной коммисии
+	val department: DepartmentCol? = null,
+	val departmentName: String? = null,
 
 	val medalsInfo: List<MedalInfoCol> = emptyList(),
 
@@ -57,6 +60,8 @@ data class UserCol(
 			description = description,
 			companyId = companyId,
 			departmentId = departmentId,
+			departmentName = departmentName,
+			department = department?.toDepartment(),
 			score = score,
 			currentScore = currentScore,
 			rewardCount = rewardCount,

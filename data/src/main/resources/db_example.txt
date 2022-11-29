@@ -44,3 +44,17 @@ db.orders.aggregate([
         "products": { "$push": "$products" },
         "productObjects": { "$push": "$productObjects" }
     }}
+
+val r = col.aggregate<Result>(
+            match(
+                Article::tags contains "virus"
+            ),
+            group(
+                Article::title, Result::friends.push(Friend::name from Article::author)
+            ),
+            sort(
+                ascending(
+                    Result::title
+                )
+            )
+        )

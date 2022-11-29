@@ -1,5 +1,6 @@
 package ru.medals.data.user.repository
 
+import com.mongodb.client.model.UnwindOptions
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.coroutine.aggregate
@@ -41,7 +42,14 @@ class UserRepositoryImpl(
 	}
 
 	override suspend fun getUserById(id: String): User? {
-		return users.findOneById(id)?.toUser()
+//		return users.findOneById(id)?.toUser()
+		return users.aggregate<UserCol>(
+			match(UserCol::id eq id),
+			lookup(from = "departmentCol", localField = "departmentId", foreignField = "_id", newAs = "department"),
+			unwind("\$department", unwindOptions = UnwindOptions().preserveNullAndEmptyArrays(true)),
+//			replaceRoot("{newRoot: {\$mergeObjects: [{departmentName: '\$departments.name'}, '\$\$ROOT']}}")
+//			project(UserCol::departmentName from "\$department.name")
+		).first()?.toUser()
 	}
 
 	/*    override suspend fun getUserByCredential(login: String): User? {
@@ -114,18 +122,42 @@ class UserRepositoryImpl(
 			.toList().map { it.toUser().copy(hashPassword = null) }
 	}
 
+	/*
+			return users.aggregate<UserCol>(
+			match(UserCol::id eq id),
+			lookup(from = "departmentCol", localField = "departmentId", foreignField = "_id", newAs = "department"),
+			unwind("\$department", unwindOptions = UnwindOptions().preserveNullAndEmptyArrays(true)),
+			).first()?.toUser()
+	 */
+
 	override suspend fun getUsersByCompany(companyId: String, filter: String?): List<User> {
-		return users.find(
-			UserCol::companyId eq companyId,
-			filter?.let {
-				or(
-					UserCol::name regex Regex("$filter", RegexOption.IGNORE_CASE),
-					UserCol::lastname regex Regex("$filter", RegexOption.IGNORE_CASE),
-				)
-			}
+		/*		return users.find(
+					UserCol::companyId eq companyId,
+					filter?.let {
+						or(
+							UserCol::name regex Regex("$filter", RegexOption.IGNORE_CASE),
+							UserCol::lastname regex Regex("$filter", RegexOption.IGNORE_CASE),
+						)
+					}
 		)
-			.ascendingSort(UserCol::lastname)
-			.toList().map { it.toUser().copy(hashPassword = null) }
+		.ascendingSort(UserCol::lastname)
+		*/
+		return users.aggregate<UserCol>(
+			match(
+				and(
+					UserCol::companyId eq companyId,
+					filter?.let {
+						or(
+							UserCol::name regex Regex("$filter", RegexOption.IGNORE_CASE),
+							UserCol::lastname regex Regex("$filter", RegexOption.IGNORE_CASE),
+						)
+					}
+				)
+			),
+			lookup(from = "departmentCol", localField = "departmentId", foreignField = "_id", newAs = "department"),
+			unwind("\$department", unwindOptions = UnwindOptions().preserveNullAndEmptyArrays(true)),
+			sort(ascending(UserCol::lastname))
+		).toList().map { it.toUser().copy(hashPassword = null) }
 	}
 
 	override suspend fun updateProfile(user: User): Boolean {
