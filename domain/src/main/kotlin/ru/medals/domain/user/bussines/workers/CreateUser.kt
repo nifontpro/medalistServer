@@ -18,7 +18,7 @@ fun ICorChainDsl<UserContext>.createUser(title: String) = worker {
 			hashPassword = hashPassword(user.hashPassword ?: " "),
 			score = 0,
 			currentScore = 0,
-			rewardCount = 0,
+			awardCount = 0,
 		)
 
 		user = checkRepositoryData {

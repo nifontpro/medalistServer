@@ -11,6 +11,7 @@ import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardDelet
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardNotFound
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardUpdate
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardUser
+import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardUserDelete
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorGetAward
 import ru.medals.domain.award.model.*
 import ru.medals.domain.award.repository.AwardRepository
@@ -143,11 +144,6 @@ class AwardRepositoryImpl(
 	 * Приставляем сотрудника к награде
 	 */
 	override suspend fun awardUser(awardId: String, awardRelate: AwardRelate, isNew: Boolean): RepositoryData<Unit> {
-//		awards.updateOneById(
-//			id =  awardId,
-//			pullByFilter(AwardCol::relations, AwardRelate::userId eq userId)
-//		)
-
 		return try {
 			if (isNew) {
 				awards.updateOneById(
@@ -167,6 +163,23 @@ class AwardRepositoryImpl(
 	}
 
 	/**
+	 * Удалить награждение сотрудника заданной наградой
+	 */
+	override suspend fun deleteUserAward(awardId: String, userId: String): RepositoryData<AwardRelate> {
+		val result = getAwardRelateFromUser(awardId = awardId, userId = userId)
+		if (!result.success) return result
+		return try {
+			awards.updateOneById(
+				id = awardId,
+				update = pullByFilter(AwardCol::relations, AwardRelate::userId eq userId)
+			)
+			RepositoryData.success(data = result.data)
+		} catch (e: Exception) {
+			errorAwardUserDelete()
+		}
+	}
+
+	/**
 	 * Получить запись о награждении сотрудника определенной наградой
 	 * и companyId
 	 */
@@ -182,7 +195,7 @@ class AwardRepositoryImpl(
 						"relations: {\$filter: {input: '\$relations', as: 'rel', cond: {\$eq: ['\$\$rel.userId', '$userId']}}}" +
 						"}}" +
 						"]"
-			).toList().firstOrNull()
+			).first()
 			val relate = awardCol?.relations?.firstOrNull()
 			RepositoryData.success(data = relate)
 		} catch (e: Exception) {

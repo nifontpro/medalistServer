@@ -17,4 +17,5 @@ interface AwardRepository {
 	suspend fun updateImage(awardId: String, fileData: FileData): Boolean
 	suspend fun getAwardRelateFromUser(awardId: String, userId: String): RepositoryData<AwardRelate>
 	suspend fun awardUser(awardId: String, awardRelate: AwardRelate, isNew: Boolean): RepositoryData<Unit>
+	suspend fun deleteUserAward(awardId: String, userId: String): RepositoryData<AwardRelate>
 }

@@ -1,6 +1,5 @@
 package ru.medals.domain.user.model
 
-import ru.medals.domain.department.model.Department
 import ru.medals.domain.image.model.IImages
 import ru.medals.domain.image.model.ImageRef
 
@@ -21,10 +20,9 @@ data class User(
 	val departmentId: String? = null,
 	val score: Int? = null,
 	val currentScore: Int? = null,
-	val rewardCount: Int? = null,
+	val awardCount: Int? = null,
 	val isMnc: Boolean? = null, // Является ли членом номинационной коммисии
 	val departmentName: String? = null,
-	val department: Department? = null,
 
 	override val imageUrl: String? = null,
 	override val imageKey: String? = null,

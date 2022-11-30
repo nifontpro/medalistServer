@@ -32,6 +32,10 @@ fun Route.awardRoutes() {
 			post("user") {
 				call.awardUser(awardProcessor)
 			}
+
+			delete("user") {
+				call.awardUserDelete(awardProcessor)
+			}
 		}
 
 		post("get_id") {

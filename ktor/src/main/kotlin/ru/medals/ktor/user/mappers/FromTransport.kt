@@ -1,12 +1,13 @@
 package ru.medals.ktor.user.mappers
 
+import ru.medals.domain.user.bussines.context.UserCommand
 import ru.medals.domain.user.bussines.context.UserContext
 import ru.medals.domain.user.model.Gender
 import ru.medals.domain.user.model.User
 import ru.medals.ktor.user.model.request.*
 
 fun UserContext.fromTransport(request: CreateUserRequest) {
-	command = UserContext.Command.CREATE
+	command = UserCommand.CREATE
 	user = User(
 		role = request.role,
 		login = request.login,
@@ -27,42 +28,53 @@ fun UserContext.fromTransport(request: CreateUserRequest) {
 }
 
 fun UserContext.fromTransport(request: GetUserByIdRequest) {
-	command = UserContext.Command.GET_BY_ID
+	command = UserCommand.GET_BY_ID
+	userId = request.userId
+}
+
+fun UserContext.fromTransport(request: GetUserByIdDepNameRequest) {
+	command = UserCommand.GET_BY_ID_DEP_NAME
 	userId = request.userId
 }
 
 fun UserContext.fromTransport(request: GetUsersByDepartmentRequest) {
-	command = UserContext.Command.GET_BY_DEPARTMENT
+	command = UserCommand.GET_BY_DEPARTMENT
 	departmentId = request.departmentId
 	searchFilter = request.filter
 }
 
 fun UserContext.fromTransport(request: GetUsersByCompanyRequest) {
-	command = UserContext.Command.GET_BY_COMPANY
+	command = UserCommand.GET_BY_COMPANY
+	companyId = request.companyId
+	searchFilter = request.filter
+}
+
+fun UserContext.fromTransport(request: GetUsersByCompanyDepNameRequest) {
+	command = UserCommand.GET_BY_COMPANY_DEP_NAME
 	companyId = request.companyId
 	searchFilter = request.filter
 }
 
 fun UserContext.fromTransport(request: GetBestUsersByCompanyRequest) {
-	command = UserContext.Command.GET_BEST
+	command = UserCommand.GET_BEST
 	companyId = request.companyId
 	request.limit?.let { limit = it }
 }
 
 fun UserContext.fromTransport(request: GetBossesRequest) {
-	command = UserContext.Command.GET_BOSSES
+	command = UserCommand.GET_BOSSES
 	companyId = request.companyId
 	searchFilter = request.filter
 }
 
 
 fun UserContext.fromTransport(request: DeleteUserRequest) {
-	command = UserContext.Command.DELETE
+	command = UserCommand.DELETE
 	userId = request.userId
 }
 
 fun UserContext.fromTransport(request: UpdateUserRequest) {
-	command = UserContext.Command.UPDATE
+	command = UserCommand.UPDATE
 	user = User(
 		id = request.id,
 		login = request.login,
@@ -81,17 +93,17 @@ fun UserContext.fromTransport(request: UpdateUserRequest) {
 }
 
 fun UserContext.fromTransport(request: UserCountByCompanyRequest) {
-	command = UserContext.Command.COUNT_BY_COMPANY
+	command = UserCommand.COUNT_BY_COMPANY
 	companyId = request.companyId
 }
 
 fun UserContext.fromTransport(request: UserCountByDepartmentRequest) {
-	command = UserContext.Command.COUNT_BY_DEPARTMENT
+	command = UserCommand.COUNT_BY_DEPARTMENT
 	departmentId = request.departmentId
 }
 
 fun UserContext.fromTransport(request: DeleteUserImageRequest) {
-	command = UserContext.Command.IMAGE_DELETE
+	command = UserCommand.IMAGE_DELETE
 	userId = request.userId
 	imageKey = request.imageKey
 }

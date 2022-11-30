@@ -33,7 +33,7 @@ fun ICorChainDsl<RegisterContext>.createOwner(title: String) = worker {
 			role = OWNER,
 			score = 0,
 			currentScore = 0,
-			rewardCount = 0,
+			awardCount = 0,
 		)
 
 		user = checkRepositoryData {

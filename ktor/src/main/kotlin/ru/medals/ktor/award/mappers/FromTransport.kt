@@ -66,3 +66,9 @@ fun AwardContext.fromTransport(request: AwardUserRequest) {
 	userId = request.userId
 	awardState = request.awardState
 }
+
+fun AwardContext.fromTransport(request: AwardUserDeleteRequest) {
+	command = AwardCommand.AWARD_USER_DELETE
+	awardId = request.awardId ?: ""
+	userId = request.userId
+}

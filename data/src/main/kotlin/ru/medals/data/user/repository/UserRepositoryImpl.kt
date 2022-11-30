@@ -42,24 +42,60 @@ class UserRepositoryImpl(
 	}
 
 	override suspend fun getUserById(id: String): User? {
-//		return users.findOneById(id)?.toUser()
+		return users.findOneById(id)?.toUser()
+	}
+
+	override suspend fun getUserByIdWithDepartmentName(id: String): User? {
 		return users.aggregate<UserCol>(
 			match(UserCol::id eq id),
 			lookup(from = "departmentCol", localField = "departmentId", foreignField = "_id", newAs = "department"),
 			unwind("\$department", unwindOptions = UnwindOptions().preserveNullAndEmptyArrays(true)),
-//			replaceRoot("{newRoot: {\$mergeObjects: [{departmentName: '\$departments.name'}, '\$\$ROOT']}}")
-//			project(UserCol::departmentName from "\$department.name")
+			projectUserFieldsWithDepartmentName
 		).first()?.toUser()
 	}
 
+	override suspend fun getUsersByCompanyWithDepartmentName(companyId: String, filter: String?): List<User> {
+		return users.aggregate<UserCol>(
+			match(
+				and(
+					UserCol::companyId eq companyId,
+					filter?.let {
+						or(
+							UserCol::name regex Regex("$filter", RegexOption.IGNORE_CASE),
+							UserCol::lastname regex Regex("$filter", RegexOption.IGNORE_CASE),
+						)
+					}
+				)
+			),
+			lookup(from = "departmentCol", localField = "departmentId", foreignField = "_id", newAs = "department"),
+			unwind(fieldName = "\$department", unwindOptions = UnwindOptions().preserveNullAndEmptyArrays(true)),
+			projectUserFieldsWithDepartmentName,
+			sort(ascending(UserCol::lastname))
+		).toList().map { it.toUser() }
+	}
+
+	override suspend fun getUsersByCompany(companyId: String, filter: String?): List<User> {
+		return users.find(
+			UserCol::companyId eq companyId,
+			filter?.let {
+				or(
+					UserCol::name regex Regex("$filter", RegexOption.IGNORE_CASE),
+					UserCol::lastname regex Regex("$filter", RegexOption.IGNORE_CASE),
+				)
+			}
+		)
+			.ascendingSort(UserCol::lastname)
+			.toList().map { it.toUser().copy(hashPassword = null) }
+	}
+
 	/*    override suspend fun getUserByCredential(login: String): User? {
-					return users.findOne(
-							or(
-									User::email regex Regex("^$login\$", RegexOption.IGNORE_CASE),
-									User::login eq login
-							)
-					)
-			}*/
+				return users.findOne(
+						or(
+								User::email regex Regex("^$login\$", RegexOption.IGNORE_CASE),
+								User::login eq login
+						)
+				)
+		}*/
 
 	override suspend fun getUserByEmail(email: String): User? {
 		return users.findOne(
@@ -120,44 +156,6 @@ class UserRepositoryImpl(
 		)
 			.ascendingSort(UserCol::lastname)
 			.toList().map { it.toUser().copy(hashPassword = null) }
-	}
-
-	/*
-			return users.aggregate<UserCol>(
-			match(UserCol::id eq id),
-			lookup(from = "departmentCol", localField = "departmentId", foreignField = "_id", newAs = "department"),
-			unwind("\$department", unwindOptions = UnwindOptions().preserveNullAndEmptyArrays(true)),
-			).first()?.toUser()
-	 */
-
-	override suspend fun getUsersByCompany(companyId: String, filter: String?): List<User> {
-		/*		return users.find(
-					UserCol::companyId eq companyId,
-					filter?.let {
-						or(
-							UserCol::name regex Regex("$filter", RegexOption.IGNORE_CASE),
-							UserCol::lastname regex Regex("$filter", RegexOption.IGNORE_CASE),
-						)
-					}
-		)
-		.ascendingSort(UserCol::lastname)
-		*/
-		return users.aggregate<UserCol>(
-			match(
-				and(
-					UserCol::companyId eq companyId,
-					filter?.let {
-						or(
-							UserCol::name regex Regex("$filter", RegexOption.IGNORE_CASE),
-							UserCol::lastname regex Regex("$filter", RegexOption.IGNORE_CASE),
-						)
-					}
-				)
-			),
-			lookup(from = "departmentCol", localField = "departmentId", foreignField = "_id", newAs = "department"),
-			unwind("\$department", unwindOptions = UnwindOptions().preserveNullAndEmptyArrays(true)),
-			sort(ascending(UserCol::lastname))
-		).toList().map { it.toUser().copy(hashPassword = null) }
 	}
 
 	override suspend fun updateProfile(user: User): Boolean {
@@ -367,6 +365,29 @@ class UserRepositoryImpl(
 		} catch (e: Exception) {
 			errorUserGet()
 		}
+	}
+
+	companion object {
+		val projectUserFieldsWithDepartmentName = project(
+			UserCol::id from UserCol::id,
+			UserCol::email from UserCol::email,
+			UserCol::login from UserCol::login,
+			UserCol::name from UserCol::name,
+			UserCol::patronymic from UserCol::patronymic,
+			UserCol::lastname from UserCol::lastname,
+			UserCol::role from UserCol::role,
+			UserCol::imageUrl from UserCol::imageUrl,
+			UserCol::imageKey from UserCol::imageKey,
+			UserCol::bio from UserCol::bio,
+			UserCol::post from UserCol::post,
+			UserCol::phone from UserCol::phone,
+			UserCol::gender from UserCol::gender,
+			UserCol::description from UserCol::description,
+			UserCol::companyId from UserCol::companyId,
+			UserCol::departmentId from UserCol::departmentId,
+			UserCol::awardCount from UserCol::awardCount,
+			UserCol::departmentName from ("\$department.name")
+		)
 	}
 
 }

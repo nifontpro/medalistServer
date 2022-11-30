@@ -1,6 +1,7 @@
 package ru.medals.ktor.user
 
 import io.ktor.server.application.*
+import ru.medals.domain.user.bussines.context.UserCommand
 import ru.medals.domain.user.bussines.context.UserContext
 import ru.medals.domain.user.bussines.processor.UserProcessor
 import ru.medals.domain.user.model.User
@@ -37,6 +38,13 @@ suspend fun ApplicationCall.getUserById(processor: UserProcessor) =
 		toTransport = { toTransportGetUser() }
 	)
 
+suspend fun ApplicationCall.getUserByIdWithDepName(processor: UserProcessor) =
+	process<GetUserByIdDepNameRequest, User, UserContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetUser() }
+	)
+
 suspend fun ApplicationCall.getUsersByDepartment(processor: UserProcessor) =
 	process<GetUsersByDepartmentRequest, List<User>, UserContext>(
 		processor = processor,
@@ -46,6 +54,13 @@ suspend fun ApplicationCall.getUsersByDepartment(processor: UserProcessor) =
 
 suspend fun ApplicationCall.getUsersByCompany(processor: UserProcessor) =
 	process<GetUsersByCompanyRequest, List<User>, UserContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetUsers() }
+	)
+
+suspend fun ApplicationCall.getUsersByCompanyDepName(processor: UserProcessor) =
+	process<GetUsersByCompanyDepNameRequest, List<User>, UserContext>(
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
 		toTransport = { toTransportGetUsers() }
@@ -80,17 +95,17 @@ suspend fun ApplicationCall.getUserCountByDepartment(processor: UserProcessor) =
 	)
 
 suspend fun ApplicationCall.updateUserImageOld(processor: UserProcessor) {
-	val context = UserContext().apply { command = UserContext.Command.UPDATE_IMAGE }
+	val context = UserContext().apply { command = UserCommand.UPDATE_IMAGE }
 	processImageSingle(context = context, processor = processor)
 }
 
 suspend fun ApplicationCall.createUserImage(processor: UserProcessor) {
-	val context = UserContext().apply { command = UserContext.Command.IMAGE_ADD }
+	val context = UserContext().apply { command = UserCommand.IMAGE_ADD }
 	processImage(context = context, processor = processor)
 }
 
 suspend fun ApplicationCall.updateUserImage(processor: UserProcessor) {
-	val context = UserContext().apply { command = UserContext.Command.IMAGE_UPDATE }
+	val context = UserContext().apply { command = UserCommand.IMAGE_UPDATE }
 	processImage(context = context, processor = processor)
 }
 

@@ -40,7 +40,7 @@ data class PrincipalUser(
 		departmentId = departmentId,
 		score = score,
 		currentScore = currentScore,
-		rewardCount = rewardCount,
+		awardCount = rewardCount,
 		isMnc = isMnc,
 		id = id
 	)
@@ -60,7 +60,7 @@ fun User.toPrincipalUser() = PrincipalUser(
 	departmentId = departmentId,
 	score = score,
 	currentScore = currentScore,
-	rewardCount = rewardCount,
+	rewardCount = awardCount,
 	isMnc = isMnc,
 	id = id
 )

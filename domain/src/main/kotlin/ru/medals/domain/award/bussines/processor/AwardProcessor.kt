@@ -94,6 +94,18 @@ class AwardProcessor : IBaseProcessor<AwardContext> {
 				awardUserDb("Награждаем сотрудника")
 			}
 
+			operation("Удалить награждение сотрудника", AwardCommand.AWARD_USER_DELETE) {
+				validateUserIdEmpty("Проверяем userId")
+				trimFieldUserIdAndCopyToValid("Очищаем userId")
+				// Добавить расширенную проверку сторудника, чтоб не был из другой компании
+				validateAwardIdEmpty("Проверяем на непустой id")
+				getAwardByIdFromDb("Получаем награду")
+				getRelateUserFromAward("Получаем запись о награждении сотрудника и companyId для авторизации")
+				validateAwardRelateExist("Проверяем, был ли удостоен сотрудник этой награды")
+				validateAdminLevel("Уровень доступа - администратор")
+				deleteAwardUserDb("Удаляем награждение сотрудника")
+			}
+
 			finishOperation()
 		}.build()
 	}

@@ -5,6 +5,7 @@ import ru.medals.domain.award.bussines.context.AwardCommand
 import ru.medals.domain.award.bussines.context.AwardContext
 import ru.medals.domain.award.bussines.processor.AwardProcessor
 import ru.medals.domain.award.model.Award
+import ru.medals.domain.award.model.AwardRelate
 import ru.medals.domain.award.model.AwardUsers
 import ru.medals.ktor.award.mappers.*
 import ru.medals.ktor.award.model.request.*
@@ -64,6 +65,13 @@ suspend fun ApplicationCall.awardUser(processor: AwardProcessor) =
 	authProcess<AwardUserRequest, Unit, AwardContext>(
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
+	)
+
+suspend fun ApplicationCall.awardUserDelete(processor: AwardProcessor) =
+	authProcess<AwardUserDeleteRequest, AwardRelate, AwardContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetAwardRelate() }
 	)
 
 suspend fun ApplicationCall.updateAwardImageOld(processor: AwardProcessor) {

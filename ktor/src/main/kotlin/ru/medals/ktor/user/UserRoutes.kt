@@ -24,7 +24,7 @@ fun Route.userRoutes() {
 		}
 
 		authenticate(USER) {
-			put("/update") {
+			put("update") {
 				call.updateUser(userProcessor)
 			}
 
@@ -46,13 +46,17 @@ fun Route.userRoutes() {
 		}
 
 		authenticate(ADMIN) {
-			post("/get_bosses") {
+			post("get_bosses") {
 				call.getBosses(userProcessor)
 			}
 		}
 
 		post("get_id") {
 			call.getUserById(userProcessor)
+		}
+
+		post("get_id_dep") {
+			call.getUserByIdWithDepName(userProcessor)
 		}
 
 		/**
@@ -69,6 +73,11 @@ fun Route.userRoutes() {
 			call.getUsersByCompany(userProcessor)
 		}
 
+		post("get_company_dep") {
+			call.getUsersByCompanyDepName(userProcessor)
+		}
+
+
 		/**
 		 * Получить лучших сотрудников компании
 		 */
@@ -79,14 +88,14 @@ fun Route.userRoutes() {
 		/**
 		 * Получить количество сотрудников в компании
 		 */
-		post("/count_c") {
+		post("count_c") {
 			call.getUserCountByCompany(userProcessor)
 		}
 
 		/**
 		 * Получить количество сотрудников в отделе
 		 */
-		post("/count_d") {
+		post("count_d") {
 			call.getUserCountByDepartment(userProcessor)
 		}
 	}

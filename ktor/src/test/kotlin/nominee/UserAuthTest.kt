@@ -11,6 +11,7 @@ import ru.medals.data.di.dataModule
 import ru.medals.data.di.dbModule
 import ru.medals.domain.core.bussines.ContextState
 import ru.medals.domain.di.domainModule
+import ru.medals.domain.user.bussines.context.UserCommand
 import ru.medals.domain.user.bussines.context.UserContext
 import ru.medals.domain.user.bussines.processor.UserProcessor
 import ru.medals.domain.user.repository.UserRepository
@@ -49,7 +50,7 @@ class UserAuthTest : KoinTest {
 			val ctx = UserContext().apply {
 				state = ContextState.NONE
 				userId = id
-				command = UserContext.Command.GET_BY_ID
+				command = UserCommand.GET_BY_ID
 			}
 
 			processor.exec(ctx)

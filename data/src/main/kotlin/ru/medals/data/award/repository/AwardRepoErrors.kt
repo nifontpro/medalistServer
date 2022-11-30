@@ -32,6 +32,14 @@ interface AwardRepoErrors {
 			)
 		)
 
+		fun errorAwardUserDelete() = RepositoryData.error(
+			error = RepositoryError(
+				repository = REPO,
+				violationCode = "delete award user error",
+				description = "Ошибка удаления награждения сотрудника"
+			)
+		)
+
 		fun errorAwardUpdate() = RepositoryData.error(
 			error = RepositoryError(
 				repository = REPO,
