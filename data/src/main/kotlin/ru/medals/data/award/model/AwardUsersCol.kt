@@ -51,6 +51,9 @@ data class AwardUsersCol(
 			)
 		},
 
+		imageUrl = imageUrl,
+		imageKey = imageKey,
+
 		id = id
 	)
 }

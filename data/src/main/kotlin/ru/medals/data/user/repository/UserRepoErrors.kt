@@ -44,3 +44,11 @@ fun errorUserUpdate() = RepositoryData.error(
 		description = "Ошибка обновления данных сотрудника"
 	)
 )
+
+	fun errorUserAwardCountUpdate() = RepositoryData.error(
+		error = RepositoryError(
+			repository = REPO,
+			violationCode = "bad update",
+			description = "Ошибка при обновлении количества наград сотрудника"
+		)
+)

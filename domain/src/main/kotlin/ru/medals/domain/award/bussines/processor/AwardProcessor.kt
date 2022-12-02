@@ -92,6 +92,7 @@ class AwardProcessor : IBaseProcessor<AwardContext> {
 				validateAward("Проверяем возможность награждения этой премией")
 				prepareAwardRelate("Подготовка данных награждения")
 				awardUserDb("Награждаем сотрудника")
+				incrementAwardUserDb("Увеличиваем число наград у сотрудника на 1")
 			}
 
 			operation("Удалить награждение сотрудника", AwardCommand.AWARD_USER_DELETE) {
@@ -104,6 +105,7 @@ class AwardProcessor : IBaseProcessor<AwardContext> {
 				validateAwardRelateExist("Проверяем, был ли удостоен сотрудник этой награды")
 				validateAdminLevel("Уровень доступа - администратор")
 				deleteAwardUserDb("Удаляем награждение сотрудника")
+				decrementAwardUserDb("Уменьшаем число наград у сотрудника на 1")
 			}
 
 			finishOperation()

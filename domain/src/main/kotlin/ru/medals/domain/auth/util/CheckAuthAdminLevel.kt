@@ -13,6 +13,10 @@ suspend fun checkAuthMinAdmin(
 		return false
 	}
 
+	if (principalUser.role == null) {
+		return false
+	}
+
 	val companyRepository: CompanyRepository by inject(CompanyRepository::class.java)
 
 	if (principalUser.role == User.ADMIN && principalUser.companyId != companyId) {

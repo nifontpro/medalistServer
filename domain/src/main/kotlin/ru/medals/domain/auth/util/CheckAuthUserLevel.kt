@@ -13,6 +13,11 @@ suspend fun checkAuthMinUser(
 ): Boolean {
 	val userRepository: UserRepository by inject(UserRepository::class.java)
 
+	if (principalUser.role == null) {
+		return false
+	}
+
+
 	val findUser = userRepository.getUserById(userId) ?: run {
 		return false
 	}

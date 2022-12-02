@@ -12,6 +12,7 @@ import ru.medals.data.user.model.MedalInfoCol
 import ru.medals.data.user.model.UserCol
 import ru.medals.data.user.model.UserMedalsCol
 import ru.medals.data.user.model.toUserCol
+import ru.medals.domain.award.repository.AwardRepository
 import ru.medals.domain.core.bussines.model.RepositoryData
 import ru.medals.domain.image.model.FileData
 import ru.medals.domain.image.model.ImageRef
@@ -25,7 +26,8 @@ import java.util.*
 
 class UserRepositoryImpl(
 	db: CoroutineDatabase,
-	private val s3repository: S3Repository
+	private val s3repository: S3Repository,
+	private val awardRepository: AwardRepository
 ) : UserRepository {
 
 	private val users = db.getCollection<UserCol>()
@@ -180,6 +182,24 @@ class UserRepositoryImpl(
 		}
 	}
 
+	/**
+	 * Обновить количество наград у заданного пользователя
+	 * @param [userId]
+	 * @param [dCount] на сколько изменяется количество наград (приращение),
+	 * может быть как положительным, так и отрицательным числом.
+	 */
+	override suspend fun updateAwardCount(userId: String, dCount: Int): RepositoryData<Unit> {
+		return try {
+			users.updateOneById(
+				id = userId,
+				update = inc(UserCol::awardCount, dCount)
+			)
+			RepositoryData.success()
+		} catch (e: Exception) {
+			errorUserAwardCountUpdate()
+		}
+	}
+
 	override suspend fun delete(user: User): RepositoryData<User> {
 
 		if (!s3repository.deleteAllImages(user)) return errorS3()
@@ -232,6 +252,21 @@ class UserRepositoryImpl(
 
 	override suspend fun getAllMncIds(companyId: String): List<String> {
 		return getAllMnc(companyId).map { it.id }
+	}
+
+	/**
+	 * Пересчитать количество наград у всех сотрудников
+	 */
+	override suspend fun calculateAwardCountOfUsers() {
+		val allUsers = users.find().toList()
+		allUsers.forEach { user ->
+			val awardCount = awardRepository.calculateAwardCountOfUser(userId = user.id)
+			users.updateOneById(
+				id = user.id,
+				update = set(UserCol::awardCount setTo  awardCount.toInt())
+			)
+			println("User id: ${user.id}: ${user.lastname} ${user.name} ${user.patronymic} - $awardCount")
+		}
 	}
 
 	@Deprecated("Удалить в будущем")

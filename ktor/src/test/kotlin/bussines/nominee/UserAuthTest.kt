@@ -1,4 +1,4 @@
-package nominee
+package bussines.nominee
 
 import io.ktor.server.testing.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi

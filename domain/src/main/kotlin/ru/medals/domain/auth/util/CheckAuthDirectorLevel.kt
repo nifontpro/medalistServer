@@ -13,6 +13,11 @@ suspend fun checkAuthMinDirector(
 ): Boolean {
 	val companyRepository: CompanyRepository by inject(CompanyRepository::class.java)
 
+	if (principalUser.role == null) {
+		return false
+	}
+
+
 	if (principalUser.role == DIRECTOR && principalUser.companyId != companyId &&
 		principalUser.departmentId != departmentId
 	) {

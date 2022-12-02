@@ -24,7 +24,7 @@ data class UserCol(
 	val departmentId: String? = null,
 	val score: Int? = null,
 	val currentScore: Int? = null,
-	val awardCount: Int? = null,
+	val awardCount: Int = 0,
 	val mnc: Boolean? = null, // Является ли членом номинационной коммисии
 	val departmentName: String? = null,
 

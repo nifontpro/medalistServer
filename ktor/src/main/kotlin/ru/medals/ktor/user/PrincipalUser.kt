@@ -20,7 +20,7 @@ data class PrincipalUser(
 	val departmentId: String? = null,
 	val score: Int? = null,
 	val currentScore: Int? = null,
-	val rewardCount: Int? = null,
+	val awardCount: Int = 0,
 	val isMnc: Boolean? = null, // Является ли членом номинационной коммисии
 
 	val id: String = ""
@@ -40,7 +40,7 @@ data class PrincipalUser(
 		departmentId = departmentId,
 		score = score,
 		currentScore = currentScore,
-		awardCount = rewardCount,
+		awardCount = awardCount,
 		isMnc = isMnc,
 		id = id
 	)
@@ -60,7 +60,7 @@ fun User.toPrincipalUser() = PrincipalUser(
 	departmentId = departmentId,
 	score = score,
 	currentScore = currentScore,
-	rewardCount = awardCount,
+	awardCount = awardCount,
 	isMnc = isMnc,
 	id = id
 )

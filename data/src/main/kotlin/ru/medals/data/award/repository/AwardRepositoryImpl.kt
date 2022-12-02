@@ -180,6 +180,19 @@ class AwardRepositoryImpl(
 	}
 
 	/**
+	 * Посчитать количество наград у сотрудника
+	 */
+	override suspend fun calculateAwardCountOfUser(userId: String): Long {
+
+		return awards.countDocuments(
+			and(
+				AwardCol::relations / AwardRelate::userId eq userId,
+				AwardCol::relations / AwardRelate::state eq AwardState.AWARD
+			)
+		)
+	}
+
+	/**
 	 * Получить запись о награждении сотрудника определенной наградой
 	 * и companyId
 	 */

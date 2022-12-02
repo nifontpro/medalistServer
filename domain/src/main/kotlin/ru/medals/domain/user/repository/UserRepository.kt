@@ -36,4 +36,6 @@ interface UserRepository {
 	suspend fun checkExist(userId: String): RepositoryData<Unit>
 	suspend fun getUsersByCompany(companyId: String, filter: String?): List<User>
 	suspend fun getUserByIdWithDepartmentName(id: String): User?
+	suspend fun updateAwardCount(userId: String, dCount: Int): RepositoryData<Unit>
+	suspend fun calculateAwardCountOfUsers()
 }

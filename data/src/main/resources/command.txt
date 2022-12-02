@@ -1,0 +1,6 @@
+// Удалить поле в документе
+db.userCol.updateMany({}, {$unset: {"rewardCount": ""}})
+
+// +field
+db.userCol.updateMany({}, {$set: {"awardCount": 0}})
+

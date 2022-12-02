@@ -18,4 +18,5 @@ interface AwardRepository {
 	suspend fun getAwardRelateFromUser(awardId: String, userId: String): RepositoryData<AwardRelate>
 	suspend fun awardUser(awardId: String, awardRelate: AwardRelate, isNew: Boolean): RepositoryData<Unit>
 	suspend fun deleteUserAward(awardId: String, userId: String): RepositoryData<AwardRelate>
+	suspend fun calculateAwardCountOfUser(userId: String): Long
 }

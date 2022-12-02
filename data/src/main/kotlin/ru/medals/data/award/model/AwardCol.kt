@@ -34,6 +34,10 @@ data class AwardCol(
 		score = score,
 		companyId = companyId,
 		relations = relations,
+
+		imageUrl   = imageUrl,
+		imageKey = imageKey,
+
 		id = id
 	)
 }
