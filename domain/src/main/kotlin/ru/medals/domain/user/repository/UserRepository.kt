@@ -3,6 +3,7 @@ package ru.medals.domain.user.repository
 import ru.medals.domain.core.bussines.model.RepositoryData
 import ru.medals.domain.image.model.FileData
 import ru.medals.domain.user.model.User
+import ru.medals.domain.user.model.UserAwards
 import ru.medals.domain.user.model.UserMedals
 
 interface UserRepository {
@@ -38,4 +39,5 @@ interface UserRepository {
 	suspend fun getUserByIdWithDepartmentName(id: String): User?
 	suspend fun updateAwardCount(userId: String, dCount: Int): RepositoryData<Unit>
 	suspend fun calculateAwardCountOfUsers()
+	suspend fun getUsersByCompanyWithAwards(companyId: String, filter: String? = null): RepositoryData<List<UserAwards>>
 }

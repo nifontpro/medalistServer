@@ -8,10 +8,9 @@ import ru.medals.data.core.errorBadImageKey
 import ru.medals.data.core.errorS3
 import ru.medals.data.medal.model.MedalCol
 import ru.medals.data.medal.repository.MedalRepoErrors.Companion.errorMedalNotFound
-import ru.medals.data.user.model.MedalInfoCol
-import ru.medals.data.user.model.UserCol
-import ru.medals.data.user.model.UserMedalsCol
-import ru.medals.data.user.model.toUserCol
+import ru.medals.data.user.model.*
+import ru.medals.data.user.repository.UserProjections.Companion.projectUserFieldsWithDepNameAndAwards
+import ru.medals.data.user.repository.UserProjections.Companion.projectUserFieldsWithDepartmentName
 import ru.medals.domain.award.repository.AwardRepository
 import ru.medals.domain.core.bussines.model.RepositoryData
 import ru.medals.domain.image.model.FileData
@@ -20,6 +19,7 @@ import ru.medals.domain.image.repository.S3Repository
 import ru.medals.domain.user.model.User
 import ru.medals.domain.user.model.User.Companion.ADMIN
 import ru.medals.domain.user.model.User.Companion.DIRECTOR
+import ru.medals.domain.user.model.UserAwards
 import ru.medals.domain.user.model.UserMedals
 import ru.medals.domain.user.repository.UserRepository
 import java.util.*
@@ -74,6 +74,39 @@ class UserRepositoryImpl(
 			projectUserFieldsWithDepartmentName,
 			sort(ascending(UserCol::lastname))
 		).toList().map { it.toUser() }
+	}
+
+	/**
+	 * Список сотрудников компании со списком их наград и именами отделов, в которых находятся
+	 * Награды с самыми необходимыми полями (AwardLite)
+	 */
+	override suspend fun getUsersByCompanyWithAwards(
+		companyId: String,
+		filter: String?
+	): RepositoryData<List<UserAwards>> {
+		return try {
+			val userAwards = users.aggregate<UserAwardsCol>(
+				match(
+					and(
+						UserCol::companyId eq companyId,
+						filter?.let {
+							or(
+								UserCol::name regex Regex("$filter", RegexOption.IGNORE_CASE),
+								UserCol::lastname regex Regex("$filter", RegexOption.IGNORE_CASE),
+							)
+						}
+					)
+				),
+				lookup(from = "departmentCol", localField = "departmentId", foreignField = "_id", newAs = "department"),
+				unwind(fieldName = "\$department", unwindOptions = UnwindOptions().preserveNullAndEmptyArrays(true)),
+				lookup(from = "awardCol", localField = "_id", foreignField = "relations.userId", newAs = "awards"),
+				projectUserFieldsWithDepNameAndAwards,
+				sort(ascending(UserCol::lastname))
+			).toList().map { it.toUserAwards() }
+			RepositoryData.success(data = userAwards)
+		} catch (e: Exception) {
+			errorUserGet()
+		}
 	}
 
 	override suspend fun getUsersByCompany(companyId: String, filter: String?): List<User> {
@@ -263,7 +296,7 @@ class UserRepositoryImpl(
 			val awardCount = awardRepository.calculateAwardCountOfUser(userId = user.id)
 			users.updateOneById(
 				id = user.id,
-				update = set(UserCol::awardCount setTo  awardCount.toInt())
+				update = set(UserCol::awardCount setTo awardCount.toInt())
 			)
 			println("User id: ${user.id}: ${user.lastname} ${user.name} ${user.patronymic} - $awardCount")
 		}
@@ -401,28 +434,4 @@ class UserRepositoryImpl(
 			errorUserGet()
 		}
 	}
-
-	companion object {
-		val projectUserFieldsWithDepartmentName = project(
-			UserCol::id from UserCol::id,
-			UserCol::email from UserCol::email,
-			UserCol::login from UserCol::login,
-			UserCol::name from UserCol::name,
-			UserCol::patronymic from UserCol::patronymic,
-			UserCol::lastname from UserCol::lastname,
-			UserCol::role from UserCol::role,
-			UserCol::imageUrl from UserCol::imageUrl,
-			UserCol::imageKey from UserCol::imageKey,
-			UserCol::bio from UserCol::bio,
-			UserCol::post from UserCol::post,
-			UserCol::phone from UserCol::phone,
-			UserCol::gender from UserCol::gender,
-			UserCol::description from UserCol::description,
-			UserCol::companyId from UserCol::companyId,
-			UserCol::departmentId from UserCol::departmentId,
-			UserCol::awardCount from UserCol::awardCount,
-			UserCol::departmentName from ("\$department.name")
-		)
-	}
-
 }

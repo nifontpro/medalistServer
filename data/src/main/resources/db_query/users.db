@@ -1,0 +1,18 @@
+db.userCol.aggregate([
+  {
+    $lookup: {
+      from: 'awardCol',
+      localField: '_id',
+      foreignField: 'relations.userId',
+      pipeline: [
+        {
+          $project: {
+            name: 1,
+            imageUrl: 1
+          }
+        }
+      ],
+      as: 'awards'
+    }
+  }
+])

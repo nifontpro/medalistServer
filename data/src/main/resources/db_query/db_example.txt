@@ -58,3 +58,5 @@ val r = col.aggregate<Result>(
                 )
             )
         )
+
+db.user.aggregate()
