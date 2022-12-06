@@ -9,6 +9,7 @@ data class Award(
 	val criteria: String? = null,
 	val startDate: Long? = null,
 	val endDate: Long? = null,
+	val state: AwardState = AwardState.NONE,
 	val score: Int? = null,
 	val companyId: String = "",
 	val relations: List<AwardRelate> = emptyList(),
