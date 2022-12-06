@@ -77,6 +77,9 @@ fun Route.userRoutes() {
 			call.getUsersByCompanyDepName(userProcessor)
 		}
 
+		post("get_awards") {
+			call.getUsersWithAwards(userProcessor)
+		}
 
 		/**
 		 * Получить лучших сотрудников компании

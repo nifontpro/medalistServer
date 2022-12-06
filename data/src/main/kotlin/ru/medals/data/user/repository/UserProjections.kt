@@ -1,8 +1,8 @@
 package ru.medals.data.user.repository
 
-import org.litote.kmongo.div
-import org.litote.kmongo.from
-import org.litote.kmongo.project
+import org.bson.BsonDocument
+import org.bson.BsonInt32
+import org.litote.kmongo.*
 import ru.medals.data.award.model.AwardCol
 import ru.medals.data.user.model.UserAwardsCol
 import ru.medals.data.user.model.UserCol
@@ -51,5 +51,12 @@ interface UserProjections {
 			UserAwardsCol::awards / AwardCol::name from 1,
 			UserAwardsCol::awards / AwardCol::companyId from 1
 		)
+
+		val sortByAwardCountAndLastName = sort(
+			BsonDocument()
+				.append(UserCol::awardCount.path(), BsonInt32(-1))
+				.append(UserCol::lastname.path(), BsonInt32(1))
+		)
 	}
+
 }

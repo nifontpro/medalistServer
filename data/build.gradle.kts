@@ -29,4 +29,5 @@ dependencies {
 	implementation(kotlin("test-annotations-common"))
 	testImplementation(kotlin("test-junit"))
 	api("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
+	implementation("io.github.microutils:kotlin-logging-jvm:3.0.4")
 }

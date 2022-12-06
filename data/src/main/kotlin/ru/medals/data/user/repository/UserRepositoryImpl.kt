@@ -11,6 +11,7 @@ import ru.medals.data.medal.repository.MedalRepoErrors.Companion.errorMedalNotFo
 import ru.medals.data.user.model.*
 import ru.medals.data.user.repository.UserProjections.Companion.projectUserFieldsWithDepNameAndAwards
 import ru.medals.data.user.repository.UserProjections.Companion.projectUserFieldsWithDepartmentName
+import ru.medals.data.user.repository.UserProjections.Companion.sortByAwardCountAndLastName
 import ru.medals.domain.award.repository.AwardRepository
 import ru.medals.domain.core.bussines.model.RepositoryData
 import ru.medals.domain.image.model.FileData
@@ -101,7 +102,7 @@ class UserRepositoryImpl(
 				unwind(fieldName = "\$department", unwindOptions = UnwindOptions().preserveNullAndEmptyArrays(true)),
 				lookup(from = "awardCol", localField = "_id", foreignField = "relations.userId", newAs = "awards"),
 				projectUserFieldsWithDepNameAndAwards,
-				sort(ascending(UserCol::lastname))
+				sortByAwardCountAndLastName,
 			).toList().map { it.toUserAwards() }
 			RepositoryData.success(data = userAwards)
 		} catch (e: Exception) {

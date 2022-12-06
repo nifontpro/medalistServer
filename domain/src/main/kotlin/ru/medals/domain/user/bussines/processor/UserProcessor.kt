@@ -96,6 +96,13 @@ class UserProcessor : IBaseProcessor<UserContext> {
 				getUsersByCompanyDepNameFromDb("Получаем сотрудников компании из БД")
 			}
 
+			operation("Получить сотрудников компании с наградами", UserCommand.GET_WITH_AWARDS) {
+				validateCompanyIdEmpty("Проверка на непустой companyId")
+				trimFieldCompanyIdAndCopyToValid("Очистка companyId")
+				prepareFilter("Подготовка фильтра")
+				getUsersByCompanyWithAwardsDb("Получаем сотрудников компании с наградами из БД")
+			}
+
 			operation("Получить лучших сотрудников компании", UserCommand.GET_BEST) {
 				validateCompanyIdEmpty("Проверка на непустой companyId")
 				validateLimit("Проверка максимального количества записей")

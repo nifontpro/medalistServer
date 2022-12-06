@@ -9,6 +9,8 @@ import ru.medals.domain.image.model.IImages
 import ru.medals.domain.image.model.ImageRef
 import java.util.*
 
+//private val log = KotlinLogging.logger {}
+
 data class AwardCol(
     val name: String,
     val description: String? = null,
@@ -64,7 +66,7 @@ fun Award.toAwardColCreate() = AwardCol(
 fun getAwardState(startDate: Date?, endDate: Date?): AwardState {
     val startTime = startDate?.time
     val endTime = endDate?.time
-    val now = System.currentTimeMillis()
+    val now = System.currentTimeMillis() / 1000
     val awardState = if (endTime != null && startTime != null) {
         when {
             now >= startTime && now < endTime -> AwardState.NOMINEE

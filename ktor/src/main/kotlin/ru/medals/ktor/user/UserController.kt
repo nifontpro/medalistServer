@@ -5,10 +5,12 @@ import ru.medals.domain.user.bussines.context.UserCommand
 import ru.medals.domain.user.bussines.context.UserContext
 import ru.medals.domain.user.bussines.processor.UserProcessor
 import ru.medals.domain.user.model.User
+import ru.medals.domain.user.model.UserAwards
 import ru.medals.ktor.core.*
 import ru.medals.ktor.user.mappers.fromTransport
 import ru.medals.ktor.user.mappers.toTransportGetUser
 import ru.medals.ktor.user.mappers.toTransportGetUsers
+import ru.medals.ktor.user.mappers.toTransportGetUsersAwards
 import ru.medals.ktor.user.model.request.*
 
 suspend fun ApplicationCall.createUser(processor: UserProcessor) =
@@ -64,6 +66,13 @@ suspend fun ApplicationCall.getUsersByCompanyDepName(processor: UserProcessor) =
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
 		toTransport = { toTransportGetUsers() }
+	)
+
+suspend fun ApplicationCall.getUsersWithAwards(processor: UserProcessor) =
+	process<GetUsersWithAwardsRequest, List<UserAwards>, UserContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetUsersAwards() }
 	)
 
 suspend fun ApplicationCall.getBestUsersByCompany(processor: UserProcessor) =
