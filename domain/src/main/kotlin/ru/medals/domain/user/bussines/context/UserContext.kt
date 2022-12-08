@@ -5,14 +5,14 @@ import ru.medals.domain.company.repository.CompanyRepository
 import ru.medals.domain.core.bussines.BaseContext
 import ru.medals.domain.core.bussines.IBaseCommand
 import ru.medals.domain.user.model.User
-import ru.medals.domain.user.model.UserAwards
+import ru.medals.domain.user.model.UserAwardsLite
 import ru.medals.domain.user.repository.UserRepository
 
 data class UserContext(
 
     var user: User = User(),
     val users: MutableList<User> = mutableListOf(),
-    var usersAwards: List<UserAwards> = emptyList()
+    var usersAwards: List<UserAwardsLite> = emptyList()
 
 ) : BaseContext(command = UserCommand.NONE) {
 

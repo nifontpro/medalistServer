@@ -4,7 +4,7 @@ import org.bson.BsonDocument
 import org.bson.BsonInt32
 import org.litote.kmongo.*
 import ru.medals.data.award.model.AwardCol
-import ru.medals.data.user.model.UserAwardsCol
+import ru.medals.data.user.model.UserAwardsLiteCol
 import ru.medals.data.user.model.UserCol
 
 interface UserProjections {
@@ -31,25 +31,27 @@ interface UserProjections {
 		)
 
 		val projectUserFieldsWithDepNameAndAwards = project(
-			UserAwardsCol::id from 1,
-			UserAwardsCol::email from 1,
-			UserAwardsCol::login from 1,
-			UserAwardsCol::name from 1,
-			UserAwardsCol::patronymic from 1,
-			UserAwardsCol::lastname from 1,
-			UserAwardsCol::role from 1,
-			UserAwardsCol::imageUrl from 1,
-			UserAwardsCol::imageKey from 1,
+			UserAwardsLiteCol::id from 1,
+			UserAwardsLiteCol::email from 1,
+			UserAwardsLiteCol::login from 1,
+			UserAwardsLiteCol::name from 1,
+			UserAwardsLiteCol::patronymic from 1,
+			UserAwardsLiteCol::lastname from 1,
+			UserAwardsLiteCol::role from 1,
+			UserAwardsLiteCol::imageUrl from 1,
+			UserAwardsLiteCol::imageKey from 1,
 //			UserAwardsCol::images from 1,
-			UserAwardsCol::post from 1,
-			UserAwardsCol::phone from 1,
-			UserAwardsCol::gender from 1,
-			UserAwardsCol::companyId from 1,
-			UserAwardsCol::departmentId from 1,
-			UserAwardsCol::awardCount from UserAwardsCol::awardCount,
-			UserAwardsCol::departmentName from ("\$department.name"),
-			UserAwardsCol::awards / AwardCol::name from 1,
-			UserAwardsCol::awards / AwardCol::companyId from 1
+			UserAwardsLiteCol::post from 1,
+			UserAwardsLiteCol::phone from 1,
+			UserAwardsLiteCol::gender from 1,
+			UserAwardsLiteCol::companyId from 1,
+			UserAwardsLiteCol::departmentId from 1,
+			UserAwardsLiteCol::awardCount from UserAwardsLiteCol::awardCount,
+			UserAwardsLiteCol::departmentName from ("\$department.name"),
+
+			UserAwardsLiteCol::awards / AwardCol::name from 1,
+			UserAwardsLiteCol::awards / AwardCol::imageUrl from 1,
+			UserAwardsLiteCol::awards / AwardCol::companyId from 1
 		)
 
 		val sortByAwardCountAndLastName = sort(

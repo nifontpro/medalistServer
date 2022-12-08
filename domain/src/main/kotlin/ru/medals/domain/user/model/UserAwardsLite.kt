@@ -4,7 +4,7 @@ import ru.medals.domain.award.model.AwardLite
 import ru.medals.domain.image.model.IImages
 import ru.medals.domain.image.model.ImageRef
 
-data class UserAwards(
+data class UserAwardsLite(
 	val email: String? = null,
 	val login: String? = null,
 	val name: String? = null,

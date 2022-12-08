@@ -2,18 +2,18 @@ package ru.medals.data.user.model
 
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
-import ru.medals.data.award.model.AwardLiteCol
+import ru.medals.data.award.model.AwardUnionCol
 import ru.medals.domain.image.model.IImages
 import ru.medals.domain.image.model.ImageRef
 import ru.medals.domain.user.model.Gender
 import ru.medals.domain.user.model.User
-import ru.medals.domain.user.model.UserAwards
+import ru.medals.domain.user.model.UserAwardsLite
 
 /**
  * Класс сотрудников для вывода со списком наград
- * Включает только необходимые поля
+ * Включает объединенные поля награды со статусом награждения этого сотрудника
  */
-data class UserAwardsCol(
+data class UserAwardsUnionCol(
 	val email: String? = null,
 	val login: String? = null,
 	val name: String? = null,
@@ -31,7 +31,7 @@ data class UserAwardsCol(
 	val awardCount: Int = 0,
 	val departmentName: String? = null,
 
-	val awards: List<AwardLiteCol> = emptyList(),
+	val awards: List<AwardUnionCol> = emptyList(),
 
 	override val imageUrl: String? = null,
 	override val imageKey: String? = null,
@@ -41,7 +41,7 @@ data class UserAwardsCol(
 	val id: String = ObjectId().toString()
 ) : IImages {
 
-	fun toUserAwards() = UserAwards(
+	fun toUserAwards() = UserAwardsLite(
 		id = id,
 		email = email,
 		login = login,

@@ -20,7 +20,7 @@ import ru.medals.domain.image.repository.S3Repository
 import ru.medals.domain.user.model.User
 import ru.medals.domain.user.model.User.Companion.ADMIN
 import ru.medals.domain.user.model.User.Companion.DIRECTOR
-import ru.medals.domain.user.model.UserAwards
+import ru.medals.domain.user.model.UserAwardsLite
 import ru.medals.domain.user.model.UserMedals
 import ru.medals.domain.user.repository.UserRepository
 import java.util.*
@@ -57,6 +57,56 @@ class UserRepositoryImpl(
 		).first()?.toUser()
 	}
 
+	/**
+	 * Получит сотрудника со всеми его наградами
+	 */
+	override suspend fun getUserByIdWithAwards(userId: String) {
+		val userAwards = users.aggregate<UserAwardsUnionCol>(
+			"""[
+				{$match: {'_id': '$userId'}},
+				
+				{$lookup: {
+				from: 'awardCol',
+				  localField: '_id',
+				  foreignField: 'relations.userId',
+				  let: {relations: '$relations'},
+				  pipeline: [
+				    {$project: {_id:1, companyId:1, name:1, description:1, criteria:1, startDate:1, endDate:1, imageUrl:1,
+				      relations: {$filter: {input: '$relations', as: 'rel', cond: {$eq: ['${"$$"}rel.userId', '$userId']} }}
+				    }},
+				    {$unwind: '$relations'},
+				    {$replaceRoot : {newRoot: {$mergeObjects: 
+				      [
+								{_id: '${'$'}_id', companyId: '${'$'}companyId', name: '${'$'}name', description: '${'$'}description', 
+								imageUrl: '${'$'}imageUrl', startDate: '${'$'}startDate', endDate: '${'$'}endDate'}, '$relations'
+				      ]
+				    }}},
+				  ],
+				  as: 'awards'					
+				}},
+				
+				{$lookup: {
+					from: "departmentCol",
+				  localField: "departmentId",
+				  foreignField: "_id",
+				  as: 'department'
+				}},
+				
+				{$unwind: {
+					path: '${'$'}department',
+          preserveNullAndEmptyArrays: true
+				}},
+											
+				{$project: {
+					awards: 1, email: 1, login: 1, name: 1, patronymic: 1, role: 1, bio: 1, post: 1, phone: 1, gender: 1, description: 1, companyId: 1, departmentId: 1, awardCount: 1,
+          departmentName: '${'$'}department.name'					
+				}},											
+		]"""
+		).first()
+		println("--------------------------")
+		println(userAwards)
+	}
+
 	override suspend fun getUsersByCompanyWithDepartmentName(companyId: String, filter: String?): List<User> {
 		return users.aggregate<UserCol>(
 			match(
@@ -84,9 +134,9 @@ class UserRepositoryImpl(
 	override suspend fun getUsersByCompanyWithAwards(
 		companyId: String,
 		filter: String?
-	): RepositoryData<List<UserAwards>> {
+	): RepositoryData<List<UserAwardsLite>> {
 		return try {
-			val userAwards = users.aggregate<UserAwardsCol>(
+			val userAwards = users.aggregate<UserAwardsLiteCol>(
 				match(
 					and(
 						UserCol::companyId eq companyId,
@@ -421,18 +471,32 @@ class UserRepositoryImpl(
 		return try {
 			val userMedals = users.aggregate<UserMedalsCol>(
 				//			"[{\$match : {_id : {\$eq: '$userId'}}}]"
-				"[{\$match: {'_id': '$userId', 'medalsInfo.medalId': '$medalId'}}," +
-						"{\$project:{" +
+				"[{$match: {'_id': '$userId', 'medalsInfo.medalId': '$medalId'}}," +
+						"{$project:{" +
 						"_id: 1, email:1, login:1, name: 1, patronymic: 1, lastname: 1, role: 1, bio: 1, companyId: 1, departmentId: 1, score: 1, currentScore: 1, rewardCount: 1," +
 						"medalsInfo: {\$filter: {input: '\$medalsInfo', as: 'infos'," +
-						"cond: {\$eq: ['\$\$infos.medalId', '$medalId']}}}}" +
+						"cond: {$eq: ['\$\$infos.medalId', '$medalId']}}}}" +
 						"}," +
-						"{\$lookup: {from: 'medalCol', localField: 'medalsInfo.medalId', foreignField: '_id', as: 'medals'}}" +
+						"{$lookup: {from: 'medalCol', localField: 'medalsInfo.medalId', foreignField: '_id', as: 'medals'}}" +
 						"]"
 			).toList().map { it.toUserMedal() }
 			RepositoryData.success(data = userMedals)
 		} catch (e: Exception) {
 			errorUserGet()
 		}
+	}
+
+	companion object {
+		const val project = "\$project"
+		const val match = "\$match"
+		const val eq = "\$eq"
+		const val filter = "\$filter"
+		const val lookup = "\$lookup"
+		const val unwind = "\$unwind"
+		const val replaceRoot = "\$replaceRoot"
+		const val mergeObjects = "\$mergeObjects"
+
+		//fields:
+		const val relations = "\$relations"
 	}
 }

@@ -66,7 +66,7 @@ fun Award.toAwardColCreate() = AwardCol(
 fun getAwardState(startDate: Date?, endDate: Date?): AwardState {
     val startTime = startDate?.time
     val endTime = endDate?.time
-    val now = System.currentTimeMillis() / 1000
+    val now = System.currentTimeMillis()
     val awardState = if (endTime != null && startTime != null) {
         when {
             now >= startTime && now < endTime -> AwardState.NOMINEE
