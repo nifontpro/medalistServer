@@ -6,11 +6,9 @@ import ru.medals.domain.user.bussines.context.UserContext
 import ru.medals.domain.user.bussines.processor.UserProcessor
 import ru.medals.domain.user.model.User
 import ru.medals.domain.user.model.UserAwardsLite
+import ru.medals.domain.user.model.UserAwardsUnion
 import ru.medals.ktor.core.*
-import ru.medals.ktor.user.mappers.fromTransport
-import ru.medals.ktor.user.mappers.toTransportGetUser
-import ru.medals.ktor.user.mappers.toTransportGetUsers
-import ru.medals.ktor.user.mappers.toTransportGetUsersAwards
+import ru.medals.ktor.user.mappers.*
 import ru.medals.ktor.user.model.request.*
 
 suspend fun ApplicationCall.createUser(processor: UserProcessor) =
@@ -45,6 +43,13 @@ suspend fun ApplicationCall.getUserByIdWithDepName(processor: UserProcessor) =
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
 		toTransport = { toTransportGetUser() }
+	)
+
+suspend fun ApplicationCall.getUserByIdWithAwards(processor: UserProcessor) =
+	process<GetUserByIdAwardsRequest, UserAwardsUnion, UserContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetUserAwards() }
 	)
 
 suspend fun ApplicationCall.getUsersByDepartment(processor: UserProcessor) =

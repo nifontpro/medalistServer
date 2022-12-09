@@ -10,3 +10,5 @@ fun RegisterContext.toTransportAuthResponse(): AuthResponse {
 		accessToken = accessToken
 	)
 }
+
+fun RegisterContext.toTransportExpDate() = expDate

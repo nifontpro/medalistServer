@@ -27,7 +27,7 @@ class RegisterProcessor : IBaseProcessor<RegisterContext> {
 				validateUserWithEmailExist("Проверка, есть ли сотрудник с таким email")
 				validateUserWithLoginExist("Проверка, есть ли сотрудник с таким login")
 				validateTempRegWithEmailExist("Не регистрируется ли сейчас владелец с таким email")
-				sendCodeToUserEmail("Отправляем письмо с кодом на почту")
+				sendCodeToUserEmailForRegister("Отправляем письмо с кодом на почту")
 				saveTempRegUserToDb("Записываем данные в таблицу регистрации")
 			}
 
@@ -39,6 +39,15 @@ class RegisterProcessor : IBaseProcessor<RegisterContext> {
 				validateRegCode("Сопоставляем полученный код с кодом, высланным ранее на почту")
 				createOwner("Создаем профиль владельца компаний в БД")
 				generateTokens("Генерируем токены")
+			}
+
+			operation("Сброс пароля по email", RegisterContext.Command.RESET_PASSWORD_EMAIL) {
+				validateEmailEmpty("Проверка, не пустой ли email")
+				trimFieldEmailAndCopyToValid("Очищаем email")
+				getUserByEmailDb("Получаем сотрудника по email")
+				validateTempRegRestorePswExist("Проверка, есть ли запись о сбросе пароля в БД (возможен ли повторный сброс)")
+				sendCodeToUserEmailForRestore("Отправка письма со ссылкой")
+				saveTempRegForResetPsw("Записываем данные для сброса пароля")
 			}
 
 			finishOperation()

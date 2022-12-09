@@ -37,6 +37,11 @@ fun UserContext.fromTransport(request: GetUserByIdDepNameRequest) {
 	userId = request.userId
 }
 
+fun UserContext.fromTransport(request: GetUserByIdAwardsRequest) {
+	command = UserCommand.GET_BY_ID_AWARDS
+	userId = request.userId
+}
+
 fun UserContext.fromTransport(request: GetUsersByDepartmentRequest) {
 	command = UserCommand.GET_BY_DEPARTMENT
 	departmentId = request.departmentId

@@ -7,8 +7,10 @@ import ru.medals.data.award.model.AwardCol
 import ru.medals.data.user.model.UserAwardsLiteCol
 import ru.medals.data.user.model.UserCol
 
-interface UserProjections {
+interface UserDbProjection {
+
 	companion object {
+
 		val projectUserFieldsWithDepartmentName = project(
 			UserCol::id from UserCol::id,
 			UserCol::email from UserCol::email,

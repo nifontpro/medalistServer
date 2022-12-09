@@ -9,7 +9,7 @@ import ru.medals.domain.auth.model.TokenLife
 import ru.medals.domain.auth.repository.AuthRepository
 import ru.medals.domain.core.util.Constants.LIFE_TIME_ACCESS_TOKEN
 import ru.medals.domain.core.util.Constants.LIFE_TIME_REFRESH_TOKEN
-import ru.medals.domain.core.util.Constants.LIFE_TIME_REGISTER_TOKEN
+import ru.medals.domain.core.util.Constants.LIFE_TIME_REGISTER
 import ru.medals.domain.user.model.User
 import java.util.*
 
@@ -47,7 +47,7 @@ class AuthRepositoryImpl(
 	}
 
 	override fun emailJwtToken(email: String): TokenLife {
-		val expirationDate = System.currentTimeMillis() + LIFE_TIME_REGISTER_TOKEN
+		val expirationDate = System.currentTimeMillis() + LIFE_TIME_REGISTER
 		val token = JWT.create()
 			.withAudience(audience)
 			.withIssuer(issuer)

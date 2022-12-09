@@ -6,7 +6,7 @@ import ru.medals.domain.register.bussines.context.RegisterContext
 import ru.otus.cor.ICorChainDsl
 import ru.otus.cor.worker
 
-fun ICorChainDsl<RegisterContext>.sendCodeToUserEmail(title: String) = worker {
+fun ICorChainDsl<RegisterContext>.sendCodeToUserEmailForRegister(title: String) = worker {
 	this.title = title
 	on { state == ContextState.RUNNING }
 	handle {

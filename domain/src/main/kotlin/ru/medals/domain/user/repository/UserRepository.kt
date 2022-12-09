@@ -4,6 +4,7 @@ import ru.medals.domain.core.bussines.model.RepositoryData
 import ru.medals.domain.image.model.FileData
 import ru.medals.domain.user.model.User
 import ru.medals.domain.user.model.UserAwardsLite
+import ru.medals.domain.user.model.UserAwardsUnion
 import ru.medals.domain.user.model.UserMedals
 
 interface UserRepository {
@@ -40,5 +41,5 @@ interface UserRepository {
 	suspend fun updateAwardCount(userId: String, dCount: Int): RepositoryData<Unit>
 	suspend fun calculateAwardCountOfUsers()
 	suspend fun getUsersByCompanyWithAwards(companyId: String, filter: String? = null): RepositoryData<List<UserAwardsLite>>
-	suspend fun getUserByIdWithAwards(userId: String)
+	suspend fun getUserByIdWithAwards(userId: String): RepositoryData<UserAwardsUnion>
 }

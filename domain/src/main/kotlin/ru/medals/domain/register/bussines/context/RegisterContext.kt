@@ -14,7 +14,10 @@ data class RegisterContext(
 	var user: User = User(),
 	var tempReg: TempReg = TempReg(), // Данные временной регистрации
 
+	var email: String? = null,
+	var emailValid: String = "",
 	var code: String = "", // Код подтверждения, высланный на email
+	var expDate: Long = 0, // Время повторной регистрации / восстановления пароля
 	var refreshToken: String = "",
 	var accessToken: String = "",
 
@@ -28,5 +31,6 @@ data class RegisterContext(
 		NONE,
 		TEMP_REGISTER_OWNER,
 		VALID_REGISTER_OWNER,
+		RESET_PASSWORD_EMAIL,
 	}
 }

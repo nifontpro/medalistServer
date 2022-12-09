@@ -9,14 +9,18 @@ fun Route.registerRoutes() {
 
 	val registerProcessor: RegisterProcessor by inject()
 
-	route("register/owner") {
+	route("register") {
 
-		post("temp") {
+		post("owner/temp") {
 			call.registerTempOwner(registerProcessor)
 		}
 
-		post("valid") {
+		post("owner/valid") {
 			call.registerValidOwner(registerProcessor)
+		}
+
+		post("restore") {
+			call.restorePassword(registerProcessor)
 		}
 
 	}

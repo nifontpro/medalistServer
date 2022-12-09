@@ -12,25 +12,25 @@ import ru.medals.domain.register.repository.RegisterRepository
 class RegisterRepositoryImpl(
 	db: CoroutineDatabase
 ) : RegisterRepository {
-	private val tempRegsCol = db.getCollection<TempRegCol>()
+	private val tempRegs = db.getCollection<TempRegCol>()
 
 	/**
 	 * Удаляем устаревшие по времени записи
 	 */
 	private suspend fun clearOldTempReg() {
-		tempRegsCol.deleteMany(filter = TempRegCol::expDate lt System.currentTimeMillis())
+		tempRegs.deleteMany(filter = TempRegCol::expDate lt System.currentTimeMillis())
 	}
 
 	override suspend fun checkTempRegExist(email: String): Boolean {
 		clearOldTempReg()
-		return tempRegsCol.countDocuments(
+		return tempRegs.countDocuments(
 			TempRegCol::email regex Regex("^$email\$", RegexOption.IGNORE_CASE)
 		) > 0
 	}
 
 	override suspend fun createTempReg(tempReg: TempReg): Boolean {
 		return try {
-			tempRegsCol.insertOne(tempReg.toTempRegCol())
+			tempRegs.insertOne(tempReg.toTempRegCol())
 			true
 		} catch (e: Exception) {
 			false
@@ -38,7 +38,7 @@ class RegisterRepositoryImpl(
 	}
 
 	override suspend fun getTempRegByEmail(email: String): TempReg? {
-		return tempRegsCol.findOne(
+		return tempRegs.findOne(
 			TempRegCol::email regex Regex("^$email\$", RegexOption.IGNORE_CASE),
 			TempRegCol::expDate gt System.currentTimeMillis() // >
 		)?.toTempReg()

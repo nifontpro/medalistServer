@@ -11,6 +11,7 @@ import ru.medals.data.di.dataModule
 import ru.medals.data.di.dbModule
 import ru.medals.domain.user.repository.UserRepository
 import ru.medals.s3.di.s3Module
+import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
 @Suppress("NonAsciiCharacters")
@@ -28,8 +29,9 @@ class GetUserWithAwardsUnionTest : KoinTest {
 
 			val userId = "6386238b2741bb167c6c2388"
 
-			userRepository.getUserByIdWithAwards(userId)
-//			println(usersAwards)
+			val usersAwards = userRepository.getUserByIdWithAwards(userId)
+			assertEquals(true, usersAwards.success)
+			println(usersAwards.data)
 
 			stopKoin()
 		}

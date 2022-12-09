@@ -63,10 +63,10 @@ class UserProcessor : IBaseProcessor<UserContext> {
 				getUserByIdFromDb("Получаем сотрудника из БД")
 			}
 
-			operation("Получить сотрудника по id", UserCommand.GET_BY_ID) {
+			operation("Получить сотрудника по id", UserCommand.GET_BY_ID_AWARDS) {
 				validateUserIdEmpty("Проверяем на непустой userId")
 				trimFieldUserIdAndCopyToValid("Очищаем userId")
-				getUserByIdFromDb("Получаем сотрудника из БД")
+				getUserByIdWithAwardsFromDb("Получаем сотрудника с наградами из БД")
 			}
 
 			operation("Получить сотрудника по id с названием отдела", UserCommand.GET_BY_ID_DEP_NAME) {

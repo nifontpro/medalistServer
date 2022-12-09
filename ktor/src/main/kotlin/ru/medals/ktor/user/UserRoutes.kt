@@ -59,6 +59,10 @@ fun Route.userRoutes() {
 			call.getUserByIdWithDepName(userProcessor)
 		}
 
+		post("get_id_awards") {
+			call.getUserByIdWithAwards(userProcessor)
+		}
+
 		/**
 		 * Получить сотрудников отдела
 		 */

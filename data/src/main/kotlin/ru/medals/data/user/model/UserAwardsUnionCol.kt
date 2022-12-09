@@ -7,7 +7,7 @@ import ru.medals.domain.image.model.IImages
 import ru.medals.domain.image.model.ImageRef
 import ru.medals.domain.user.model.Gender
 import ru.medals.domain.user.model.User
-import ru.medals.domain.user.model.UserAwardsLite
+import ru.medals.domain.user.model.UserAwardsUnion
 
 /**
  * Класс сотрудников для вывода со списком наград
@@ -41,7 +41,7 @@ data class UserAwardsUnionCol(
 	val id: String = ObjectId().toString()
 ) : IImages {
 
-	fun toUserAwards() = UserAwardsLite(
+	fun toUserAwardsUnion() = UserAwardsUnion(
 		id = id,
 		email = email,
 		login = login,
@@ -61,6 +61,6 @@ data class UserAwardsUnionCol(
 		score = score,
 		currentScore = currentScore,
 		awardCount = awardCount,
-		awards = awards.map { it.toAwardLite() }
+		awards = awards.map { it.toAwardUnion() }
 	)
 }

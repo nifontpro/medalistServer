@@ -2,8 +2,8 @@ package ru.medals.data.award.model
 
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
-import ru.medals.domain.award.model.AwardLite
 import ru.medals.domain.award.model.AwardState
+import ru.medals.domain.award.model.AwardUnion
 import ru.medals.domain.image.model.IImages
 import ru.medals.domain.image.model.ImageRef
 import java.util.*
@@ -31,11 +31,30 @@ data class AwardUnionCol(
 
 	@BsonId
 	val id: String = ObjectId().toString()
-): IImages {
+) : IImages {
 
-	fun toAwardLite() = AwardLite(
+	fun toAwardUnion() = AwardUnion(
 		name = name,
+		description = description,
+		criteria = criteria,
+		startDate = startDate?.time,
+		endDate = endDate?.time,
+		awardState = getAwardState(startDate, endDate),
+		score = score,
+		companyId = companyId,
+
 		imageUrl = imageUrl,
+		imageKey = imageKey,
+		images = images,
+
+		// from user relate
+		userId = userId,
+		userState = state,
+		nomineeDate = nomineeDate,
+		awardDate = awardDate,
+		nomineeUserId = nomineeUserId,
+		awardUserId = awardUserId,
+
 		id = id
 	)
 }

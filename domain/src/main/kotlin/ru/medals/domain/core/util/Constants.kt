@@ -7,7 +7,7 @@ object Constants {
 	/*    const val DEFAULT_PAGE_SIZE = 15
 			const val DEFAULT_ACTIVITY_PAGE_SIZE = 15*/
 
-	const val LIFE_TIME_REGISTER_TOKEN = 60 * 5 * 1000L // 5 min
+	const val LIFE_TIME_REGISTER = 60 * 5 * 1000L // 5 min
 	const val LIFE_TIME_REFRESH_TOKEN = 30 * 24 * 60 * 60 * 1000L // 30 day
 //	const val LIFE_TIME_ACCESS_TOKEN = 30 * 60 * 1000L // 30 min
 	const val LIFE_TIME_ACCESS_TOKEN = 7 * 24 * 60 * 60 * 1000L // 7 day (dev)
