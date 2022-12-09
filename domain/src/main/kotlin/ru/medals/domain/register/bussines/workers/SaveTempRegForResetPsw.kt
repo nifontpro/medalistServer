@@ -19,6 +19,7 @@ fun ICorChainDsl<RegisterContext>.saveTempRegForResetPsw(title: String) = worker
 			expDate = System.currentTimeMillis() + Constants.LIFE_TIME_REGISTER
 			registerRepository.createTempReg(
 				TempReg(
+					userId = user.id,
 					email = emailValid,
 					code = code,
 					expDate = expDate

@@ -5,27 +5,30 @@ import org.bson.types.ObjectId
 import ru.medals.domain.register.model.TempReg
 
 data class TempRegCol(
-	val name: String,
-	val login: String,
-	val email: String,
-	val hashPassword: String,
-	val code: String,
-	val expDate: Long,
+	val userId: String? = null,
+	val name: String? = null,
+	val login: String? = null,
+	val email: String? = null,
+	val hashPassword: String? = null,
+	val code: String? = null,
+	val expDate: Long? = null,
 
 	@BsonId
 	val id: String = ObjectId().toString(),
 ) {
 	fun toTempReg() = TempReg(
-		name = name,
-		login = login,
-		email = email,
-		hashPassword = hashPassword,
-		code = code,
-		expDate = expDate
+		userId = userId ?: "",
+		name = name ?: "",
+		login = login ?: "",
+		email = email ?: "",
+		hashPassword = hashPassword ?: " ",
+		code = code ?: "",
+		expDate = expDate ?: -1
 	)
 }
 
 fun TempReg.toTempRegCol() = TempRegCol(
+	userId = userId,
 	name = name,
 	login = login,
 	email = email,

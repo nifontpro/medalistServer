@@ -42,7 +42,7 @@ fun getUserByIdWithAwardsDbRequest(userId: String) =
 				}},
 											
 				{$Project: {
-					awards: 1, email: 1, login: 1, name: 1, patronymic: 1, role: 1, bio: 1, post: 1, phone: 1, gender: 1, description: 1, companyId: 1, departmentId: 1, awardCount: 1,
+					awards: 1, email: 1, login: 1, name: 1, lastname: 1, patronymic: 1, role: 1, bio: 1, post: 1, phone: 1, gender: 1, description: 1, companyId: 1, departmentId: 1, awardCount: 1, imageUrl: 1, imageKey:1,
           departmentName: '${'$'}department.name'					
 				}},											
 		]"""

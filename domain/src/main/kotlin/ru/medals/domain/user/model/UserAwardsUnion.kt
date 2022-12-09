@@ -14,6 +14,7 @@ data class UserAwardsUnion(
 	val post: String? = null,
 	val phone: String? = null,
 	val gender: Gender? = null,
+	val description: String? = null,
 	val companyId: String? = null,
 	val departmentId: String? = null,
 	val score: Int? = null,
