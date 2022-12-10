@@ -5,6 +5,7 @@ import ru.medals.domain.register.bussines.context.RegisterContext
 import ru.medals.domain.user.model.User
 import ru.medals.ktor.register.model.request.CreateTempOwnerRequest
 import ru.medals.ktor.register.model.request.CreateValidOwnerRequest
+import ru.medals.ktor.register.model.request.ResetPasswordRequest
 import ru.medals.ktor.register.model.request.RestorePasswordRequest
 
 private val log = KotlinLogging.logger {}
@@ -30,6 +31,15 @@ fun RegisterContext.fromTransport(request: CreateValidOwnerRequest) {
 }
 
 fun RegisterContext.fromTransport(request: RestorePasswordRequest) {
-	command = RegisterContext.Command.RESET_PASSWORD_EMAIL
+	command = RegisterContext.Command.RESTORE_PASSWORD_EMAIL
 	email = request.email
+}
+
+fun RegisterContext.fromTransport(request: ResetPasswordRequest) {
+	command = RegisterContext.Command.RESET_PASSWORD
+	code = request.code ?: ""
+	user = User(
+		id = request.userId ?: "",
+		hashPassword = request.password
+	)
 }

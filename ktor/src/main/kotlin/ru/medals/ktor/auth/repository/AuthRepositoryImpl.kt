@@ -57,6 +57,7 @@ class AuthRepositoryImpl(
 			.sign(algorithm)
 		return TokenLife(token = token, expirationDate = expirationDate)
 	}
+
 	/**
 	 * Настройка почты:
 	 * https://mail.yandex.ru/?uid=1707294862#setup/client

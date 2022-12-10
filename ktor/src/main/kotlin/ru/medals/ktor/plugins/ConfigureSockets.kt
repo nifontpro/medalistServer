@@ -1,26 +1,14 @@
 package ru.medals.ktor.plugins
 
-import com.auth0.jwt.JWTVerifier
-import io.ktor.server.application.*
-import io.ktor.server.routing.*
-import io.ktor.server.websocket.*
-import io.ktor.websocket.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import org.koin.ktor.ext.inject
-import ru.medals.ktor.auth.repository.AuthVerify
-import java.time.Duration
-import java.util.*
-
-fun emitFlow(): Flow<String> = flow {
+/*fun emitFlow(): Flow<String> = flow {
 	var x = 0
 	while (true) {
 		x++
 		emit("--- Message $x")
 		delay(3000)
 	}
-}
+}*/
+/*
 
 // https://github.com/auth0/java-jwt
 fun Application.configureSockets() {
@@ -78,4 +66,4 @@ fun Application.configureSockets() {
 		}
 //		}
 	}
-}
+}*/

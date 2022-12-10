@@ -10,6 +10,7 @@ import ru.medals.ktor.register.mappers.toTransportAuthResponse
 import ru.medals.ktor.register.mappers.toTransportExpDate
 import ru.medals.ktor.register.model.request.CreateTempOwnerRequest
 import ru.medals.ktor.register.model.request.CreateValidOwnerRequest
+import ru.medals.ktor.register.model.request.ResetPasswordRequest
 import ru.medals.ktor.register.model.request.RestorePasswordRequest
 
 suspend fun ApplicationCall.registerTempOwner(processor: RegisterProcessor) =
@@ -31,4 +32,10 @@ suspend fun ApplicationCall.restorePassword(processor: RegisterProcessor) =
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
 		toTransport = { toTransportExpDate() }
+	)
+
+suspend fun ApplicationCall.resetPassword(processor: RegisterProcessor) =
+	process<ResetPasswordRequest, Unit, RegisterContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
 	)

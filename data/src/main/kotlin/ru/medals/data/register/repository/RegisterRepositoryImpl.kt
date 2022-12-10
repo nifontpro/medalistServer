@@ -1,9 +1,7 @@
 package ru.medals.data.register.repository
 
+import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineDatabase
-import org.litote.kmongo.gt
-import org.litote.kmongo.lt
-import org.litote.kmongo.regex
 import ru.medals.data.register.model.TempRegCol
 import ru.medals.data.register.model.toTempRegCol
 import ru.medals.domain.register.model.TempReg
@@ -42,6 +40,16 @@ class RegisterRepositoryImpl(
 			TempRegCol::email regex Regex("^$email\$", RegexOption.IGNORE_CASE),
 			TempRegCol::expDate gt System.currentTimeMillis() // >
 		)?.toTempReg()
+	}
+
+	override suspend fun verifyTempRegByCodeAndUserId(code: String, userId: String): Boolean {
+		return tempRegs.countDocuments(
+			and(
+				TempRegCol::userId eq userId,
+				TempRegCol::code eq code,
+				TempRegCol::expDate gt System.currentTimeMillis() // >
+			)
+		) > 0
 	}
 
 }

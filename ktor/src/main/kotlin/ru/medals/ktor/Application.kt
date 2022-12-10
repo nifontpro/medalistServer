@@ -15,7 +15,7 @@ fun Application.module() {
 	configureSerialization()
 	configureSecurity()
 	configureRouting()
-	configureSockets()
+//	configureSockets()
 	configureMonitoring()
 
 	log.info("START KTOR")

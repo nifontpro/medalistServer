@@ -19,8 +19,19 @@ fun Route.registerRoutes() {
 			call.registerValidOwner(registerProcessor)
 		}
 
-		post("restore") {
+		/**
+		 * Запрос на сброс пароля с отправкой на почту ссылки для сброса
+		 */
+		post("psw/restore") {
 			call.restorePassword(registerProcessor)
+		}
+
+		/**
+		 * Сброс пароля по коду, полученному из письма
+		 * (Код и id сотрудника отправляет фронтенд, извлекая их из ссылки)
+		 */
+		post("psw/reset") {
+			call.resetPassword(registerProcessor)
 		}
 
 	}

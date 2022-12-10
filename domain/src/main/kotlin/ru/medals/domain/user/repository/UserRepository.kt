@@ -42,4 +42,5 @@ interface UserRepository {
 	suspend fun calculateAwardCountOfUsers()
 	suspend fun getUsersByCompanyWithAwards(companyId: String, filter: String? = null): RepositoryData<List<UserAwardsLite>>
 	suspend fun getUserByIdWithAwards(userId: String): RepositoryData<UserAwardsUnion>
+	suspend fun verifyUserByIdExist(userId: String): Boolean
 }

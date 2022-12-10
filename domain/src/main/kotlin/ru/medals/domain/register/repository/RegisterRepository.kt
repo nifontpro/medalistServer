@@ -6,4 +6,5 @@ interface RegisterRepository {
     suspend fun createTempReg(tempReg: TempReg): Boolean
     suspend fun getTempRegByEmail(email: String): TempReg?
     suspend fun checkTempRegExist(email: String): Boolean
+	suspend fun verifyTempRegByCodeAndUserId(code: String, userId: String): Boolean
 }

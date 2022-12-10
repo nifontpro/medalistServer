@@ -41,13 +41,24 @@ class RegisterProcessor : IBaseProcessor<RegisterContext> {
 				generateTokens("Генерируем токены")
 			}
 
-			operation("Сброс пароля по email", RegisterContext.Command.RESET_PASSWORD_EMAIL) {
+			operation("Восстановление пароля по email", RegisterContext.Command.RESTORE_PASSWORD_EMAIL) {
 				validateEmailEmpty("Проверка, не пустой ли email")
 				trimFieldEmailAndCopyToValid("Очищаем email")
 				getUserByEmailDb("Получаем сотрудника по email")
 				validateTempRegRestorePswExist("Проверка, есть ли запись о сбросе пароля в БД (возможен ли повторный сброс)")
 				sendCodeToUserEmailForRestore("Отправка письма со ссылкой")
 				saveTempRegForResetPsw("Записываем данные для сброса пароля")
+			}
+
+			operation("Сброс пароля по email", RegisterContext.Command.RESET_PASSWORD) {
+				validateUserIdEmpty("Проверяем userId")
+				validateUserPasswordEmpty("Проверка, не пустой ли password")
+				validateRegCodeEmpty("Проверка, не пустой ли код подтверждения")
+				trimFieldCode("Очищаем код подтверждения")
+				trimFieldUser("Очищаем поля сотрудника")
+				validateTempRegCodeAndUserId("Проверка данных сброса на совпадение")
+				validateUserWithIdNotExist("Проверка наличия сотрудника")
+
 			}
 
 			finishOperation()

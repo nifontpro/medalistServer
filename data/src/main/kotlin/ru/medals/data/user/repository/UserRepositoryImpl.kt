@@ -153,6 +153,10 @@ class UserRepositoryImpl(
 		)?.toUser(clearHashPassword = false)
 	}
 
+	override suspend fun verifyUserByIdExist(userId: String): Boolean {
+		return users.countDocuments(UserCol::id eq userId) > 0
+	}
+
 	override suspend fun verifyUserByEmailExist(email: String): Boolean {
 		return users.countDocuments(
 			UserCol::email regex Regex("^$email\$", RegexOption.IGNORE_CASE),

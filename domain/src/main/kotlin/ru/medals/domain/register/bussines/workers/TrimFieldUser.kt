@@ -10,6 +10,7 @@ fun ICorChainDsl<RegisterContext>.trimFieldUser(title: String) = worker {
 	on { state == ContextState.RUNNING }
 	handle {
 		user = user.copy(
+			id = user.id.trim(),
 			login = user.login?.trim(),
 			hashPassword = user.hashPassword?.trim(),
 			email = user.email?.trim(),
