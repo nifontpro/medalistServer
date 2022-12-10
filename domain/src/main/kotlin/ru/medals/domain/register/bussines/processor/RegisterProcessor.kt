@@ -51,7 +51,7 @@ class RegisterProcessor : IBaseProcessor<RegisterContext> {
 			}
 
 			operation("Сброс пароля по email", RegisterContext.Command.RESET_PASSWORD) {
-				validateUserIdEmpty("Проверяем userId")
+				validateUserIdEmpty("Проверка, не пустой ли userId")
 				validateUserPasswordEmpty("Проверка, не пустой ли password")
 				validateRegCodeEmpty("Проверка, не пустой ли код подтверждения")
 				trimFieldCode("Очищаем код подтверждения")
