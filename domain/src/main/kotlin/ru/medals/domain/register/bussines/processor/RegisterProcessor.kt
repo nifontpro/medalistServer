@@ -58,7 +58,7 @@ class RegisterProcessor : IBaseProcessor<RegisterContext> {
 				trimFieldUser("Очищаем поля сотрудника")
 				validateTempRegCodeAndUserId("Проверка данных сброса на совпадение")
 				validateUserWithIdNotExist("Проверка наличия сотрудника")
-
+				resetUserPassword("Переустанавливаем пароль на новый")
 			}
 
 			finishOperation()

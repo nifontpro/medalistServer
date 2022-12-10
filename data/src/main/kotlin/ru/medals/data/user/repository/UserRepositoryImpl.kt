@@ -227,7 +227,19 @@ class UserRepositoryImpl(
 					UserCol::phone setTo user.phone,
 					UserCol::gender setTo user.gender,
 					UserCol::description setTo user.description,
+					UserCol::hashPassword setTo user.hashPassword
 				)
+			).wasAcknowledged()
+		} catch (e: Exception) {
+			false
+		}
+	}
+
+	override suspend fun updateHashPassword(userId: String, hashPassword: String): Boolean {
+		return try {
+			users.updateOneById(
+				id = userId,
+				update = setValue(property = UserCol::hashPassword, value = hashPassword)
 			).wasAcknowledged()
 		} catch (e: Exception) {
 			false

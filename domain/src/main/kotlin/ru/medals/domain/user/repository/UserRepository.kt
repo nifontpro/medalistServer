@@ -43,4 +43,5 @@ interface UserRepository {
 	suspend fun getUsersByCompanyWithAwards(companyId: String, filter: String? = null): RepositoryData<List<UserAwardsLite>>
 	suspend fun getUserByIdWithAwards(userId: String): RepositoryData<UserAwardsUnion>
 	suspend fun verifyUserByIdExist(userId: String): Boolean
+	suspend fun updateHashPassword(userId: String, hashPassword: String): Boolean
 }
