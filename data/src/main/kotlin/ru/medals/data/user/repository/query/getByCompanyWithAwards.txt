@@ -1,0 +1,104 @@
+db.userCol.aggregate([
+    {
+        $match: {
+            $and: [
+                {companyId: {$eq: '63641544e81cbd0b5c5a8412'}},
+                {
+                    $or: [
+                        {name: {$regex: 'Ар'}},
+                        {lastname: {$regex: ''}}
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        $lookup: {
+            from: 'awardCol',
+            localField: '_id',
+            foreignField: 'relations.userId',
+            let: {relations: '$relations', uid: '$_id'},
+            pipeline: [{
+                $project: {
+                    _id: 1,
+                    companyId: 1,
+                    name: 1,
+                    description: 1,
+                    criteria: 1,
+                    startDate: 1,
+                    endDate: 1,
+                    imageUrl: 1,
+                    relations: {
+                        $filter: {input: '$relations', as: 'rel', cond: {$eq: ['$$rel.userId', '$$uid']}}
+                    }
+                }
+            }, {$unwind: '$relations'},
+                {
+                    $replaceRoot: {
+                        newRoot: {
+                            $mergeObjects: [
+                                {
+                                    _id: '$_id',
+                                    companyId: '$companyId',
+                                    name: '$name',
+                                    description: '$description',
+                                    imageUrl: '$imageUrl',
+                                    startDate: '$startDate',
+                                    endDate: '$endDate'
+                                }, '$relations'
+                            ]
+                        }
+                    }
+                },
+            ],
+            as: 'awards'
+        }
+    },
+
+    {
+        $lookup: {
+            from: "departmentCol",
+            localField: "departmentId",
+            foreignField: "_id",
+            as: 'department'
+        }
+    },
+
+    {
+        $unwind: {
+            path: '$department',
+            preserveNullAndEmptyArrays: true
+        }
+    },
+
+    {
+        $project: {
+            awards: 1,
+            email: 1,
+            login: 1,
+            name: 1,
+            lastname: 1,
+            patronymic: 1,
+            role: 1,
+            bio: 1,
+            post: 1,
+            phone: 1,
+            gender: 1,
+            description: 1,
+            companyId: 1,
+            departmentId: 1,
+            imageUrl: 1,
+            imageKey: 1,
+            departmentName: '$department.name',
+            awardCount: {
+                $size: {
+                    $filter:
+                        {input: '$awards', as: 'awards', cond: {$eq: ['$$awards.state', 'AWARD']}}
+                }
+            }
+        }
+    },
+
+    {$sort: {awardCount: -1, lastname: 1}}
+
+])

@@ -1,11 +1,11 @@
-package ru.medals.data.user.repository
+package ru.medals.data.user.repository.query
 
 import ru.medals.data.core.*
 
 //fields:
 private const val RELATIONS = "\$relations"
 
-fun getUserByIdWithAwardsDbRequest(userId: String) =
+fun getUserByIdWithAwardsQuery(userId: String) =
 	"""[
 				{$Match: {'_id': '$userId'}},
 				

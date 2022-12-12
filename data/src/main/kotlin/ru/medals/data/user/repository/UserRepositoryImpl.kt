@@ -11,6 +11,7 @@ import ru.medals.data.user.model.*
 import ru.medals.data.user.repository.UserDbProjection.Companion.projectUserFieldsWithDepNameAndAwards
 import ru.medals.data.user.repository.UserDbProjection.Companion.projectUserFieldsWithDepartmentName
 import ru.medals.data.user.repository.UserDbProjection.Companion.sortByAwardCountAndLastName
+import ru.medals.data.user.repository.query.getUserByIdWithAwardsQuery
 import ru.medals.domain.core.bussines.model.RepositoryData
 import ru.medals.domain.image.model.FileData
 import ru.medals.domain.image.model.ImageRef
@@ -61,7 +62,7 @@ class UserRepositoryImpl(
 	override suspend fun getUserByIdWithAwards(userId: String): RepositoryData<UserAwardsUnion> {
 		return try {
 			val userAwards = users.aggregate<UserAwardsUnionCol>(
-				getUserByIdWithAwardsDbRequest(userId = userId)
+				getUserByIdWithAwardsQuery(userId = userId)
 			).first()?.toUserAwardsUnion()
 			RepositoryData.success(data = userAwards)
 		} catch (e: Exception) {
