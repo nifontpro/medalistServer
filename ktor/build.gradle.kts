@@ -181,7 +181,7 @@ task("docker") {
 }
 
 val remoteUrl = "nmedalist.ru"
-val patchKey = "d:/deploy/reg/medalist/remotekey"
+val patchKey = "d:/deploy/serverkey"
 
 task("remote-docker") {
 	dependsOn("clean", "shadowJar")

@@ -24,6 +24,14 @@ interface AwardRepoErrors {
 			)
 		)
 
+		fun errorAwardDeleteContainsUser() = RepositoryData.error(
+			error = RepositoryError(
+				repository = REPO,
+				violationCode = "not found",
+				description = "Удаление награды невозможно, так как ею награждены сотрудники"
+			)
+		)
+
 		fun errorAwardDelete() = RepositoryData.error(
 			error = RepositoryError(
 				repository = REPO,

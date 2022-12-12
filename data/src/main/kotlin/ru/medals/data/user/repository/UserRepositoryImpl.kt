@@ -11,7 +11,6 @@ import ru.medals.data.user.model.*
 import ru.medals.data.user.repository.UserDbProjection.Companion.projectUserFieldsWithDepNameAndAwards
 import ru.medals.data.user.repository.UserDbProjection.Companion.projectUserFieldsWithDepartmentName
 import ru.medals.data.user.repository.UserDbProjection.Companion.sortByAwardCountAndLastName
-import ru.medals.domain.award.repository.AwardRepository
 import ru.medals.domain.core.bussines.model.RepositoryData
 import ru.medals.domain.image.model.FileData
 import ru.medals.domain.image.model.ImageRef
@@ -28,7 +27,6 @@ import java.util.*
 class UserRepositoryImpl(
 	db: CoroutineDatabase,
 	private val s3repository: S3Repository,
-	private val awardRepository: AwardRepository
 ) : UserRepository {
 
 	private val users = db.getCollection<UserCol>()
@@ -324,10 +322,11 @@ class UserRepositoryImpl(
 	override suspend fun calculateAwardCountOfUsers() {
 		val allUsers = users.find().toList()
 		allUsers.forEach { user ->
-			val awardCount = awardRepository.calculateAwardCountOfUser(userId = user.id)
+			val res = getUserByIdWithAwards(userId = user.id)
+			val awardCount = if (res.success) res.data?.awardCount ?: 0 else 0
 			users.updateOneById(
 				id = user.id,
-				update = set(UserCol::awardCount setTo awardCount.toInt())
+				update = set(UserCol::awardCount setTo awardCount)
 			)
 			println("User id: ${user.id}: ${user.lastname} ${user.name} ${user.patronymic} - $awardCount")
 		}

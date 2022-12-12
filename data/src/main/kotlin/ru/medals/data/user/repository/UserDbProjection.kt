@@ -56,7 +56,22 @@ interface UserDbProjection {
 			UserAwardsLiteCol::awards / AwardCol::companyId from 1,
 			UserAwardsLiteCol::awards / AwardCol::startDate from 1,
 			UserAwardsLiteCol::awards / AwardCol::endDate from 1,
+
+//			UserAwardsLiteCol::awardCount from Projections.computed(
+//				"\$size",
+//				Projections.computed(
+//					"\$filter", fields(
+//						Projections.computed("input", "\$awards"),
+//						Projections.computed("as", "awards"),
+//						Projections.computed(
+//							"cond",
+//							Projections.computed("\$eq", listOf("\$\$awards.state", "NOMINEE"))
+//						)
+//					)
+//				)
+//			)
 		)
+
 
 		val sortByAwardCountAndLastName = sort(
 			BsonDocument()

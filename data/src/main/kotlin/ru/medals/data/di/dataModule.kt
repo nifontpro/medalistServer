@@ -39,7 +39,7 @@ val dataModule = module {
 	}
 
 	single<UserRepository> {
-		UserRepositoryImpl(db = get(), s3repository = get(), awardRepository = get())
+		UserRepositoryImpl(db = get(), s3repository = get())
 	}
 
 	single<MessageRepository> {

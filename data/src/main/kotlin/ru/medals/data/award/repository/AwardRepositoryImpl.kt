@@ -8,6 +8,7 @@ import ru.medals.data.award.model.AwardUsersCol
 import ru.medals.data.award.model.toAwardColCreate
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardCreate
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardDelete
+import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardDeleteContainsUser
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardNotFound
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardUpdate
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardUser
@@ -39,6 +40,7 @@ class AwardRepositoryImpl(
 
 	override suspend fun delete(id: String): RepositoryData<Award> {
 		val awardCol = awards.findOneById(id) ?: return errorAwardNotFound()
+		if (awardCol.relations.isNotEmpty()) return errorAwardDeleteContainsUser()
 		return if (awards.deleteOneById(id).wasAcknowledged()) {
 			RepositoryData.success(data = awardCol.toAward())
 		} else {
@@ -177,19 +179,6 @@ class AwardRepositoryImpl(
 		} catch (e: Exception) {
 			errorAwardUserDelete()
 		}
-	}
-
-	/**
-	 * Посчитать количество наград у сотрудника
-	 */
-	override suspend fun calculateAwardCountOfUser(userId: String): Long {
-
-		return awards.countDocuments(
-			and(
-				AwardCol::relations / AwardRelate::userId eq userId,
-				AwardCol::relations / AwardRelate::state eq AwardState.AWARD
-			)
-		)
 	}
 
 	/**
