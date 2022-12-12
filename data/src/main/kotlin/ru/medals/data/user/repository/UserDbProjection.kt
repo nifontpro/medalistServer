@@ -53,7 +53,9 @@ interface UserDbProjection {
 
 			UserAwardsLiteCol::awards / AwardCol::name from 1,
 			UserAwardsLiteCol::awards / AwardCol::imageUrl from 1,
-			UserAwardsLiteCol::awards / AwardCol::companyId from 1
+			UserAwardsLiteCol::awards / AwardCol::companyId from 1,
+			UserAwardsLiteCol::awards / AwardCol::startDate from 1,
+			UserAwardsLiteCol::awards / AwardCol::endDate from 1,
 		)
 
 		val sortByAwardCountAndLastName = sort(

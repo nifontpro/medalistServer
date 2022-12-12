@@ -39,7 +39,7 @@ data class AwardUnionCol(
 		criteria = criteria,
 		startDate = startDate?.time,
 		endDate = endDate?.time,
-		awardState = getAwardState(startDate, endDate),
+		awardState = calcAwardState(startDate, endDate),
 		score = score,
 		companyId = companyId,
 

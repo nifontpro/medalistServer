@@ -184,7 +184,7 @@ val remoteUrl = "nmedalist.ru"
 val patchKey = "d:/deploy/reg/medalist/remotekey"
 
 task("remote-docker") {
-	dependsOn(/*"clean", */"shadowJar")
+	dependsOn("clean", "shadowJar")
 	ant.withGroovyBuilder {
 		doLast {
 			val knownHosts = File.createTempFile("knownhosts", "txt")
@@ -216,7 +216,7 @@ task("remote-docker") {
 }
 
 task("remote-deploy") {
-	dependsOn(/*"clean", */"shadowJar")
+	dependsOn("clean", "shadowJar")
 	ant.withGroovyBuilder {
 		doLast {
 			val knownHosts = File.createTempFile("knownhosts", "txt")

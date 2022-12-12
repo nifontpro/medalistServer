@@ -36,7 +36,7 @@ data class AwardCol(
             criteria = criteria,
             startDate = startDate?.time,
             endDate = endDate?.time,
-            state = getAwardState(startDate, endDate),
+            state = calcAwardState(startDate, endDate),
             score = score,
             companyId = companyId,
             relations = relations,
@@ -63,7 +63,7 @@ fun Award.toAwardColCreate() = AwardCol(
 /**
  * Определение состояния награды в зависимости от времени
  */
-fun getAwardState(startDate: Date?, endDate: Date?): AwardState {
+fun calcAwardState(startDate: Date?, endDate: Date?): AwardState {
     val startTime = startDate?.time
     val endTime = endDate?.time
     val now = System.currentTimeMillis()

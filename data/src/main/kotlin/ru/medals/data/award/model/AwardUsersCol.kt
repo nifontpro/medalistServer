@@ -37,7 +37,7 @@ data class AwardUsersCol(
 		criteria = criteria,
 		startDate = startDate?.time,
 		endDate = endDate?.time,
-		state = getAwardState(startDate, endDate),
+		state = calcAwardState(startDate, endDate),
 		companyId = companyId,
 		score = score,
 
