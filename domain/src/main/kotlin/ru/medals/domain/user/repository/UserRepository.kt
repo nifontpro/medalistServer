@@ -40,7 +40,16 @@ interface UserRepository {
 	suspend fun getUserByIdWithDepartmentName(id: String): User?
 	suspend fun updateAwardCount(userId: String, dCount: Int): RepositoryData<Unit>
 	suspend fun calculateAwardCountOfUsers()
-	suspend fun getUsersByCompanyWithAwards(companyId: String, filter: String? = null): RepositoryData<List<UserAwardsLite>>
+	suspend fun getUsersByCompanyWithAwards(
+		companyId: String,
+		filter: String? = null
+	): RepositoryData<List<UserAwardsLite>>
+
+	suspend fun getUsersByCompanyWithAwardsUnion(
+		companyId: String,
+		filter: String? = ""
+	): RepositoryData<List<UserAwardsUnion>>
+
 	suspend fun getUserByIdWithAwards(userId: String): RepositoryData<UserAwardsUnion>
 	suspend fun verifyUserByIdExist(userId: String): Boolean
 	suspend fun updateHashPassword(userId: String, hashPassword: String): Boolean

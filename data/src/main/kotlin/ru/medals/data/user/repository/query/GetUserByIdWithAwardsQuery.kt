@@ -3,7 +3,8 @@ package ru.medals.data.user.repository.query
 import ru.medals.data.core.*
 
 //fields:
-private const val RELATIONS = "\$relations"
+@Suppress("ConstPropertyName")
+private const val Relations = "\$relations"
 
 fun getUserByIdWithAwardsQuery(userId: String) =
 	"""[
@@ -13,16 +14,16 @@ fun getUserByIdWithAwardsQuery(userId: String) =
 				from: 'awardCol',
 				  localField: '_id',
 				  foreignField: 'relations.userId',
-				  let: {relations: '$RELATIONS'},
+				  let: {relations: '$Relations'},
 				  pipeline: [
 				    {$Project: {_id:1, companyId:1, name:1, description:1, criteria:1, startDate:1, endDate:1, imageUrl:1,
-				      relations: {$Filter: {input: '$RELATIONS', as: 'rel', cond: {$Eq: ['${"$$"}rel.userId', '$userId']} }}
+				      relations: {$Filter: {input: '$Relations', as: 'rel', cond: {$Eq: ['${"$$"}rel.userId', '$userId']} }}
 				    }},
-				    {$Unwind: '$RELATIONS'},
+				    {$Unwind: '$Relations'},
 				    {$ReplaceRoot : {newRoot: {$MergeObjects: 
 				      [
 								{_id: '${'$'}_id', companyId: '${'$'}companyId', name: '${'$'}name', description: '${'$'}description', 
-								imageUrl: '${'$'}imageUrl', startDate: '${'$'}startDate', endDate: '${'$'}endDate'}, '$RELATIONS'
+								imageUrl: '${'$'}imageUrl', startDate: '${'$'}startDate', endDate: '${'$'}endDate'}, '$Relations'
 				      ]
 				    }}},
 				  ],
@@ -50,23 +51,4 @@ fun getUserByIdWithAwardsQuery(userId: String) =
 						}
 					}
 				}},											
-		]"""
-
-/*
-const val asd ="""
-{
-  from: 'awardCol',
-  localField: '_id',
-  foreignField: 'relations.userId',
-  let: {relations: '$relations', uid: '$_id'},
-  pipeline: [
-    {$project: {_id:1, companyId:1, name:1, description:1, criteria:1, startDate:1, endDate:1, imageUrl:1,
-      relations: {$filter:
-        {input: '$relations', as: 'rel', cond: {$eq: ['${'$'}$rel.userId', '${'$'}$uid']} }
-      }
-    }},
-    {$unwind: '$relations'}
-  ],
-  as: 'awards'
-}
-"""*/
+		]""".trimIndent()

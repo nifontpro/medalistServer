@@ -11,5 +11,7 @@ fun UserContext.toTransportGetUserAwards(): UserAwardsUnion = userAwards
 
 fun UserContext.toTransportGetUsers(): List<User> = users
 
-fun UserContext.toTransportGetUsersAwards(): List<UserAwardsLite> = usersAwards
+fun UserContext.toTransportGetUsersAwardsLite(): List<UserAwardsLite> = usersAwardsLite
+
+fun UserContext.toTransportGetUsersAwardsUnion(): List<UserAwardsUnion> = usersAwardsUnion
 

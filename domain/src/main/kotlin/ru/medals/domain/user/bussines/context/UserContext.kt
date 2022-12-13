@@ -15,9 +15,10 @@ data class UserContext(
 	var userAwards: UserAwardsUnion = UserAwardsUnion(),
 
 	val users: MutableList<User> = mutableListOf(),
-	var usersAwards: List<UserAwardsLite> = emptyList()
+	var usersAwardsLite: List<UserAwardsLite> = emptyList(),
+	var usersAwardsUnion: List<UserAwardsUnion> = emptyList(),
 
-) : BaseContext(command = UserCommand.NONE) {
+	) : BaseContext(command = UserCommand.NONE) {
 
 	val userRepository: UserRepository by inject(UserRepository::class.java)
 	val companyRepository: CompanyRepository by inject(CompanyRepository::class.java)
@@ -33,6 +34,7 @@ enum class UserCommand : IBaseCommand {
 	GET_BY_COMPANY,
 	GET_BY_COMPANY_DEP_NAME,
 	GET_WITH_AWARDS,
+	GET_WITH_AWARDS_FULL,
 	GET_BOSSES,
 	GET_BEST,
 	UPDATE,

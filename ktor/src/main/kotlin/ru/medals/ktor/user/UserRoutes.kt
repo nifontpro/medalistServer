@@ -85,6 +85,10 @@ fun Route.userRoutes() {
 			call.getUsersWithAwards(userProcessor)
 		}
 
+		post("get_awards_full") {
+			call.getUsersWithAwardsFull(userProcessor)
+		}
+
 		/**
 		 * Получить лучших сотрудников компании
 		 */

@@ -6,13 +6,13 @@ import ru.medals.domain.user.bussines.context.UserContext
 import ru.otus.cor.ICorChainDsl
 import ru.otus.cor.worker
 
-fun ICorChainDsl<UserContext>.getUsersByCompanyWithAwardsDb(title: String) =
+fun ICorChainDsl<UserContext>.getUsersByCompanyWithAwardsFullDb(title: String) =
 	worker {
 		this.title = title
 		on { state == ContextState.RUNNING }
 		handle {
-			usersAwardsLite = checkRepositoryData {
-				userRepository.getUsersByCompanyWithAwards(companyId = companyIdValid, filter = searchFilter)
+			usersAwardsUnion = checkRepositoryData {
+				userRepository.getUsersByCompanyWithAwardsUnion(companyId = companyIdValid, filter = searchFilter)
 			} ?: return@handle
 		}
 	}

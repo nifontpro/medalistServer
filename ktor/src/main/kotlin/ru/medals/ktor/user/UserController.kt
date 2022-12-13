@@ -77,7 +77,14 @@ suspend fun ApplicationCall.getUsersWithAwards(processor: UserProcessor) =
 	process<GetUsersWithAwardsRequest, List<UserAwardsLite>, UserContext>(
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
-		toTransport = { toTransportGetUsersAwards() }
+		toTransport = { toTransportGetUsersAwardsLite() }
+	)
+
+suspend fun ApplicationCall.getUsersWithAwardsFull(processor: UserProcessor) =
+	process<GetUsersWithAwardsFullRequest, List<UserAwardsUnion>, UserContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetUsersAwardsUnion() }
 	)
 
 suspend fun ApplicationCall.getBestUsersByCompany(processor: UserProcessor) =

@@ -12,6 +12,7 @@ import ru.medals.data.user.repository.UserDbProjection.Companion.projectUserFiel
 import ru.medals.data.user.repository.UserDbProjection.Companion.projectUserFieldsWithDepartmentName
 import ru.medals.data.user.repository.UserDbProjection.Companion.sortByAwardCountAndLastName
 import ru.medals.data.user.repository.query.getUserByIdWithAwardsQuery
+import ru.medals.data.user.repository.query.getUsersByCompanyWithAwardsQuery
 import ru.medals.domain.core.bussines.model.RepositoryData
 import ru.medals.domain.image.model.FileData
 import ru.medals.domain.image.model.ImageRef
@@ -117,6 +118,24 @@ class UserRepositoryImpl(
 				projectUserFieldsWithDepNameAndAwards,
 				sortByAwardCountAndLastName,
 			).toList().map { it.toUserAwards() }
+			RepositoryData.success(data = userAwards)
+		} catch (e: Exception) {
+			errorUserGet()
+		}
+	}
+
+	/**
+	 * Список сотрудников компании со списком их наград и именами отделов, в которых находятся
+	 * Награды со всеми полями (AwardUnion)
+	 */
+	override suspend fun getUsersByCompanyWithAwardsUnion(
+		companyId: String,
+		filter: String?
+	): RepositoryData<List<UserAwardsUnion>> {
+		return try {
+			val userAwards = users.aggregate<UserAwardsUnionCol>(
+				getUsersByCompanyWithAwardsQuery(companyId = companyId, filter = filter)
+			).toList().map { it.toUserAwardsUnion() }
 			RepositoryData.success(data = userAwards)
 		} catch (e: Exception) {
 			errorUserGet()

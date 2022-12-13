@@ -66,6 +66,12 @@ fun UserContext.fromTransport(request: GetUsersWithAwardsRequest) {
 	searchFilter = request.filter
 }
 
+fun UserContext.fromTransport(request: GetUsersWithAwardsFullRequest) {
+	command = UserCommand.GET_WITH_AWARDS_FULL
+	companyId = request.companyId
+	searchFilter = request.filter
+}
+
 fun UserContext.fromTransport(request: GetBestUsersByCompanyRequest) {
 	command = UserCommand.GET_BEST
 	companyId = request.companyId
