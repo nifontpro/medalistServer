@@ -132,10 +132,5 @@ fun Route.userRoutes() {
 			call.getUserAwardCountDepByCompany(userProcessor)
 		}
 
-		//on test1
-		// + rs
-		// rs new
-
-		// new api
 	}
 }
