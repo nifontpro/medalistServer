@@ -133,6 +133,9 @@ fun Route.userRoutes() {
 		}
 
 		//on test1
-		// new method
+		// + rs
+		// rs new
+
+		// new api
 	}
 }
