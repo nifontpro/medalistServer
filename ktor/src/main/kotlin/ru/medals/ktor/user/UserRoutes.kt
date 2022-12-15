@@ -132,5 +132,6 @@ fun Route.userRoutes() {
 			call.getUserAwardCountDepByCompany(userProcessor)
 		}
 		//on test1
+		// + rs
 	}
 }
