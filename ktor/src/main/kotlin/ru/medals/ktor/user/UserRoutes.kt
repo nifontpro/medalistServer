@@ -123,7 +123,7 @@ fun Route.userRoutes() {
 		post("count_ac") {
 			call.getUserAwardCountByCompany(userProcessor)
 		}
-
+		// on reset password
 		/**
 		 * Получить количество наград сотрудников в компании,
 		 * аггрегированное по отделам
