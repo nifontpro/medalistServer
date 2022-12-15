@@ -3,6 +3,7 @@ package ru.medals.domain.user.repository
 import ru.medals.domain.core.bussines.model.RepositoryData
 import ru.medals.domain.image.model.FileData
 import ru.medals.domain.user.model.*
+import ru.medals.domain.user.model.count.UserAwardsCountDep
 
 interface UserRepository {
 
@@ -52,4 +53,5 @@ interface UserRepository {
 	suspend fun updateHashPassword(userId: String, hashPassword: String): Boolean
 	suspend fun getAwardCountByCompany(companyId: String): RepositoryData<UserAwardCount>
 	suspend fun getAwardCountByDepartment(departmentId: String): RepositoryData<UserAwardCount>
+	suspend fun getUsersAwardsCountAggregate(companyId: String): RepositoryData<List<UserAwardsCountDep>>
 }

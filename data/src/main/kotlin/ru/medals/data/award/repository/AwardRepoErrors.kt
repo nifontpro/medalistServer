@@ -71,5 +71,13 @@ interface AwardRepoErrors {
 				description = "Ошибка получения данных о награде"
 			)
 		)
+
+		fun errorGetAwardCount() = RepositoryData.error(
+			error = RepositoryError(
+				repository = REPO,
+				violationCode = "I/O error",
+				description = "Ошибка получения данных о количестве наград"
+			)
+		)
 	}
 }

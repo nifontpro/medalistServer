@@ -123,5 +123,13 @@ fun Route.userRoutes() {
 		post("count_ac") {
 			call.getUserAwardCountByCompany(userProcessor)
 		}
+
+		/**
+		 * Получить количество наград сотрудников в компании,
+		 * аггрегированное по отделам
+		 */
+		post("count_ac_dep") {
+			call.getUserAwardCountDepByCompany(userProcessor)
+		}
 	}
 }

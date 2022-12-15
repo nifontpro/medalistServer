@@ -8,6 +8,7 @@ import ru.medals.domain.user.model.User
 import ru.medals.domain.user.model.UserAwardCount
 import ru.medals.domain.user.model.UserAwardsLite
 import ru.medals.domain.user.model.UserAwardsUnion
+import ru.medals.domain.user.model.count.UserAwardsCountDep
 import ru.medals.ktor.core.*
 import ru.medals.ktor.user.mappers.*
 import ru.medals.ktor.user.model.request.*
@@ -129,6 +130,14 @@ suspend fun ApplicationCall.getUserAwardCountByCompany(processor: UserProcessor)
 		fromTransport = { request -> fromTransport(request) },
 		toTransport = { toTransportGetUsersAwardCount() }
 	)
+
+suspend fun ApplicationCall.getUserAwardCountDepByCompany(processor: UserProcessor) =
+	process<UserAwardCountByCompanyDepRequest, List<UserAwardsCountDep>, UserContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetUsersAwardDepsCount() }
+	)
+
 
 suspend fun ApplicationCall.updateUserImageOld(processor: UserProcessor) {
 	val context = UserContext().apply { command = UserCommand.UPDATE_IMAGE }

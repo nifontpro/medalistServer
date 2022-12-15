@@ -5,6 +5,7 @@ import ru.medals.domain.user.model.User
 import ru.medals.domain.user.model.UserAwardCount
 import ru.medals.domain.user.model.UserAwardsLite
 import ru.medals.domain.user.model.UserAwardsUnion
+import ru.medals.domain.user.model.count.UserAwardsCountDep
 
 fun UserContext.toTransportGetUser(): User = user.copy(hashPassword = null)
 
@@ -17,4 +18,6 @@ fun UserContext.toTransportGetUsersAwardsLite(): List<UserAwardsLite> = usersAwa
 fun UserContext.toTransportGetUsersAwardsUnion(): List<UserAwardsUnion> = usersAwardsUnion
 
 fun UserContext.toTransportGetUsersAwardCount(): UserAwardCount = userAwardCount
+
+fun UserContext.toTransportGetUsersAwardDepsCount(): List<UserAwardsCountDep> = usersAwardsCountDep
 

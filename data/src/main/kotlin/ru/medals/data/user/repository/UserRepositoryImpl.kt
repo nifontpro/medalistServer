@@ -8,11 +8,13 @@ import ru.medals.data.core.*
 import ru.medals.data.medal.model.MedalCol
 import ru.medals.data.medal.repository.MedalRepoErrors.Companion.errorMedalNotFound
 import ru.medals.data.user.model.*
+import ru.medals.data.user.model.count.UserAwardsCountDepCol
 import ru.medals.data.user.repository.UserDbProjection.Companion.projectUserFieldsWithDepNameAndAwards
 import ru.medals.data.user.repository.UserDbProjection.Companion.projectUserFieldsWithDepartmentName
 import ru.medals.data.user.repository.UserDbProjection.Companion.sortByAwardCountAndLastName
 import ru.medals.data.user.repository.query.getAwardCountByEntity
 import ru.medals.data.user.repository.query.getUserByIdWithAwardsQuery
+import ru.medals.data.user.repository.query.getUsersAwardCountByCompanyAggregateQuery
 import ru.medals.data.user.repository.query.getUsersByCompanyWithAwardsQuery
 import ru.medals.domain.core.bussines.model.RepositoryData
 import ru.medals.domain.image.model.FileData
@@ -21,6 +23,7 @@ import ru.medals.domain.image.repository.S3Repository
 import ru.medals.domain.user.model.*
 import ru.medals.domain.user.model.User.Companion.ADMIN
 import ru.medals.domain.user.model.User.Companion.DIRECTOR
+import ru.medals.domain.user.model.count.UserAwardsCountDep
 import ru.medals.domain.user.repository.UserRepository
 import java.util.*
 
@@ -330,6 +333,17 @@ class UserRepositoryImpl(
 				getAwardCountByEntity(field = "departmentId", value = departmentId)
 			).first()
 			RepositoryData.success(data = count)
+		} catch (e: Exception) {
+			errorUserCountGet()
+		}
+	}
+
+	override suspend fun getUsersAwardsCountAggregate(companyId: String): RepositoryData<List<UserAwardsCountDep>> {
+		return try {
+			val userAwardsCount = users.aggregate<UserAwardsCountDepCol>(
+				getUsersAwardCountByCompanyAggregateQuery(companyId = companyId)
+			).toList().map { it.toUserAwardsCountDep() }
+			RepositoryData.success(data = userAwardsCount)
 		} catch (e: Exception) {
 			errorUserCountGet()
 		}

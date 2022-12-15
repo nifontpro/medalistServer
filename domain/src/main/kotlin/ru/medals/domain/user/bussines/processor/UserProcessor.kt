@@ -148,6 +148,12 @@ class UserProcessor : IBaseProcessor<UserContext> {
 				getUserAwardCountByCompanyDb("Получаем количество наград сотрудников в компании из БД")
 			}
 
+			operation("Число наград сотрудников в компании по отделам", UserCommand.AWARD_COUNT_BY_COMPANY_AGR_DEP) {
+				validateCompanyIdEmpty("Проверка на непустой companyId")
+				trimFieldCompanyIdAndCopyToValid("Очистка companyId")
+				getUserAwardCountByCompanyAgrDepDb("Получаем количество наград сотрудников в компании по отделам")
+			}
+
 			operation("Обновить изображение сотрудника", UserCommand.UPDATE_IMAGE) {
 				worker("Подготовка") { userIdValid = imageEntityId }
 				validateUserLevel("Уровень доступа - сотрудник")

@@ -14,6 +14,8 @@ import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardUpdat
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardUser
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardUserDelete
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorGetAward
+import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorGetAwardCount
+import ru.medals.data.user.repository.query.getAwardsCountByCompanyQuery
 import ru.medals.domain.award.model.*
 import ru.medals.domain.award.repository.AwardRepository
 import ru.medals.domain.core.bussines.model.RepositoryData
@@ -218,6 +220,17 @@ class AwardRepositoryImpl(
 			RepositoryData.success(data = relate)
 		} catch (e: Exception) {
 			errorGetAward()
+		}
+	}
+
+	override suspend fun getAwardsCountByCompany(companyId: String): RepositoryData<AwardCount> {
+		return try {
+			val awardCount = awards.aggregate<AwardCount>(
+				getAwardsCountByCompanyQuery(companyId = companyId)
+			).first()
+			RepositoryData.success(data = awardCount)
+		} catch (e: Exception) {
+			errorGetAwardCount()
 		}
 	}
 

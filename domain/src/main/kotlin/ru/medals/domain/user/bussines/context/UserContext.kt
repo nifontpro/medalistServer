@@ -9,6 +9,7 @@ import ru.medals.domain.user.model.User
 import ru.medals.domain.user.model.UserAwardCount
 import ru.medals.domain.user.model.UserAwardsLite
 import ru.medals.domain.user.model.UserAwardsUnion
+import ru.medals.domain.user.model.count.UserAwardsCountDep
 import ru.medals.domain.user.repository.UserRepository
 
 data class UserContext(
@@ -20,6 +21,7 @@ data class UserContext(
 	var usersAwardsLite: List<UserAwardsLite> = emptyList(),
 	var usersAwardsUnion: List<UserAwardsUnion> = emptyList(),
 	var userAwardCount: UserAwardCount = UserAwardCount(),
+	var usersAwardsCountDep: List<UserAwardsCountDep> = emptyList(),
 
 	) : BaseContext(command = UserCommand.NONE) {
 
@@ -48,6 +50,7 @@ enum class UserCommand : IBaseCommand {
 	COUNT_BY_DEPARTMENT,
 	AWARD_COUNT_BY_DEPARTMENT,
 	AWARD_COUNT_BY_COMPANY,
+	AWARD_COUNT_BY_COMPANY_AGR_DEP,
 	IMAGE_ADD,
 	IMAGE_UPDATE,
 	IMAGE_DELETE
