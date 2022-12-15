@@ -182,6 +182,22 @@ class AwardRepositoryImpl(
 	}
 
 	/**
+	 * Удаление всех записей о награждениях данного сотрудника
+	 */
+	override suspend fun deleteUserAwards(userId: String): RepositoryData<Long> {
+
+		return try {
+			val count = awards.updateMany(
+				filter = AwardCol::relations / AwardRelate::userId eq userId,
+				update = pullByFilter(AwardCol::relations, AwardRelate::userId eq userId)
+			).modifiedCount
+			RepositoryData.success(data = count)
+		} catch (e: Exception) {
+			errorAwardUserDelete()
+		}
+	}
+
+	/**
 	 * Получить запись о награждении сотрудника определенной наградой
 	 * и companyId
 	 */

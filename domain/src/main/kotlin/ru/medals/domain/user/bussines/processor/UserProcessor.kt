@@ -44,6 +44,7 @@ class UserProcessor : IBaseProcessor<UserContext> {
 				prepareAuthFromUser("Подготовка к авторизации")
 				validateDirectorLevel("Уровень доступа - не ниже директор отдела")
 				validateOwnerContainCompany("Проверяем наличие компаний у владельца")
+				deleteUserAwards("Удаляем все награды у сотрудника")
 				deleteUser("Удаление")
 			}
 
@@ -133,6 +134,18 @@ class UserProcessor : IBaseProcessor<UserContext> {
 				validateDepartmentIdEmpty("Проверка на непустой departmentId")
 				trimFieldDepartmentIdAndCopyToValid("Очистка departmentId")
 				getUserCountByDepartmentDb("Получаем количество сотрудников в отделе из БД")
+			}
+
+			operation("Число наград сотрудников в отделе", UserCommand.AWARD_COUNT_BY_DEPARTMENT) {
+				validateDepartmentIdEmpty("Проверка на непустой departmentId")
+				trimFieldDepartmentIdAndCopyToValid("Очистка departmentId")
+				getUserAwardCountByDepartmentDb("Получаем количество наград сотрудников в отделе из БД")
+			}
+
+			operation("Число наград сотрудников в компании", UserCommand.AWARD_COUNT_BY_COMPANY) {
+				validateCompanyIdEmpty("Проверка на непустой companyId")
+				trimFieldCompanyIdAndCopyToValid("Очистка companyId")
+				getUserAwardCountByCompanyDb("Получаем количество наград сотрудников в компании из БД")
 			}
 
 			operation("Обновить изображение сотрудника", UserCommand.UPDATE_IMAGE) {

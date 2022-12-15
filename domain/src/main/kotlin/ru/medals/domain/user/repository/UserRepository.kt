@@ -2,10 +2,7 @@ package ru.medals.domain.user.repository
 
 import ru.medals.domain.core.bussines.model.RepositoryData
 import ru.medals.domain.image.model.FileData
-import ru.medals.domain.user.model.User
-import ru.medals.domain.user.model.UserAwardsLite
-import ru.medals.domain.user.model.UserAwardsUnion
-import ru.medals.domain.user.model.UserMedals
+import ru.medals.domain.user.model.*
 
 interface UserRepository {
 
@@ -53,4 +50,6 @@ interface UserRepository {
 	suspend fun getUserByIdWithAwards(userId: String): RepositoryData<UserAwardsUnion>
 	suspend fun verifyUserByIdExist(userId: String): Boolean
 	suspend fun updateHashPassword(userId: String, hashPassword: String): Boolean
+	suspend fun getAwardCountByCompany(companyId: String): RepositoryData<UserAwardCount>
+	suspend fun getAwardCountByDepartment(departmentId: String): RepositoryData<UserAwardCount>
 }

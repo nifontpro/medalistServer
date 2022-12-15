@@ -1,28 +1,14 @@
-package ru.medals.data.user.repository.query
-
-import ru.medals.data.core.*
-
-//fields:
-@Suppress("ConstPropertyName")
-private const val Relations = "\$relations"
-
-fun getUsersByCompanyWithAwardsQuery(companyId: String, filter: String?): String {
-
-	val strFilter = if (filter.isNullOrBlank()) "" else
-		"""
-				, {
-            $or: [
-                {name: {$regex: '$filter'}},
-                {lastname: {$regex: '$filter'}}
-            ]
-        }			
-		""".trimIndent()
-
-	return """[
+db.userCol.aggregate([
     {
         $match: {
             $and: [
-                {companyId: {$eq: '$companyId'}}$strFilter
+                {companyId: {$eq: '63641544e81cbd0b5c5a8412'}},
+                {
+                    $or: [
+                        {name: {$regex: 'р'}},
+                        {lastname: {$regex: 'р'}}
+                    ]
+                }
             ]
         }
     },
@@ -31,7 +17,7 @@ fun getUsersByCompanyWithAwardsQuery(companyId: String, filter: String?): String
             from: 'awardCol',
             localField: '_id',
             foreignField: 'relations.userId',
-            let: {relations: '$Relations', uid: '${'$'}_id'},
+            let: {relations: '$relations', uid: '$_id'},
             pipeline: [{
                 $project: {
                     _id: 1,
@@ -43,23 +29,23 @@ fun getUsersByCompanyWithAwardsQuery(companyId: String, filter: String?): String
                     endDate: 1,
                     imageUrl: 1,
                     relations: {
-                        ${ru.medals.data.core.filter}: {input: '$Relations', as: 'rel', cond: {$eq: ['${"$$"}rel.userId', '${"$$"}uid']}}
+                        $filter: {input: '$relations', as: 'rel', cond: {$eq: ['$$rel.userId', '$$uid']}}
                     }
                 }
-            }, {$unwind: '$Relations'},
+            }, {$unwind: '$relations'},
                 {
                     $replaceRoot: {
                         newRoot: {
                             $mergeObjects: [
                                 {
-                                    _id: '${'$'}_id',
-                                    companyId: '${'$'}companyId',
-                                    name: '${'$'}name',
-                                    description: '${'$'}description',
-                                    imageUrl: '${'$'}imageUrl',
-                                    startDate: '${'$'}startDate',
-                                    endDate: '${'$'}endDate'
-                                }, '${'$'}relations'
+                                    _id: '$_id',
+                                    companyId: '$companyId',
+                                    name: '$name',
+                                    description: '$description',
+                                    imageUrl: '$imageUrl',
+                                    startDate: '$startDate',
+                                    endDate: '$endDate'
+                                }, '$relations'
                             ]
                         }
                     }
@@ -80,7 +66,7 @@ fun getUsersByCompanyWithAwardsQuery(companyId: String, filter: String?): String
 
     {
         $unwind: {
-            path: '${'$'}department',
+            path: '$department',
             preserveNullAndEmptyArrays: true
         }
     },
@@ -103,11 +89,11 @@ fun getUsersByCompanyWithAwardsQuery(companyId: String, filter: String?): String
             departmentId: 1,
             imageUrl: 1,
             imageKey: 1,
-            departmentName: '${'$'}department.name',
+            departmentName: '$department.name',
             awardCount: {
                 $size: {
-                    ${ru.medals.data.core.filter}:
-                        {input: '${'$'}awards', as: 'awards', cond: {$eq: ['${"$$"}awards.state', 'AWARD']}}
+                    $filter:
+                        {input: '$awards', as: 'awards', cond: {$eq: ['$$awards.state', 'AWARD']}}
                 }
             }
         }
@@ -115,5 +101,4 @@ fun getUsersByCompanyWithAwardsQuery(companyId: String, filter: String?): String
 
     {$sort: {awardCount: -1, lastname: 1}}
 
-]""".trimIndent()
-}
+])

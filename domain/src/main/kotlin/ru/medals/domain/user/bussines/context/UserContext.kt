@@ -1,10 +1,12 @@
 package ru.medals.domain.user.bussines.context
 
 import org.koin.java.KoinJavaComponent.inject
+import ru.medals.domain.award.repository.AwardRepository
 import ru.medals.domain.company.repository.CompanyRepository
 import ru.medals.domain.core.bussines.BaseContext
 import ru.medals.domain.core.bussines.IBaseCommand
 import ru.medals.domain.user.model.User
+import ru.medals.domain.user.model.UserAwardCount
 import ru.medals.domain.user.model.UserAwardsLite
 import ru.medals.domain.user.model.UserAwardsUnion
 import ru.medals.domain.user.repository.UserRepository
@@ -17,11 +19,13 @@ data class UserContext(
 	val users: MutableList<User> = mutableListOf(),
 	var usersAwardsLite: List<UserAwardsLite> = emptyList(),
 	var usersAwardsUnion: List<UserAwardsUnion> = emptyList(),
+	var userAwardCount: UserAwardCount = UserAwardCount(),
 
 	) : BaseContext(command = UserCommand.NONE) {
 
 	val userRepository: UserRepository by inject(UserRepository::class.java)
 	val companyRepository: CompanyRepository by inject(CompanyRepository::class.java)
+	val awardRepository: AwardRepository by inject(AwardRepository::class.java)
 }
 
 enum class UserCommand : IBaseCommand {
@@ -42,6 +46,8 @@ enum class UserCommand : IBaseCommand {
 	DELETE,
 	COUNT_BY_COMPANY,
 	COUNT_BY_DEPARTMENT,
+	AWARD_COUNT_BY_DEPARTMENT,
+	AWARD_COUNT_BY_COMPANY,
 	IMAGE_ADD,
 	IMAGE_UPDATE,
 	IMAGE_DELETE

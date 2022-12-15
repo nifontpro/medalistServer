@@ -5,6 +5,7 @@ import ru.medals.domain.user.bussines.context.UserCommand
 import ru.medals.domain.user.bussines.context.UserContext
 import ru.medals.domain.user.bussines.processor.UserProcessor
 import ru.medals.domain.user.model.User
+import ru.medals.domain.user.model.UserAwardCount
 import ru.medals.domain.user.model.UserAwardsLite
 import ru.medals.domain.user.model.UserAwardsUnion
 import ru.medals.ktor.core.*
@@ -113,6 +114,20 @@ suspend fun ApplicationCall.getUserCountByDepartment(processor: UserProcessor) =
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
 		toTransport = { toTransportGetCount() }
+	)
+
+suspend fun ApplicationCall.getUserAwardCountByDepartment(processor: UserProcessor) =
+	process<UserAwardCountByDepartmentRequest, UserAwardCount, UserContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetUsersAwardCount() }
+	)
+
+suspend fun ApplicationCall.getUserAwardCountByCompany(processor: UserProcessor) =
+	process<UserAwardCountByCompanyRequest, UserAwardCount, UserContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetUsersAwardCount() }
 	)
 
 suspend fun ApplicationCall.updateUserImageOld(processor: UserProcessor) {

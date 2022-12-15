@@ -1,0 +1,35 @@
+db.awardCol.aggregate([
+    {
+        $match: {
+            $and: [
+                {companyId: {$eq: '63641544e81cbd0b5c5a8412'}},
+
+            ]
+        }
+    },
+    {
+        $addFields: {
+            awardState: {
+                $switch: {
+                    branches: [
+                        {case: {$gt: ['$startDate', '$endDate']}, then: 'ERROR'},
+                        {case: {$lt: ['$$NOW', '$startDate']}, then: 'BEFORE'},
+                        {case: {$gt: ['$$NOW', '$endDate']}, then: 'AFTER'}
+                    ],
+                    default: 'NOMINEE'
+                }
+            }
+        }
+    },
+
+    {
+        $group: {
+            _id: null,
+            beforeCount: {$sum: {$cond: {if: {$eq: ['$awardState', 'BEFORE']}, then: 1, else: 0}}},
+            nomineeCount: {$sum: {$cond: {if: {$eq: ['$awardState', 'NOMINEE']}, then: 1, else: 0}}},
+            afterCount: {$sum: {$cond:{if: {$eq: ['$awardState', 'AFTER']}, then: 1, else: 0}}},
+            errorCount: {$sum: {$cond:{if: {$eq: ['$awardState', 'ERROR']}, then: 1, else: 0}}},
+            total: {$count: {}}
+        }
+    },
+])

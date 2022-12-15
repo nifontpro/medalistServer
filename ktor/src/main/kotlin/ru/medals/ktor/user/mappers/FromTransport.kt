@@ -119,6 +119,16 @@ fun UserContext.fromTransport(request: UserCountByDepartmentRequest) {
 	departmentId = request.departmentId
 }
 
+fun UserContext.fromTransport(request: UserAwardCountByDepartmentRequest) {
+	command = UserCommand.AWARD_COUNT_BY_DEPARTMENT
+	departmentId = request.departmentId
+}
+
+fun UserContext.fromTransport(request: UserAwardCountByCompanyRequest) {
+	command = UserCommand.AWARD_COUNT_BY_COMPANY
+	companyId = request.companyId
+}
+
 fun UserContext.fromTransport(request: DeleteUserImageRequest) {
 	command = UserCommand.IMAGE_DELETE
 	userId = request.userId
