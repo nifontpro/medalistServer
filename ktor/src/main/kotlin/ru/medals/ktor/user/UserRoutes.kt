@@ -133,7 +133,7 @@ fun Route.userRoutes() {
 		}
 
 		//f1
-		//f2
+
 		//t1
 		//t2
 
