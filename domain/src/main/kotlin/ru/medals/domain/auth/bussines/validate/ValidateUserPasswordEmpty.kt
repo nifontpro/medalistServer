@@ -8,13 +8,13 @@ import ru.otus.cor.worker
 
 fun ICorChainDsl<AuthContext>.validateUserPasswordEmpty(title: String) = worker {
 	this.title = title
-	on { email.isBlank() }
+	on { password.isBlank() }
 	handle {
 		fail(
 			errorValidation(
 				field = "password",
 				violationCode = "empty",
-				description = "Не должно быть пустым"
+				description = "Пароль не должен быть пустым"
 			)
 		)
 	}

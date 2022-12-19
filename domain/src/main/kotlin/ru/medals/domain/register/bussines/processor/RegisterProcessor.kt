@@ -46,7 +46,7 @@ class RegisterProcessor : IBaseProcessor<RegisterContext> {
 				trimFieldEmailAndCopyToValid("Очищаем email")
 				getUserByEmailDb("Получаем сотрудника по email")
 				validateTempRegRestorePswExist("Проверка, есть ли запись о сбросе пароля в БД (возможен ли повторный сброс)")
-				sendCodeToUserEmailForRestore("Отправка письма со ссылкой")
+				sendLinkToUserEmailForRestore("Отправка письма со ссылкой")
 				saveTempRegForResetPsw("Записываем данные для сброса пароля")
 			}
 

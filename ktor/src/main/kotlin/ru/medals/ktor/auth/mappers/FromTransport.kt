@@ -9,10 +9,11 @@ private val log = KotlinLogging.logger {}
 
 fun AuthContext.fromTransport(request: LoginRequest) {
 	command = AuthContext.Command.LOGIN
-	email = request.email
+	login = request.login
+//	email = request.email
 	password = request.password
 
-	log.info("LOGIN: $email", request)
+	log.info("LOGIN: $login", request)
 
 }
 

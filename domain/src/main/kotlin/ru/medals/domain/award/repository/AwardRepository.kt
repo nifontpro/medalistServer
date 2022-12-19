@@ -1,6 +1,7 @@
 package ru.medals.domain.award.repository
 
 import ru.medals.domain.award.model.Award
+import ru.medals.domain.award.model.AwardCount
 import ru.medals.domain.award.model.AwardRelate
 import ru.medals.domain.award.model.AwardUsers
 import ru.medals.domain.core.bussines.model.RepositoryData
@@ -18,4 +19,6 @@ interface AwardRepository {
 	suspend fun getAwardRelateFromUser(awardId: String, userId: String): RepositoryData<AwardRelate>
 	suspend fun awardUser(awardId: String, awardRelate: AwardRelate, isNew: Boolean): RepositoryData<Unit>
 	suspend fun deleteUserAward(awardId: String, userId: String): RepositoryData<AwardRelate>
+	suspend fun deleteUserAwards(userId: String): RepositoryData<Long>
+	suspend fun getAwardsCountByCompany(companyId: String): RepositoryData<AwardCount>
 }

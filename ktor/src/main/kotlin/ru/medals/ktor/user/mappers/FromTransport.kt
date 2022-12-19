@@ -11,7 +11,6 @@ fun UserContext.fromTransport(request: CreateUserRequest) {
 	user = User(
 		role = request.role,
 		login = request.login,
-		hashPassword = request.password,
 		email = request.email,
 		name = request.name,
 		patronymic = request.patronymic,
@@ -25,6 +24,8 @@ fun UserContext.fromTransport(request: CreateUserRequest) {
 		departmentId = request.departmentId,
 		isMnc = request.isMNC,
 	)
+
+	testMode = request.test
 }
 
 fun UserContext.fromTransport(request: GetUserByIdRequest) {
@@ -109,6 +110,15 @@ fun UserContext.fromTransport(request: UpdateUserRequest) {
 	)
 }
 
+fun UserContext.fromTransport(request: UpdateUserPasswordRequest) {
+	command = UserCommand.UPDATE_PASSWORD
+	userId = request.userId
+	password = request.password ?: " "
+	newPassword = request.newPassword ?: " "
+
+	testMode = request.test
+}
+
 fun UserContext.fromTransport(request: UserCountByCompanyRequest) {
 	command = UserCommand.COUNT_BY_COMPANY
 	companyId = request.companyId
@@ -117,6 +127,21 @@ fun UserContext.fromTransport(request: UserCountByCompanyRequest) {
 fun UserContext.fromTransport(request: UserCountByDepartmentRequest) {
 	command = UserCommand.COUNT_BY_DEPARTMENT
 	departmentId = request.departmentId
+}
+
+fun UserContext.fromTransport(request: UserAwardCountByDepartmentRequest) {
+	command = UserCommand.AWARD_COUNT_BY_DEPARTMENT
+	departmentId = request.departmentId
+}
+
+fun UserContext.fromTransport(request: UserAwardCountByCompanyRequest) {
+	command = UserCommand.AWARD_COUNT_BY_COMPANY
+	companyId = request.companyId
+}
+
+fun UserContext.fromTransport(request: UserAwardCountByCompanyDepRequest) {
+	command = UserCommand.AWARD_COUNT_BY_COMPANY_AGR_DEP
+	companyId = request.companyId
 }
 
 fun UserContext.fromTransport(request: DeleteUserImageRequest) {

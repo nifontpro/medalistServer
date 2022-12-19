@@ -13,6 +13,14 @@ fun errorUserGet() = RepositoryData.error(
 	)
 )
 
+fun errorUserCountGet() = RepositoryData.error(
+	error = RepositoryError(
+		repository = REPO,
+		violationCode = "$REPO get error",
+		description = "Ошибка получения количества сотрудников"
+	)
+)
+
 fun errorUserDelete() = RepositoryData.error(
 	error = RepositoryError(
 		repository = REPO,

@@ -2,15 +2,13 @@ package ru.medals.domain.user.repository
 
 import ru.medals.domain.core.bussines.model.RepositoryData
 import ru.medals.domain.image.model.FileData
-import ru.medals.domain.user.model.User
-import ru.medals.domain.user.model.UserAwardsLite
-import ru.medals.domain.user.model.UserAwardsUnion
-import ru.medals.domain.user.model.UserMedals
+import ru.medals.domain.user.model.*
+import ru.medals.domain.user.model.count.UserAwardsCountDep
 
 interface UserRepository {
 
 	suspend fun createUser(user: User): RepositoryData<User>
-	suspend fun getUserById(id: String): User?
+	suspend fun getUserById(id: String, clearHashPassword: Boolean = true): User?
 	suspend fun getUserByEmail(email: String): User?
 	suspend fun getUserByLogin(login: String): User?
 	suspend fun getUsersByDepartment(departmentId: String, filter: String? = null): List<User>
@@ -53,4 +51,7 @@ interface UserRepository {
 	suspend fun getUserByIdWithAwards(userId: String): RepositoryData<UserAwardsUnion>
 	suspend fun verifyUserByIdExist(userId: String): Boolean
 	suspend fun updateHashPassword(userId: String, hashPassword: String): Boolean
+	suspend fun getAwardCountByCompany(companyId: String): RepositoryData<UserAwardCount>
+	suspend fun getAwardCountByDepartment(departmentId: String): RepositoryData<UserAwardCount>
+	suspend fun getUsersAwardsCountAggregate(companyId: String): RepositoryData<List<UserAwardsCountDep>>
 }

@@ -1,6 +1,7 @@
 package ru.medals.domain.core.bussines
 
 import ru.medals.domain.core.bussines.helper.ContextError
+import ru.medals.domain.core.util.Constants.TEST_MODE
 import ru.medals.domain.image.model.FileData
 import ru.medals.domain.user.model.User
 
@@ -37,7 +38,11 @@ abstract class BaseContext(
 	var responseId: String = "",
 	var countResponse: Long = -1,
 	val errors: MutableList<ContextError> = mutableListOf(),
-)
+
+	var testMode: Boolean = false,
+) {
+	fun prodMode() = !(testMode && TEST_MODE)
+}
 
 @Suppress("unused")
 enum class ContextState {

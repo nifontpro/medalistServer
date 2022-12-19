@@ -8,19 +8,19 @@ private const val Relations = "\$relations"
 
 fun getUserByIdWithAwardsQuery(userId: String) =
 	"""[
-				{$Match: {'_id': '$userId'}},
+				{$match: {'_id': '$userId'}},
 				
-				{$Lookup: {
+				{$lookup: {
 				from: 'awardCol',
 				  localField: '_id',
 				  foreignField: 'relations.userId',
 				  let: {relations: '$Relations'},
 				  pipeline: [
-				    {$Project: {_id:1, companyId:1, name:1, description:1, criteria:1, startDate:1, endDate:1, imageUrl:1,
-				      relations: {$Filter: {input: '$Relations', as: 'rel', cond: {$Eq: ['${"$$"}rel.userId', '$userId']} }}
+				    {$project: {_id:1, companyId:1, name:1, description:1, criteria:1, startDate:1, endDate:1, imageUrl:1,
+				      relations: {$filter: {input: '$Relations', as: 'rel', cond: {$eq: ['${"$$"}rel.userId', '$userId']} }}
 				    }},
-				    {$Unwind: '$Relations'},
-				    {$ReplaceRoot : {newRoot: {$MergeObjects: 
+				    {$unwind: '$Relations'},
+				    {$replaceRoot : {newRoot: {$mergeObjects: 
 				      [
 								{_id: '${'$'}_id', companyId: '${'$'}companyId', name: '${'$'}name', description: '${'$'}description', 
 								imageUrl: '${'$'}imageUrl', startDate: '${'$'}startDate', endDate: '${'$'}endDate'}, '$Relations'
@@ -30,24 +30,24 @@ fun getUserByIdWithAwardsQuery(userId: String) =
 				  as: 'awards'					
 				}},
 				
-				{$Lookup: {
+				{$lookup: {
 					from: "departmentCol",
 				  localField: "departmentId",
 				  foreignField: "_id",
 				  as: 'department'
 				}},
 				
-				{$Unwind: {
+				{$unwind: {
 					path: '${'$'}department',
           preserveNullAndEmptyArrays: true
 				}},
 											
-				{$Project: {
+				{$project: {
 					awards: 1, email: 1, login: 1, name: 1, lastname: 1, patronymic: 1, role: 1, bio: 1, post: 1, phone: 1, gender: 1, description: 1, companyId: 1, departmentId: 1, imageUrl: 1, imageKey:1,
           departmentName: '${'$'}department.name',
 					awardCount: {
-						$Size: {$Filter:
-							{input: '${'$'}awards', as: 'awards', cond: {$Eq: ['${"$$"}awards.state', 'AWARD']}} 
+						$size: {$filter:
+							{input: '${'$'}awards', as: 'awards', cond: {$eq: ['${"$$"}awards.state', 'AWARD']}} 
 						}
 					}
 				}},											

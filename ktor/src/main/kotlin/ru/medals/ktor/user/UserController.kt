@@ -5,8 +5,10 @@ import ru.medals.domain.user.bussines.context.UserCommand
 import ru.medals.domain.user.bussines.context.UserContext
 import ru.medals.domain.user.bussines.processor.UserProcessor
 import ru.medals.domain.user.model.User
+import ru.medals.domain.user.model.UserAwardCount
 import ru.medals.domain.user.model.UserAwardsLite
 import ru.medals.domain.user.model.UserAwardsUnion
+import ru.medals.domain.user.model.count.UserAwardsCountDep
 import ru.medals.ktor.core.*
 import ru.medals.ktor.user.mappers.*
 import ru.medals.ktor.user.model.request.*
@@ -27,6 +29,12 @@ suspend fun ApplicationCall.deleteUser(processor: UserProcessor) =
 
 suspend fun ApplicationCall.updateUser(processor: UserProcessor) =
 	authProcess<UpdateUserRequest, Unit, UserContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) }
+	)
+
+suspend fun ApplicationCall.updateUserPassword(processor: UserProcessor) =
+	authProcess<UpdateUserPasswordRequest, Unit, UserContext>(
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) }
 	)
@@ -115,8 +123,30 @@ suspend fun ApplicationCall.getUserCountByDepartment(processor: UserProcessor) =
 		toTransport = { toTransportGetCount() }
 	)
 
+suspend fun ApplicationCall.getUserAwardCountByDepartment(processor: UserProcessor) =
+	process<UserAwardCountByDepartmentRequest, UserAwardCount, UserContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetUsersAwardCount() }
+	)
+
+suspend fun ApplicationCall.getUserAwardCountByCompany(processor: UserProcessor) =
+	process<UserAwardCountByCompanyRequest, UserAwardCount, UserContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetUsersAwardCount() }
+	)
+
+suspend fun ApplicationCall.getUserAwardCountDepByCompany(processor: UserProcessor) =
+	process<UserAwardCountByCompanyDepRequest, List<UserAwardsCountDep>, UserContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetUsersAwardDepsCount() }
+	)
+
+
 suspend fun ApplicationCall.updateUserImageOld(processor: UserProcessor) {
-	val context = UserContext().apply { command = UserCommand.UPDATE_IMAGE }
+	val context = UserContext().apply { command = UserCommand.UPDATE_IMAGE_OLD }
 	processImageSingle(context = context, processor = processor)
 }
 

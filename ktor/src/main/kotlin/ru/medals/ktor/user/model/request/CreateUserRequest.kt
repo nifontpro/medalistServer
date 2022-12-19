@@ -5,7 +5,6 @@ import ru.medals.domain.user.model.Gender
 data class CreateUserRequest(
 	val role: String? = null,
 	val login: String? = null,
-	val password: String? = null,
 	val email: String? = null,
 	val name: String? = null,
 	val patronymic: String? = null,
@@ -17,5 +16,7 @@ data class CreateUserRequest(
 	val description: String? = null,
 	val companyId: String? = null,
 	val departmentId: String? = null,
-	val isMNC: Boolean? = null
+	val isMNC: Boolean? = null,
+
+	val test: Boolean = false
 )

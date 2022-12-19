@@ -19,9 +19,9 @@ fun ICorChainDsl<AuthContext>.validatePassword(title: String) = worker {
 		) {
 			fail(
 				errorValidation(
-					field = "login/password",
+					field = "password",
 					violationCode = "not valid",
-					description = "Неверный логин/пароль"
+					description = "Неверный пароль"
 				)
 			)
 		}

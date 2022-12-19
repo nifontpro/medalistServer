@@ -1,10 +1,7 @@
 package ru.medals.domain.award.bussines.context
 
 import org.koin.java.KoinJavaComponent.inject
-import ru.medals.domain.award.model.Award
-import ru.medals.domain.award.model.AwardRelate
-import ru.medals.domain.award.model.AwardState
-import ru.medals.domain.award.model.AwardUsers
+import ru.medals.domain.award.model.*
 import ru.medals.domain.award.repository.AwardRepository
 import ru.medals.domain.core.bussines.BaseContext
 import ru.medals.domain.core.bussines.IBaseCommand
@@ -18,6 +15,7 @@ data class AwardContext(
 	var awardsUsers: List<AwardUsers> = emptyList(),
 	var awardRelate: AwardRelate? = null,
 	var awardRelateValid: AwardRelate = AwardRelate(),
+	var awardCount: AwardCount = AwardCount(),
 
 	var awardId: String = "",
 	var awardState: AwardState = AwardState.NONE,
@@ -40,5 +38,6 @@ enum class AwardCommand : IBaseCommand {
 	UPDATE,
 	UPDATE_IMAGE_OLD,
 	AWARD_USER,
-	AWARD_USER_DELETE
+	AWARD_USER_DELETE,
+	GET_COUNT
 }

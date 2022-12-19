@@ -8,21 +8,22 @@ import ru.medals.data.core.*
 import ru.medals.data.medal.model.MedalCol
 import ru.medals.data.medal.repository.MedalRepoErrors.Companion.errorMedalNotFound
 import ru.medals.data.user.model.*
+import ru.medals.data.user.model.count.UserAwardsCountDepCol
 import ru.medals.data.user.repository.UserDbProjection.Companion.projectUserFieldsWithDepNameAndAwards
 import ru.medals.data.user.repository.UserDbProjection.Companion.projectUserFieldsWithDepartmentName
 import ru.medals.data.user.repository.UserDbProjection.Companion.sortByAwardCountAndLastName
+import ru.medals.data.user.repository.query.getAwardCountByEntity
 import ru.medals.data.user.repository.query.getUserByIdWithAwardsQuery
+import ru.medals.data.user.repository.query.getUsersAwardCountByCompanyAggregateQuery
 import ru.medals.data.user.repository.query.getUsersByCompanyWithAwardsQuery
 import ru.medals.domain.core.bussines.model.RepositoryData
 import ru.medals.domain.image.model.FileData
 import ru.medals.domain.image.model.ImageRef
 import ru.medals.domain.image.repository.S3Repository
-import ru.medals.domain.user.model.User
+import ru.medals.domain.user.model.*
 import ru.medals.domain.user.model.User.Companion.ADMIN
 import ru.medals.domain.user.model.User.Companion.DIRECTOR
-import ru.medals.domain.user.model.UserAwardsLite
-import ru.medals.domain.user.model.UserAwardsUnion
-import ru.medals.domain.user.model.UserMedals
+import ru.medals.domain.user.model.count.UserAwardsCountDep
 import ru.medals.domain.user.repository.UserRepository
 import java.util.*
 
@@ -44,8 +45,8 @@ class UserRepositoryImpl(
 		}
 	}
 
-	override suspend fun getUserById(id: String): User? {
-		return users.findOneById(id)?.toUser()
+	override suspend fun getUserById(id: String, clearHashPassword: Boolean): User? {
+		return users.findOneById(id)?.toUser(clearHashPassword)
 	}
 
 	override suspend fun getUserByIdWithDepartmentName(id: String): User? {
@@ -184,7 +185,7 @@ class UserRepositoryImpl(
 	override suspend fun getUserByLogin(login: String): User? {
 		return users.findOne(
 			UserCol::login eq login,
-		)?.toUser()
+		)?.toUser(clearHashPassword = false)
 	}
 
 	override suspend fun verifyUserByLoginExist(login: String): Boolean {
@@ -312,6 +313,40 @@ class UserRepositoryImpl(
 
 	override suspend fun getUsersCountByDepartment(departmentId: String): Long {
 		return users.countDocuments(UserCol::departmentId eq departmentId)
+	}
+
+
+	override suspend fun getAwardCountByCompany(companyId: String): RepositoryData<UserAwardCount> {
+		return try {
+			val count = users.aggregate<UserAwardCount>(
+				getAwardCountByEntity(field = "companyId", value = companyId)
+			).first()
+			RepositoryData.success(data = count)
+		} catch (e: Exception) {
+			errorUserCountGet()
+		}
+	}
+
+	override suspend fun getAwardCountByDepartment(departmentId: String): RepositoryData<UserAwardCount> {
+		return try {
+			val count = users.aggregate<UserAwardCount>(
+				getAwardCountByEntity(field = "departmentId", value = departmentId)
+			).first()
+			RepositoryData.success(data = count)
+		} catch (e: Exception) {
+			errorUserCountGet()
+		}
+	}
+
+	override suspend fun getUsersAwardsCountAggregate(companyId: String): RepositoryData<List<UserAwardsCountDep>> {
+		return try {
+			val userAwardsCount = users.aggregate<UserAwardsCountDepCol>(
+				getUsersAwardCountByCompanyAggregateQuery(companyId = companyId)
+			).toList().map { it.toUserAwardsCountDep() }
+			RepositoryData.success(data = userAwardsCount)
+		} catch (e: Exception) {
+			errorUserCountGet()
+		}
 	}
 
 	override suspend fun getBestUsersByCompany(companyId: String, limit: Int): List<User> {
@@ -470,13 +505,13 @@ class UserRepositoryImpl(
 		return try {
 			val userMedals = users.aggregate<UserMedalsCol>(
 				//			"[{\$match : {_id : {\$eq: '$userId'}}}]"
-				"[{$Match: {'_id': '$userId', 'medalsInfo.medalId': '$medalId'}}," +
-						"{$Project:{" +
+				"[{$match: {'_id': '$userId', 'medalsInfo.medalId': '$medalId'}}," +
+						"{$project:{" +
 						"_id: 1, email:1, login:1, name: 1, patronymic: 1, lastname: 1, role: 1, bio: 1, companyId: 1, departmentId: 1, score: 1, currentScore: 1, rewardCount: 1," +
 						"medalsInfo: {\$filter: {input: '\$medalsInfo', as: 'infos'," +
-						"cond: {$Eq: ['\$\$infos.medalId', '$medalId']}}}}" +
+						"cond: {$eq: ['\$\$infos.medalId', '$medalId']}}}}" +
 						"}," +
-						"{$Lookup: {from: 'medalCol', localField: 'medalsInfo.medalId', foreignField: '_id', as: 'medals'}}" +
+						"{$lookup: {from: 'medalCol', localField: 'medalsInfo.medalId', foreignField: '_id', as: 'medals'}}" +
 						"]"
 			).toList().map { it.toUserMedal() }
 			RepositoryData.success(data = userMedals)

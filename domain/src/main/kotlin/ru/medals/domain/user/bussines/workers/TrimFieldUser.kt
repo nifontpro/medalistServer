@@ -11,7 +11,6 @@ fun ICorChainDsl<UserContext>.trimFieldUser(title: String) = worker {
 	handle {
 		user = user.copy(
 			login = user.login?.trim(),
-			hashPassword = user.hashPassword?.trim(),
 			email = user.email?.trim(),
 			name = user.name?.trim(),
 			patronymic = user.patronymic?.trim(),
