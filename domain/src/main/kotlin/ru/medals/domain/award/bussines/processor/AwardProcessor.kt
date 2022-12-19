@@ -54,6 +54,12 @@ class AwardProcessor : IBaseProcessor<AwardContext> {
 				getAwardsByCompanyFromDb("Получаем награждения")
 			}
 
+			operation("Получить награды в компании", AwardCommand.GET_COUNT) {
+				validateCompanyIdEmpty("Проверка на непустой companyId")
+				trimFieldCompanyIdAndCopyToValid("Очищаем companyId")
+				getAwardCountByCompanyFromDb("Получаем статистику по наградам")
+			}
+
 			operation("Получить награды в компании с сотрудниками", AwardCommand.GET_BY_COMPANY_WITH_USERS) {
 				validateCompanyIdEmpty("Проверка на непустой companyId")
 				trimFieldCompanyIdAndCopyToValid("Очищаем companyId")

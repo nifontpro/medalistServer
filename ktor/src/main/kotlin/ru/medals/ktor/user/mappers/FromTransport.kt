@@ -11,7 +11,6 @@ fun UserContext.fromTransport(request: CreateUserRequest) {
 	user = User(
 		role = request.role,
 		login = request.login,
-		hashPassword = request.password,
 		email = request.email,
 		name = request.name,
 		patronymic = request.patronymic,
@@ -25,6 +24,8 @@ fun UserContext.fromTransport(request: CreateUserRequest) {
 		departmentId = request.departmentId,
 		isMnc = request.isMNC,
 	)
+
+	testMode = request.test
 }
 
 fun UserContext.fromTransport(request: GetUserByIdRequest) {
@@ -107,6 +108,15 @@ fun UserContext.fromTransport(request: UpdateUserRequest) {
 		description = request.description,
 		isMnc = request.isMNC,
 	)
+}
+
+fun UserContext.fromTransport(request: UpdateUserPasswordRequest) {
+	command = UserCommand.UPDATE_PASSWORD
+	userId = request.userId
+	password = request.password ?: " "
+	newPassword = request.newPassword ?: " "
+
+	testMode = request.test
 }
 
 fun UserContext.fromTransport(request: UserCountByCompanyRequest) {

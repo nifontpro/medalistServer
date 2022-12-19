@@ -45,8 +45,8 @@ class UserRepositoryImpl(
 		}
 	}
 
-	override suspend fun getUserById(id: String): User? {
-		return users.findOneById(id)?.toUser()
+	override suspend fun getUserById(id: String, clearHashPassword: Boolean): User? {
+		return users.findOneById(id)?.toUser(clearHashPassword)
 	}
 
 	override suspend fun getUserByIdWithDepartmentName(id: String): User? {

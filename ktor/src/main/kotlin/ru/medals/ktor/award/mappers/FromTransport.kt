@@ -72,3 +72,8 @@ fun AwardContext.fromTransport(request: AwardUserDeleteRequest) {
 	awardId = request.awardId ?: ""
 	userId = request.userId
 }
+
+fun AwardContext.fromTransport(request: GetAwardCountByCompanyRequest) {
+	command = AwardCommand.GET_COUNT
+	companyId = request.companyId
+}

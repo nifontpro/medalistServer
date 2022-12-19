@@ -54,5 +54,9 @@ fun Route.awardRoutes() {
 			call.getAwardsByCompanyWithUsers(awardProcessor)
 		}
 
+		post("count") {
+			call.getAwardCountByCompany(awardProcessor)
+		}
+
 	}
 }

@@ -8,7 +8,7 @@ import ru.medals.domain.user.model.count.UserAwardsCountDep
 interface UserRepository {
 
 	suspend fun createUser(user: User): RepositoryData<User>
-	suspend fun getUserById(id: String): User?
+	suspend fun getUserById(id: String, clearHashPassword: Boolean = true): User?
 	suspend fun getUserByEmail(email: String): User?
 	suspend fun getUserByLogin(login: String): User?
 	suspend fun getUsersByDepartment(departmentId: String, filter: String? = null): List<User>

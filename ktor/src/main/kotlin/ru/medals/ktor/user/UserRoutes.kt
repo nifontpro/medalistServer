@@ -28,6 +28,10 @@ fun Route.userRoutes() {
 				call.updateUser(userProcessor)
 			}
 
+			put("password") {
+				call.updateUserPassword(userProcessor)
+			}
+
 			put("image/update") {
 				call.updateUserImageOld(userProcessor)
 			}
@@ -123,7 +127,7 @@ fun Route.userRoutes() {
 		post("count_ac") {
 			call.getUserAwardCountByCompany(userProcessor)
 		}
-		// on reset password
+
 		/**
 		 * Получить количество наград сотрудников в компании,
 		 * аггрегированное по отделам
@@ -131,11 +135,6 @@ fun Route.userRoutes() {
 		post("count_ac_dep") {
 			call.getUserAwardCountDepByCompany(userProcessor)
 		}
-
-		//f1
-
-		//t1
-		//t2
 
 	}
 }

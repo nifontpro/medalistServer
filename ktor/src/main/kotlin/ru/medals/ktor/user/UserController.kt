@@ -33,6 +33,12 @@ suspend fun ApplicationCall.updateUser(processor: UserProcessor) =
 		fromTransport = { request -> fromTransport(request) }
 	)
 
+suspend fun ApplicationCall.updateUserPassword(processor: UserProcessor) =
+	authProcess<UpdateUserPasswordRequest, Unit, UserContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) }
+	)
+
 suspend fun ApplicationCall.getUserById(processor: UserProcessor) =
 	process<GetUserByIdRequest, User, UserContext>(
 		processor = processor,
@@ -140,7 +146,7 @@ suspend fun ApplicationCall.getUserAwardCountDepByCompany(processor: UserProcess
 
 
 suspend fun ApplicationCall.updateUserImageOld(processor: UserProcessor) {
-	val context = UserContext().apply { command = UserCommand.UPDATE_IMAGE }
+	val context = UserContext().apply { command = UserCommand.UPDATE_IMAGE_OLD }
 	processImageSingle(context = context, processor = processor)
 }
 

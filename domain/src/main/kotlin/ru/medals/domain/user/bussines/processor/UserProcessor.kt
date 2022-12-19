@@ -23,7 +23,6 @@ class UserProcessor : IBaseProcessor<UserContext> {
 			// Добавить проверку длины пароля и валидность email
 			operation("Создать профиль сотрудника", UserCommand.CREATE) {
 				validateUserLoginEmpty("Проверка на непустой login")
-				validateUserPasswordEmpty("Проверка на непустой password")
 				worker("Подготовка полей к авторизации") {
 					companyId = user.companyId
 					departmentId = user.departmentId
@@ -34,6 +33,9 @@ class UserProcessor : IBaseProcessor<UserContext> {
 				validateSimpleAuth("Простая проверка прав доступа")
 				extendedAuth("Расширенная проверка авторизации")
 				validateUserWithLoginExist("Проверяем, нет ли сотрудника с таким же логином")
+				// тоже с email in prod
+				generatePassword("Генерируем пароль для сотрудника")
+				sendLinkToUserEmailWithPassword("Отпраляем письмо с паролем")
 				createUser("Создаем сотрудника")
 			}
 
@@ -56,6 +58,17 @@ class UserProcessor : IBaseProcessor<UserContext> {
 				worker("Подготовка к авторизации") { userIdValid = user.id }
 				validateUserLevel("Уровень доступа - сотрудник")
 				updateUser("Обновляем профиль")
+			}
+
+			operation("Обновить пароль сотрудника", UserCommand.UPDATE_PASSWORD) {
+				validateUserIdEmpty("Проверяем на непустой userId")
+				validatePasswordEmpty("Проверяем пароль")
+				validateNewPasswordEmpty("Проверяем новый пароль")
+				trimFieldUserIdAndCopyToValid("Очищаем userId")
+				trimFieldPasswords("Очищаем поля паролей")
+				getUserByIdHashPswFromDb("Получаем сотрудника из БД c хэш паролем")
+				validatePassword("Проверяем пароль")
+				updateUserPassword("Обновляем пароль")
 			}
 
 			operation("Получить сотрудника по id", UserCommand.GET_BY_ID) {
@@ -154,7 +167,7 @@ class UserProcessor : IBaseProcessor<UserContext> {
 				getUserAwardCountByCompanyAgrDepDb("Получаем количество наград сотрудников в компании по отделам")
 			}
 
-			operation("Обновить изображение сотрудника", UserCommand.UPDATE_IMAGE) {
+			operation("Обновить изображение сотрудника", UserCommand.UPDATE_IMAGE_OLD) {
 				worker("Подготовка") { userIdValid = imageEntityId }
 				validateUserLevel("Уровень доступа - сотрудник")
 				updateUserImageS3("Обновляем изображение в S3")

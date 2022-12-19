@@ -25,6 +25,6 @@ data class AuthContext(
 	enum class Command : IBaseCommand {
 		NONE,
 		LOGIN,
-		REFRESH
+		REFRESH,
 	}
 }

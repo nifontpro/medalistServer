@@ -1,6 +1,7 @@
 package ru.medals.domain.user.bussines.context
 
 import org.koin.java.KoinJavaComponent.inject
+import ru.medals.domain.auth.repository.AuthRepository
 import ru.medals.domain.award.repository.AwardRepository
 import ru.medals.domain.company.repository.CompanyRepository
 import ru.medals.domain.core.bussines.BaseContext
@@ -23,11 +24,15 @@ data class UserContext(
 	var userAwardCount: UserAwardCount = UserAwardCount(),
 	var usersAwardsCountDep: List<UserAwardsCountDep> = emptyList(),
 
+	var password: String = "",
+	var newPassword: String = "",
+
 	) : BaseContext(command = UserCommand.NONE) {
 
 	val userRepository: UserRepository by inject(UserRepository::class.java)
 	val companyRepository: CompanyRepository by inject(CompanyRepository::class.java)
 	val awardRepository: AwardRepository by inject(AwardRepository::class.java)
+	val authRepository: AuthRepository by inject(AuthRepository::class.java)
 }
 
 enum class UserCommand : IBaseCommand {
@@ -44,7 +49,8 @@ enum class UserCommand : IBaseCommand {
 	GET_BOSSES,
 	GET_BEST,
 	UPDATE,
-	UPDATE_IMAGE,
+	UPDATE_PASSWORD,
+	UPDATE_IMAGE_OLD,
 	DELETE,
 	COUNT_BY_COMPANY,
 	COUNT_BY_DEPARTMENT,

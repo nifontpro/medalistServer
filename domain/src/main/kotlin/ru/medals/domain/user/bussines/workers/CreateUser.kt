@@ -15,7 +15,7 @@ fun ICorChainDsl<UserContext>.createUser(title: String) = worker {
 	handle {
 
 		user = user.copy(
-			hashPassword = hashPassword(user.hashPassword ?: " "),
+			hashPassword = hashPassword(password),
 			score = 0,
 			currentScore = 0,
 			awardCount = 0,
