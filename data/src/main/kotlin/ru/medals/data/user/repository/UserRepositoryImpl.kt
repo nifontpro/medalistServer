@@ -185,7 +185,7 @@ class UserRepositoryImpl(
 	override suspend fun getUserByLogin(login: String): User? {
 		return users.findOne(
 			UserCol::login eq login,
-		)?.toUser()
+		)?.toUser(clearHashPassword = false)
 	}
 
 	override suspend fun verifyUserByLoginExist(login: String): Boolean {

@@ -6,15 +6,15 @@ import ru.medals.domain.core.bussines.helper.fail
 import ru.otus.cor.ICorChainDsl
 import ru.otus.cor.worker
 
-fun ICorChainDsl<AuthContext>.validateUserPasswordEmpty(title: String) = worker {
+fun ICorChainDsl<AuthContext>.validateUserLoginEmpty(title: String) = worker {
 	this.title = title
-	on { password.isBlank() }
+	on { login.isBlank() }
 	handle {
 		fail(
 			errorValidation(
-				field = "password",
+				field = "login",
 				violationCode = "empty",
-				description = "Пароль не должен быть пустым"
+				description = "Логин не должен быть пустым"
 			)
 		)
 	}

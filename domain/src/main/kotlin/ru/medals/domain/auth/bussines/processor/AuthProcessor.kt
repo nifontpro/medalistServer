@@ -2,10 +2,9 @@ package ru.medals.domain.auth.bussines.processor
 
 import ru.medals.domain.auth.bussines.context.AuthContext
 import ru.medals.domain.auth.bussines.validate.validatePassword
-import ru.medals.domain.auth.bussines.validate.validateUserEmailEmpty
+import ru.medals.domain.auth.bussines.validate.validateUserLoginEmpty
 import ru.medals.domain.auth.bussines.validate.validateUserPasswordEmpty
-import ru.medals.domain.auth.bussines.workers.generateTokens
-import ru.medals.domain.auth.bussines.workers.getUserByEmailFromDb
+import ru.medals.domain.auth.bussines.workers.*
 import ru.medals.domain.core.bussines.IBaseProcessor
 import ru.medals.domain.core.bussines.workers.finishOperation
 import ru.medals.domain.core.bussines.workers.initStatus
@@ -24,9 +23,13 @@ class AuthProcessor : IBaseProcessor<AuthContext> {
 			initStatus("Инициализация статуса")
 
 			operation("Вход", AuthContext.Command.LOGIN) {
-				validateUserEmailEmpty("Проверка, не пустой ли email")
+//				validateUserEmailEmpty("Проверка, не пустой ли email")
+				validateUserLoginEmpty("Проверка, не пустой ли Логин")
 				validateUserPasswordEmpty("Проверка, не пустой ли password")
-				getUserByEmailFromDb("Получаем пользователя по email")
+				trimFieldLogin("Очищаем логин")
+				trimFieldPassword("Очищаем пароль")
+//				getUserByEmailFromDb("Получаем пользователя по email")
+				getUserByLoginFromDb("Получаем пользователя по login")
 				validatePassword("Проверяем пароль")
 				generateTokens("Генерируем токены")
 			}
