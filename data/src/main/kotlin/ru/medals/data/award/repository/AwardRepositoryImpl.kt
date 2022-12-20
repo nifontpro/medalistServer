@@ -4,17 +4,21 @@ import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.coroutine.aggregate
 import ru.medals.data.award.model.AwardCol
+import ru.medals.data.award.model.AwardLiteCol
 import ru.medals.data.award.model.AwardUsersCol
 import ru.medals.data.award.model.toAwardColCreate
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardCreate
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardDelete
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardDeleteContainsUser
+import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardImageDelete
+import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardImageNotFound
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardNotFound
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardUpdate
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardUser
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardUserDelete
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorGetAward
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorGetAwardCount
+import ru.medals.data.core.errorS3
 import ru.medals.data.user.repository.query.getAwardsCountByCompanyQuery
 import ru.medals.domain.award.model.*
 import ru.medals.domain.award.repository.AwardRepository
@@ -74,6 +78,29 @@ class AwardRepositoryImpl(
 			val awardCol = awards.findOneById(id = id)?.toAward()
 			if (awardCol != null) {
 				RepositoryData.success(data = awardCol)
+			} else {
+				errorAwardNotFound()
+			}
+		} catch (e: Exception) {
+			errorGetAward()
+		}
+	}
+
+	override suspend fun getAwardLiteById(id: String): RepositoryData<AwardLite> {
+		return try {
+			val awardLiteCol = awards.aggregate<AwardLiteCol>(
+				match(AwardCol::id eq id),
+				project(
+					AwardCol::name from 1,
+					AwardCol::imageUrl from 1,
+					AwardCol::imageKey from 1,
+					AwardCol::companyId from 1,
+					AwardCol::startDate from 1,
+					AwardCol::endDate from 1,
+				)
+			).first()?.toAwardLite()
+			if (awardLiteCol != null) {
+				RepositoryData.success(data = awardLiteCol)
 			} else {
 				errorAwardNotFound()
 			}
@@ -268,4 +295,25 @@ class AwardRepositoryImpl(
 			return false
 		}
 	}
+
+	/**
+	 * Удаление основного изображения награды
+	 */
+
+	// Добавить транзакции!!!
+	override suspend fun deleteMainImage(awardLite: AwardLite): RepositoryData<Unit> {
+		if (!s3repository.available()) return errorS3()
+		val imageKey = awardLite.imageKey ?: return errorAwardImageNotFound()
+
+		if (!s3repository.deleteObject(key = imageKey)) return errorAwardImageDelete()
+		awards.updateOneById(
+			id = awardLite.id,
+			update = set(
+				AwardCol::imageKey setTo null,
+				AwardCol::imageUrl setTo null,
+			)
+		)
+		return RepositoryData.success()
+	}
+
 }

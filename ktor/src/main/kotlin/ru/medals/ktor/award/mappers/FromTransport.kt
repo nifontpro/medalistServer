@@ -77,3 +77,8 @@ fun AwardContext.fromTransport(request: GetAwardCountByCompanyRequest) {
 	command = AwardCommand.GET_COUNT
 	companyId = request.companyId
 }
+
+fun AwardContext.fromTransport(request: AwardDeleteMainImageRequest) {
+	command = AwardCommand.DELETE_IMAGE_OLD
+	awardId = request.awardId ?: ""
+}

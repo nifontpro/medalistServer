@@ -29,6 +29,10 @@ fun Route.awardRoutes() {
 				call.updateAwardImageOld(awardProcessor)
 			}
 
+			delete("delete/image") {
+				call.deleteAwardImageOld(awardProcessor)
+			}
+
 			post("user") {
 				call.awardUser(awardProcessor)
 			}

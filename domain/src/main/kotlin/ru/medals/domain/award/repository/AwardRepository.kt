@@ -1,9 +1,6 @@
 package ru.medals.domain.award.repository
 
-import ru.medals.domain.award.model.Award
-import ru.medals.domain.award.model.AwardCount
-import ru.medals.domain.award.model.AwardRelate
-import ru.medals.domain.award.model.AwardUsers
+import ru.medals.domain.award.model.*
 import ru.medals.domain.core.bussines.model.RepositoryData
 import ru.medals.domain.image.model.FileData
 
@@ -11,6 +8,7 @@ interface AwardRepository {
 	suspend fun create(award: Award): RepositoryData<Award>
 	suspend fun delete(id: String): RepositoryData<Award>
 	suspend fun getById(id: String): RepositoryData<Award>
+	suspend fun getAwardLiteById(id: String): RepositoryData<AwardLite>
 	suspend fun getByCompany(companyId: String, filter: String?): RepositoryData<List<Award>>
 	suspend fun getAwardsWithUsers(companyId: String, filter: String?): RepositoryData<List<AwardUsers>>
 	suspend fun getByIdWithUsers(awardId: String): RepositoryData<AwardUsers>
@@ -21,4 +19,6 @@ interface AwardRepository {
 	suspend fun deleteUserAward(awardId: String, userId: String): RepositoryData<AwardRelate>
 	suspend fun deleteUserAwards(userId: String): RepositoryData<Long>
 	suspend fun getAwardsCountByCompany(companyId: String): RepositoryData<AwardCount>
+	suspend fun deleteMainImage(awardLite: AwardLite): RepositoryData<Unit>
+
 }

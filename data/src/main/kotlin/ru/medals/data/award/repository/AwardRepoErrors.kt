@@ -40,6 +40,22 @@ interface AwardRepoErrors {
 			)
 		)
 
+		fun errorAwardImageDelete() = RepositoryData.error(
+			error = RepositoryError(
+				repository = REPO,
+				violationCode = "image delete error",
+				description = "Ошибка удаления изображения у награды"
+			)
+		)
+
+		fun errorAwardImageNotFound() = RepositoryData.error(
+			error = RepositoryError(
+				repository = REPO,
+				violationCode = "image not found",
+				description = "У награды отсутствует изображение"
+			)
+		)
+
 		fun errorAwardUserDelete() = RepositoryData.error(
 			error = RepositoryError(
 				repository = REPO,

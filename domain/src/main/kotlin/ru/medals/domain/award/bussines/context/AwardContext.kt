@@ -10,6 +10,7 @@ import ru.medals.domain.user.repository.UserRepository
 data class AwardContext(
 
 	var award: Award = Award(),
+	var awardLite: AwardLite = AwardLite(),
 	var awardUsers: AwardUsers = AwardUsers(),
 	var awards: List<Award> = emptyList(),
 	var awardsUsers: List<AwardUsers> = emptyList(),
@@ -37,6 +38,7 @@ enum class AwardCommand : IBaseCommand {
 	GET_BY_COMPANY_WITH_USERS,
 	UPDATE,
 	UPDATE_IMAGE_OLD,
+	DELETE_IMAGE_OLD,
 	AWARD_USER,
 	AWARD_USER_DELETE,
 	GET_COUNT

@@ -86,3 +86,9 @@ suspend fun ApplicationCall.updateAwardImageOld(processor: AwardProcessor) {
 	val context = AwardContext().apply { command = AwardCommand.UPDATE_IMAGE_OLD }
 	processImageSingle(context = context, processor = processor)
 }
+
+suspend fun ApplicationCall.deleteAwardImageOld(processor: AwardProcessor) =
+	authProcess<AwardDeleteMainImageRequest, Unit, AwardContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+	)

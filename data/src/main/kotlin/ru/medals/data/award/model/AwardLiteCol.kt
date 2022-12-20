@@ -8,8 +8,10 @@ import java.util.*
 data class AwardLiteCol(
 	val name: String,
 	val imageUrl: String? = null,
+	val imageKey: String? = null,
 	val startDate: Date? = null,
 	val endDate: Date? = null,
+	val companyId: String = "",
 
 	@BsonId
 	val id: String = ObjectId().toString()
@@ -18,7 +20,9 @@ data class AwardLiteCol(
 	fun toAwardLite() = AwardLite(
 		name = name,
 		imageUrl = imageUrl,
+		imageKey = imageKey,
 		state = calcAwardState(startDate, endDate),
+		companyId = companyId,
 
 		id = id
 	)
