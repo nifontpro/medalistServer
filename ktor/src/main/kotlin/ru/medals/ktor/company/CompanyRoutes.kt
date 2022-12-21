@@ -38,7 +38,11 @@ fun Route.companyRoutes() {
 			}
 
 			put("image/update") {
-				call.updateCompanyImageOld(companyProcessor)
+				call.updateCompanyMainImage(companyProcessor)
+			}
+
+			delete("image/delete") {
+				call.deleteCompanyMainImage(companyProcessor)
 			}
 
 			post("image") {

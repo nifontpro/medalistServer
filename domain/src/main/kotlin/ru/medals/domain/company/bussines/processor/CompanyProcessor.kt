@@ -1,5 +1,6 @@
 package ru.medals.domain.company.bussines.processor
 
+import ru.medals.domain.company.bussines.context.CompanyCommand
 import ru.medals.domain.company.bussines.context.CompanyContext
 import ru.medals.domain.company.bussines.validate.validateCompanyNameEmpty
 import ru.medals.domain.company.bussines.validate.validateOwnerPrincipalUser
@@ -20,29 +21,29 @@ class CompanyProcessor : IBaseProcessor<CompanyContext> {
 		private val businessChain = rootChain<CompanyContext> {
 			initStatus("Инициализация статуса")
 
-			operation("Создать компанию с пустыми полями", CompanyContext.Command.CREATE_EMPTY) {
+			operation("Создать компанию с пустыми полями", CompanyCommand.CREATE_EMPTY) {
 				validateOwnerPrincipalUser("Проверка на владельца")
 				createEmptyCompany("Создаем компанию")
 			}
 
-			operation("Создать компанию", CompanyContext.Command.CREATE) {
+			operation("Создать компанию", CompanyCommand.CREATE) {
 				validateOwnerPrincipalUser("Проверка на владельца")
 				validateCompanyNameEmpty("Проверка наименования компании")
 				doesCompanyWithNameExist("Проверка, есть ли компания с таким наименованием")
 				createCompany("Создаем компанию")
 			}
 
-			operation("Обновить данные компании", CompanyContext.Command.UPDATE) {
+			operation("Обновить данные компании", CompanyCommand.UPDATE) {
 				validateCompanyIdEmpty("Проверка на непустой companyId")
 				validateCompanyNameEmpty("Проверка наименования компании")
 				trimFieldCompanyIdAndCopyToValid("Подготовка к авторизации")
-				validateOwnerLevel("Уровень доступа - владелец компаний")
+				validateAdminLevel("Уровень доступа - администратор")
 				trimFieldCompany("Очищаем поля")
 				doesOtherCompanyWithNameExist("Проверка, есть ли у Владельца компания с таким наименованием")
 				updateCompany("Обновляем данные")
 			}
 
-			operation("Удалить компанию", CompanyContext.Command.DELETE) {
+			operation("Удалить компанию", CompanyCommand.DELETE) {
 				validateCompanyIdEmpty("Проверка на непустой companyId")
 				trimFieldCompanyIdAndCopyToValid("Подготовка к авторизации")
 				validateOwnerLevel("Уровень доступа - владелец компаний")
@@ -50,32 +51,39 @@ class CompanyProcessor : IBaseProcessor<CompanyContext> {
 				deleteCompany("Удаляем компанию")
 			}
 
-			operation("Получить все компании", CompanyContext.Command.GET_ALL) {
+			operation("Получить все компании", CompanyCommand.GET_ALL) {
 				getAllCompanies("Получаем компании из БД")
 			}
 
-			operation("Получить по id", CompanyContext.Command.GET_BY_ID) {
+			operation("Получить по id", CompanyCommand.GET_BY_ID) {
 				validateCompanyIdEmpty("Проверка на непустой companyId")
 				trimFieldCompanyIdAndCopyToValid("Очищаем и копируем")
 				getCompanyById("Получаем компанию из БД")
 			}
 
-			operation("Получить компании владельца", CompanyContext.Command.GET_BY_OWNER) {
+			operation("Получить компании владельца", CompanyCommand.GET_BY_OWNER) {
 				prepareFilter("Подготовка фильтра")
 				getOwnerCompanies("Получаем компании из БД")
 			}
 
-			operation("Получить количество компаний владельца", CompanyContext.Command.GET_COUNT_BY_OWNER) {
+			operation("Получить количество компаний владельца", CompanyCommand.GET_COUNT_BY_OWNER) {
 				getOwnerCompanyCount("Получаем количество компаний из БД")
 			}
 
-			operation("Обновить изображение компании", CompanyContext.Command.UPDATE_IMAGE) {
+			operation("Обновить основное изображение компании", CompanyCommand.UPDATE_MAIN_IMAGE) {
 				worker("Подготовка") { companyIdValid = imageEntityId }
-				validateOwnerLevel("Уровень доступа - владелец компаний")
-				updateCompanyImageS3("Обновляем изображение в S3")
+				validateAdminLevel("Уровень доступа - администратор")
+				updateCompanyMainImageS3("Обновляем изображение в S3")
 			}
 
-			operation("Добавить изображение компании", CompanyContext.Command.IMAGE_ADD) {
+			operation("Удалить основное изображение компании", CompanyCommand.DELETE_MAIN_IMAGE) {
+				validateCompanyIdEmpty("Проверка на непустой companyId")
+				trimFieldCompanyIdAndCopyToValid("Очищаем и копируем")
+				validateAdminLevel("Уровень доступа - администратор")
+				deleteCompanyMainImageDb("Удаляем основное изображение")
+			}
+
+			operation("Добавить изображение компании", CompanyCommand.IMAGE_ADD) {
 				validateCompanyIdEmpty("Проверка на непустой companyId")
 				trimFieldCompanyIdAndCopyToValid("Подготовка к авторизации")
 				validateOwnerLevel("Уровень доступа - владелец компаний")
@@ -83,7 +91,7 @@ class CompanyProcessor : IBaseProcessor<CompanyContext> {
 				addCompanyImageToDb("Добавляем изображение в БД")
 			}
 
-			operation("Обновить изображение компании", CompanyContext.Command.IMAGE_UPDATE) {
+			operation("Обновить изображение компании", CompanyCommand.IMAGE_UPDATE) {
 				validateCompanyIdEmpty("Проверка на непустой companyId")
 				validateImageKeyEmpty("Проверяем imageKey")
 				trimFieldCompanyIdAndCopyToValid("Подготовка к авторизации")
@@ -93,7 +101,7 @@ class CompanyProcessor : IBaseProcessor<CompanyContext> {
 				updateCompanyImageDb("Обновляем изображение")
 			}
 
-			operation("Удалить изображение компании", CompanyContext.Command.IMAGE_DELETE) {
+			operation("Удалить изображение компании", CompanyCommand.IMAGE_DELETE) {
 				validateCompanyIdEmpty("Проверка на непустой companyId")
 				validateImageKeyEmpty("Проверяем imageKey")
 				trimFieldCompanyIdAndCopyToValid("Подготовка к авторизации")

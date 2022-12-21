@@ -246,7 +246,6 @@ class UserRepositoryImpl(
 					UserCol::phone setTo user.phone,
 					UserCol::gender setTo user.gender,
 					UserCol::description setTo user.description,
-					UserCol::hashPassword setTo user.hashPassword
 				)
 			).wasAcknowledged()
 		} catch (e: Exception) {
@@ -416,6 +415,30 @@ class UserRepositoryImpl(
 		}
 
 		return isSuccess
+	}
+
+	/**
+	 * Удаление основного изображения
+	 */
+
+	// Добавить транзакции!!!
+	override suspend fun deleteMainImage(userId: String): RepositoryData<Unit> {
+		if (!s3repository.available()) return errorS3()
+
+		val imageKey = users.aggregate<UserCol>(
+			match(UserCol::id eq userId),
+			project(UserCol::imageKey)
+		).first()?.imageKey ?: return errorUserImageNotFound()
+
+		if (!s3repository.deleteObject(key = imageKey)) return errorUserImageDelete()
+		users.updateOneById(
+			id = userId,
+			update = set(
+				UserCol::imageKey setTo null,
+				UserCol::imageUrl setTo null,
+			)
+		)
+		return RepositoryData.success()
 	}
 
 	override suspend fun addImage(userId: String, fileData: FileData): RepositoryData<Unit> {

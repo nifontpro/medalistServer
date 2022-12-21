@@ -1,16 +1,17 @@
 package ru.medals.ktor.company.mappers
 
+import ru.medals.domain.company.bussines.context.CompanyCommand
 import ru.medals.domain.company.bussines.context.CompanyContext
 import ru.medals.domain.company.model.Company
 import ru.medals.ktor.company.model.request.*
 
 @Suppress("UNUSED_PARAMETER")
 fun CompanyContext.fromTransport(request: CreateEmptyCompanyRequest) {
-	command = CompanyContext.Command.CREATE_EMPTY
+	command = CompanyCommand.CREATE_EMPTY
 }
 
 fun CompanyContext.fromTransport(request: CreateCompanyRequest) {
-	command = CompanyContext.Command.CREATE
+	command = CompanyCommand.CREATE
 	company = Company(
 		name = request.name ?: "",
 		description = request.description,
@@ -21,32 +22,32 @@ fun CompanyContext.fromTransport(request: CreateCompanyRequest) {
 }
 
 fun CompanyContext.fromTransport(request: DeleteCompanyRequest) {
-	command = CompanyContext.Command.DELETE
+	command = CompanyCommand.DELETE
 	companyId = request.companyId
 }
 
 @Suppress("UNUSED_PARAMETER")
 fun CompanyContext.fromTransport(request: GetAllCompanyRequest) {
-	command = CompanyContext.Command.GET_ALL
+	command = CompanyCommand.GET_ALL
 }
 
 fun CompanyContext.fromTransport(request: GetCompanyByIdRequest) {
-	command = CompanyContext.Command.GET_BY_ID
+	command = CompanyCommand.GET_BY_ID
 	companyId = request.companyId
 }
 
 fun CompanyContext.fromTransport(request: GetCompaniesByOwnerRequest) {
-	command = CompanyContext.Command.GET_BY_OWNER
+	command = CompanyCommand.GET_BY_OWNER
 	searchFilter = request.filter
 }
 
 @Suppress("UNUSED_PARAMETER")
 fun CompanyContext.fromTransport(request: GetCompanyCountRequest) {
-	command = CompanyContext.Command.GET_COUNT_BY_OWNER
+	command = CompanyCommand.GET_COUNT_BY_OWNER
 }
 
 fun CompanyContext.fromTransport(request: UpdateCompanyRequest) {
-	command = CompanyContext.Command.UPDATE
+	command = CompanyCommand.UPDATE
 	companyId = request.id
 
 	company = Company(
@@ -60,7 +61,12 @@ fun CompanyContext.fromTransport(request: UpdateCompanyRequest) {
 }
 
 fun CompanyContext.fromTransport(request: DeleteCompanyImageRequest) {
-	command = CompanyContext.Command.IMAGE_DELETE
+	command = CompanyCommand.IMAGE_DELETE
 	companyId = request.companyId
 	imageKey = request.imageKey
+}
+
+fun CompanyContext.fromTransport(request: DeleteCompanyMainImageRequest) {
+	command = CompanyCommand.DELETE_MAIN_IMAGE
+	companyId = request.companyId
 }

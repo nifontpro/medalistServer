@@ -33,7 +33,11 @@ fun Route.userRoutes() {
 			}
 
 			put("image/update") {
-				call.updateUserImageOld(userProcessor)
+				call.updateUserMainImage(userProcessor)
+			}
+
+			delete("image/delete") {
+				call.deleteUserMainImage(userProcessor)
 			}
 
 			post("image") {

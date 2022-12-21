@@ -145,10 +145,16 @@ suspend fun ApplicationCall.getUserAwardCountDepByCompany(processor: UserProcess
 	)
 
 
-suspend fun ApplicationCall.updateUserImageOld(processor: UserProcessor) {
-	val context = UserContext().apply { command = UserCommand.UPDATE_IMAGE_OLD }
+suspend fun ApplicationCall.updateUserMainImage(processor: UserProcessor) {
+	val context = UserContext().apply { command = UserCommand.UPDATE_MAIN_IMAGE }
 	processImageSingle(context = context, processor = processor)
 }
+
+suspend fun ApplicationCall.deleteUserMainImage(processor: UserProcessor) =
+	authProcess<DeleteMainImageRequest, Unit, UserContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+	)
 
 suspend fun ApplicationCall.createUserImage(processor: UserProcessor) {
 	val context = UserContext().apply { command = UserCommand.IMAGE_ADD }

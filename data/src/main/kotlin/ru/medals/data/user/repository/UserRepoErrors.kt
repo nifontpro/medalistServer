@@ -29,6 +29,22 @@ fun errorUserDelete() = RepositoryData.error(
 	)
 )
 
+fun errorUserImageDelete() = RepositoryData.error(
+	error = RepositoryError(
+		repository = REPO,
+		violationCode = "image delete error",
+		description = "Ошибка удаления изображения у сотрудника"
+	)
+)
+
+fun errorUserImageNotFound() = RepositoryData.error(
+	error = RepositoryError(
+		repository = REPO,
+		violationCode = "image not found",
+		description = "У сотрудника отсутствует изображение"
+	)
+)
+
 fun errorUserNotFound() = RepositoryData.error(
 	error = RepositoryError(
 		repository = REPO,
@@ -53,10 +69,10 @@ fun errorUserUpdate() = RepositoryData.error(
 	)
 )
 
-	fun errorUserAwardCountUpdate() = RepositoryData.error(
-		error = RepositoryError(
-			repository = REPO,
-			violationCode = "bad update",
-			description = "Ошибка при обновлении количества наград сотрудника"
-		)
+fun errorUserAwardCountUpdate() = RepositoryData.error(
+	error = RepositoryError(
+		repository = REPO,
+		violationCode = "bad update",
+		description = "Ошибка при обновлении количества наград сотрудника"
+	)
 )

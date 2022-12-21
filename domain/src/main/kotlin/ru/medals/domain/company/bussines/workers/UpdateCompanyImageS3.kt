@@ -6,7 +6,7 @@ import ru.medals.domain.core.bussines.helper.checkRepositoryBool
 import ru.otus.cor.ICorChainDsl
 import ru.otus.cor.worker
 
-fun ICorChainDsl<CompanyContext>.updateCompanyImageS3(title: String) = worker {
+fun ICorChainDsl<CompanyContext>.updateCompanyMainImageS3(title: String) = worker {
 
 	this.title = title
 	on { state == ContextState.RUNNING }

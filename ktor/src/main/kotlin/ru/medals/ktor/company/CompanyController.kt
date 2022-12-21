@@ -1,6 +1,7 @@
 package ru.medals.ktor.company
 
 import io.ktor.server.application.*
+import ru.medals.domain.company.bussines.context.CompanyCommand
 import ru.medals.domain.company.bussines.context.CompanyContext
 import ru.medals.domain.company.bussines.processor.CompanyProcessor
 import ru.medals.domain.company.model.Company
@@ -60,10 +61,16 @@ suspend fun ApplicationCall.updateCompanyProfile(processor: CompanyProcessor) =
 		fromTransport = { request -> fromTransport(request) },
 	)
 
-suspend fun ApplicationCall.updateCompanyImageOld(processor: CompanyProcessor) {
-	val context = CompanyContext().apply { command = CompanyContext.Command.UPDATE_IMAGE }
+suspend fun ApplicationCall.updateCompanyMainImage(processor: CompanyProcessor) {
+	val context = CompanyContext().apply { command = CompanyCommand.UPDATE_MAIN_IMAGE }
 	processImageSingle(context = context, processor = processor)
 }
+
+suspend fun ApplicationCall.deleteCompanyMainImage(processor: CompanyProcessor) =
+	process<DeleteCompanyMainImageRequest, Unit, CompanyContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+	)
 
 suspend fun ApplicationCall.getCountByOwner(processor: CompanyProcessor) =
 	authProcess<GetCompanyCountRequest, Long, CompanyContext>(
@@ -73,12 +80,12 @@ suspend fun ApplicationCall.getCountByOwner(processor: CompanyProcessor) =
 	)
 
 suspend fun ApplicationCall.createCompanyImage(processor: CompanyProcessor) {
-	val context = CompanyContext().apply { command = CompanyContext.Command.IMAGE_ADD }
+	val context = CompanyContext().apply { command = CompanyCommand.IMAGE_ADD }
 	processImage(context = context, processor = processor)
 }
 
 suspend fun ApplicationCall.updateCompanyImage(processor: CompanyProcessor) {
-	val context = CompanyContext().apply { command = CompanyContext.Command.IMAGE_UPDATE }
+	val context = CompanyContext().apply { command = CompanyCommand.IMAGE_UPDATE }
 	processImage(context = context, processor = processor)
 }
 

@@ -53,7 +53,6 @@ class UserProcessor : IBaseProcessor<UserContext> {
 			operation("Обновить профиль сотрудника", UserCommand.UPDATE) {
 				validateUserIdEmptyLocal("Проверяем на непустой userId")
 				validateUserLoginBlank("Проверка login, может быть null, если не меняем")
-				validateUserPasswordBlank("Проверка пароля, может быть null, если не меняем")
 				trimFieldUser("Очищаем поля")
 				worker("Подготовка к авторизации") { userIdValid = user.id }
 				validateUserLevel("Уровень доступа - сотрудник")
@@ -167,10 +166,17 @@ class UserProcessor : IBaseProcessor<UserContext> {
 				getUserAwardCountByCompanyAgrDepDb("Получаем количество наград сотрудников в компании по отделам")
 			}
 
-			operation("Обновить изображение сотрудника", UserCommand.UPDATE_IMAGE_OLD) {
+			operation("Обновить основное изображение сотрудника", UserCommand.UPDATE_MAIN_IMAGE) {
 				worker("Подготовка") { userIdValid = imageEntityId }
 				validateUserLevel("Уровень доступа - сотрудник")
-				updateUserImageS3("Обновляем изображение в S3")
+				updateUserMainImageS3("Обновляем изображение в S3")
+			}
+
+			operation("Удалить основное изображение сотрудника", UserCommand.DELETE_MAIN_IMAGE) {
+				validateUserIdEmpty("Проверяем на непустой userId")
+				trimFieldUserIdAndCopyToValid("Очищаем userId")
+				validateUserLevel("Уровень доступа - сотрудник")
+				deleteUserMainImageDb("Удаляем изображение в S3")
 			}
 
 			operation("Добавить изображение сотрудника", UserCommand.IMAGE_ADD) {

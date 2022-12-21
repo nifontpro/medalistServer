@@ -33,6 +33,11 @@ fun UserContext.fromTransport(request: GetUserByIdRequest) {
 	userId = request.userId
 }
 
+fun UserContext.fromTransport(request: DeleteMainImageRequest) {
+	command = UserCommand.DELETE_MAIN_IMAGE
+	userId = request.userId
+}
+
 fun UserContext.fromTransport(request: GetUserByIdDepNameRequest) {
 	command = UserCommand.GET_BY_ID_DEP_NAME
 	userId = request.userId
@@ -96,7 +101,6 @@ fun UserContext.fromTransport(request: UpdateUserRequest) {
 	user = User(
 		id = request.id,
 		login = request.login,
-		hashPassword = request.password,
 		email = request.email,
 		name = request.name,
 		patronymic = request.patronymic,

@@ -23,6 +23,7 @@ interface UserRepository {
 	suspend fun getCompanyAdmins(companyId: String, filter: String?): List<User>
 
 	suspend fun updateImage(userId: String, fileData: FileData): Boolean
+	suspend fun deleteMainImage(userId: String): RepositoryData<Unit>
 
 	suspend fun addImage(userId: String, fileData: FileData): RepositoryData<Unit>
 	suspend fun updateImage(userId: String, imageKey: String, fileData: FileData): RepositoryData<Unit>
@@ -54,4 +55,5 @@ interface UserRepository {
 	suspend fun getAwardCountByCompany(companyId: String): RepositoryData<UserAwardCount>
 	suspend fun getAwardCountByDepartment(departmentId: String): RepositoryData<UserAwardCount>
 	suspend fun getUsersAwardsCountAggregate(companyId: String): RepositoryData<List<UserAwardsCountDep>>
+
 }
