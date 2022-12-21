@@ -75,12 +75,8 @@ class AwardRepositoryImpl(
 
 	override suspend fun getById(id: String): RepositoryData<Award> {
 		return try {
-			val awardCol = awards.findOneById(id = id)?.toAward()
-			if (awardCol != null) {
-				RepositoryData.success(data = awardCol)
-			} else {
-				errorAwardNotFound()
-			}
+			val awardCol = awards.findOneById(id = id)?.toAward() ?: return errorAwardNotFound()
+			RepositoryData.success(data = awardCol)
 		} catch (e: Exception) {
 			errorGetAward()
 		}

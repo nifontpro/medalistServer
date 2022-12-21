@@ -37,7 +37,7 @@ fun <T : BaseContext> ICorChainDsl<T>.validateOwnerLevel(
 			fail(
 				errorUnauthorized(
 					role = "owner",
-					description = "владелец компаний"
+					description = "Владелец компаний"
 				)
 			)
 		}

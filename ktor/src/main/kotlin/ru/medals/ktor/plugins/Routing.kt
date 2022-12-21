@@ -10,6 +10,7 @@ import ru.medals.ktor.award.awardRoutes
 import ru.medals.ktor.company.companyRoutes
 import ru.medals.ktor.department.departmentRoutes
 import ru.medals.ktor.medal.medalRoutes
+import ru.medals.ktor.message.messageRoutes
 import ru.medals.ktor.register.registerRoutes
 import ru.medals.ktor.user.userRoutes
 import java.io.File
@@ -26,6 +27,7 @@ fun Application.configureRouting() {
 			departmentRoutes()
 			medalRoutes()
 			awardRoutes()
+			messageRoutes()
 
 			get("/") {
 				call.respondText("Medalist server MVP")

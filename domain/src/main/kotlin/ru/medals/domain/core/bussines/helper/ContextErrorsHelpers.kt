@@ -116,7 +116,7 @@ fun errorUnauthorized(
 	code = "unauthorized-$role",
 	field = role,
 	group = "unauthorized",
-	message = "Недостаточно прав для совершения операции (минимум $description)",
+	message = "Недостаточно прав для совершения операции (минимум '$description')",
 	level = level,
 )
 

@@ -1,8 +1,10 @@
 package ru.medals.domain.core.bussines
 
+import org.koin.java.KoinJavaComponent.inject
 import ru.medals.domain.core.bussines.helper.ContextError
 import ru.medals.domain.core.util.Constants.TEST_MODE
 import ru.medals.domain.image.model.FileData
+import ru.medals.domain.message.repository.MessageRepository
 import ru.medals.domain.user.model.User
 
 interface IBaseCommand
@@ -34,6 +36,9 @@ abstract class BaseContext(
 	var imageKeyValid: String = "",
 	var fileData: FileData = FileData(),
 
+	// Для отпраки сообщений
+//	var message: Message = Message(),
+
 	// Возвращаемые параметры:
 	var responseId: String = "",
 	var countResponse: Long = -1,
@@ -42,6 +47,8 @@ abstract class BaseContext(
 	var testMode: Boolean = false,
 ) {
 	fun prodMode() = !(testMode && TEST_MODE)
+
+	val messageRepository: MessageRepository by inject(MessageRepository::class.java)
 }
 
 @Suppress("unused")

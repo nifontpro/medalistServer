@@ -16,6 +16,14 @@ interface MessageRepoErrors {
 			)
 		)
 
+		fun errorMessageNotFound() = RepositoryData.error(
+			error = RepositoryError(
+				repository = REPO,
+				violationCode = "$REPO not found",
+				description = "Сообщение не найдено"
+			)
+		)
+
 		fun errorMessageWrite() = RepositoryData.error(
 			error = RepositoryError(
 				repository = REPO,

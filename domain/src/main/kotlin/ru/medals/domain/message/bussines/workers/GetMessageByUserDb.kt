@@ -6,15 +6,14 @@ import ru.medals.domain.message.bussines.context.MessageContext
 import ru.otus.cor.ICorChainDsl
 import ru.otus.cor.worker
 
-fun ICorChainDsl<MessageContext>.sendMessage(title: String) = worker {
+fun ICorChainDsl<MessageContext>.getMessageByUserDb(title: String) = worker {
 
 	this.title = title
 	on { state == ContextState.RUNNING }
 
 	handle {
-		checkRepositoryData {
-			message = message.copy(fromId = principalUser.id)
-			messageRepository.send(message)
-		}
+		messages = checkRepositoryData {
+			messageRepository.getByUser(userId = userIdValid)
+		} ?: return@handle
 	}
 }

@@ -4,6 +4,7 @@ import ru.medals.domain.award.bussines.context.AwardCommand
 import ru.medals.domain.award.bussines.context.AwardContext
 import ru.medals.domain.award.bussines.validate.*
 import ru.medals.domain.award.bussines.workers.*
+import ru.medals.domain.award.bussines.workers.message.awardUserMsg
 import ru.medals.domain.core.bussines.IBaseProcessor
 import ru.medals.domain.core.bussines.workers.*
 import ru.medals.domain.core.bussines.workers.validation.validateAdminLevel
@@ -108,6 +109,8 @@ class AwardProcessor : IBaseProcessor<AwardContext> {
 				prepareAwardRelate("Подготовка данных награждения")
 				awardUserDb("Награждаем сотрудника")
 				incrementAwardUserDb("Увеличиваем число наград у сотрудника на 1")
+
+				awardUserMsg("Отправляем сотруднику сообщение о награждении")
 			}
 
 			operation("Удалить награждение сотрудника", AwardCommand.AWARD_USER_DELETE) {

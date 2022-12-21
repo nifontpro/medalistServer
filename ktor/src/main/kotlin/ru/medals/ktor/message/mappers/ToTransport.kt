@@ -1,5 +1,6 @@
 package ru.medals.ktor.message.mappers
 
-//fun DepartmentContext.toTransportGetById(): Department = department
-//
-//fun DepartmentContext.toTransportGetByCompany(): List<Department> = departments
+import ru.medals.domain.message.bussines.context.MessageContext
+import ru.medals.domain.message.model.Message
+
+fun MessageContext.toTransportGetMessages(): List<Message> = messages

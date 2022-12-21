@@ -11,12 +11,29 @@ fun Route.messageRoutes() {
 
 	val messageProcessor: MessageProcessor by inject()
 
-	route("api/message") {
+	route("message") {
 
 		authenticate(USER) {
 
+			/**
+			 * Отправить сообщение
+			 */
 			post {
 				call.sendMessage(messageProcessor)
+			}
+
+			/**
+			 * Получить сообщения сотрудника
+			 */
+			post("user") {
+				call.getMessageByUser(messageProcessor)
+			}
+
+			/**
+			 * Пометить сообщение как прочитанное
+			 */
+			post("read") {
+				call.markMessageAsRead(messageProcessor)
 			}
 
 		}

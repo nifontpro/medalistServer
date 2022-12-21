@@ -74,6 +74,7 @@ class UserProcessor : IBaseProcessor<UserContext> {
 				validateUserIdEmpty("Проверяем на непустой userId")
 				trimFieldUserIdAndCopyToValid("Очищаем userId")
 				getUserByIdFromDb("Получаем сотрудника из БД")
+//				infoUserMsg("Test")
 			}
 
 			operation("Получить сотрудника по id", UserCommand.GET_BY_ID_AWARDS) {

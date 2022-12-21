@@ -37,7 +37,7 @@ fun <T : BaseContext> ICorChainDsl<T>.validateUserLevel(
 			fail(
 				errorUnauthorized(
 					role = "director",
-					description = "директор отдела",
+					description = "Сотрудник",
 				)
 			)
 		}

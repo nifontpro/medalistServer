@@ -8,6 +8,7 @@ import ru.medals.data.message.model.MessageCol
 import ru.medals.data.message.model.toMessageColCreate
 import ru.medals.data.message.repository.MessageRepoErrors.Companion.errorMessageDelete
 import ru.medals.data.message.repository.MessageRepoErrors.Companion.errorMessageGet
+import ru.medals.data.message.repository.MessageRepoErrors.Companion.errorMessageNotFound
 import ru.medals.data.message.repository.MessageRepoErrors.Companion.errorMessageWrite
 import ru.medals.domain.core.bussines.model.RepositoryData
 import ru.medals.domain.message.model.Message
@@ -20,7 +21,7 @@ class MessageRepositoryImpl(
 
 	private val messages = db.getCollection<MessageCol>()
 
-	override suspend fun insert(message: Message): RepositoryData<Message> {
+	override suspend fun send(message: Message): RepositoryData<Message> {
 		val messageCol = message.toMessageColCreate().copy(
 			sendDate = Date(System.currentTimeMillis()),
 			read = false
@@ -45,10 +46,19 @@ class MessageRepositoryImpl(
 
 	override suspend fun getByUser(userId: String): RepositoryData<List<Message>> {
 		return try {
-			val messages = messages.find(MessageCol::toId eq userId)
+			val messageList = messages.find(MessageCol::toId eq userId)
 				.ascendingSort(MessageCol::sendDate)
 				.toList().map { it.toMessage() }
-			RepositoryData.success(data = messages)
+			RepositoryData.success(data = messageList)
+		} catch (e: Exception) {
+			errorMessageGet()
+		}
+	}
+
+	override suspend fun getById(messageId: String): RepositoryData<Message> {
+		return try {
+			val message = messages.findOneById(id = messageId)?.toMessage() ?: return errorMessageNotFound()
+			RepositoryData.success(data = message)
 		} catch (e: Exception) {
 			errorMessageGet()
 		}
@@ -83,6 +93,5 @@ class MessageRepositoryImpl(
 			errorMessageWrite()
 		}
 	}
-
 
 }
