@@ -40,6 +40,14 @@ class MessageProcessor : IBaseProcessor<MessageContext> {
 				markMessageReadDb("Помечаем сообщение как прочитанное")
 			}
 
+			operation("Пометить сообщение как непрочитаное", MessageCommand.MARK_UNREAD) {
+				validateMessageIdEmpty("Проверяем messageId")
+				trimFieldMessageId("Очищаем")
+				getMessageByIdDb("Получаем сообщение сотрудника")
+				validateUserLevel("Доступ к сообщениям - сотрудник и выше")
+				markMessageUnreadDb("Помечаем сообщение как непрочитанное")
+			}
+
 			finishOperation()
 		}.build()
 	}

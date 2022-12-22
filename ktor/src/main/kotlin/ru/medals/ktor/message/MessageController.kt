@@ -11,6 +11,7 @@ import ru.medals.ktor.message.mappers.fromTransport
 import ru.medals.ktor.message.mappers.toTransportGetMessages
 import ru.medals.ktor.message.model.request.GetMessageByUserRequest
 import ru.medals.ktor.message.model.request.MarkMessageAsReadRequest
+import ru.medals.ktor.message.model.request.MarkMessageAsUnreadRequest
 import ru.medals.ktor.message.model.request.SendMessageRequest
 
 suspend fun ApplicationCall.sendMessage(processor: MessageProcessor) =
@@ -29,6 +30,12 @@ suspend fun ApplicationCall.getMessageByUser(processor: MessageProcessor) =
 
 suspend fun ApplicationCall.markMessageAsRead(processor: MessageProcessor) =
 	authProcess<MarkMessageAsReadRequest, Unit, MessageContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+	)
+
+suspend fun ApplicationCall.markMessageAsUnread(processor: MessageProcessor) =
+	authProcess<MarkMessageAsUnreadRequest, Unit, MessageContext>(
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
 	)

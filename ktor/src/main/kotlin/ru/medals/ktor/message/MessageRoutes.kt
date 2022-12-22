@@ -36,6 +36,13 @@ fun Route.messageRoutes() {
 				call.markMessageAsRead(messageProcessor)
 			}
 
+			/**
+			 * Пометить сообщение как непрочитанное
+			 */
+			post("read") {
+				call.markMessageAsUnread(messageProcessor)
+			}
+
 		}
 
 	}

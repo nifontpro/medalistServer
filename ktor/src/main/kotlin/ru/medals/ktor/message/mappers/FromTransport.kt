@@ -5,6 +5,7 @@ import ru.medals.domain.message.bussines.context.MessageContext
 import ru.medals.domain.message.model.Message
 import ru.medals.ktor.message.model.request.GetMessageByUserRequest
 import ru.medals.ktor.message.model.request.MarkMessageAsReadRequest
+import ru.medals.ktor.message.model.request.MarkMessageAsUnreadRequest
 import ru.medals.ktor.message.model.request.SendMessageRequest
 
 fun MessageContext.fromTransport(request: SendMessageRequest) {
@@ -22,5 +23,10 @@ fun MessageContext.fromTransport(request: GetMessageByUserRequest) {
 
 fun MessageContext.fromTransport(request: MarkMessageAsReadRequest) {
 	command = MessageCommand.MARK_READ
+	messageId = request.messageId
+}
+
+fun MessageContext.fromTransport(request: MarkMessageAsUnreadRequest) {
+	command = MessageCommand.MARK_UNREAD
 	messageId = request.messageId
 }

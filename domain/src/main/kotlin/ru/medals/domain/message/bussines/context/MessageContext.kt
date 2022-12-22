@@ -23,5 +23,6 @@ enum class MessageCommand : IBaseCommand {
 	SEND,
 	DELETE,
 	GET_BY_USER,
-	MARK_READ
+	MARK_READ,
+	MARK_UNREAD
 }
