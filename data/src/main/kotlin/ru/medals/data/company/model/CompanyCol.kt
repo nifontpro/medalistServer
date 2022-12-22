@@ -7,7 +7,7 @@ import ru.medals.domain.image.model.IImages
 import ru.medals.domain.image.model.ImageRef
 
 data class CompanyCol(
-	val name: String,
+	val name: String = "",
 	val description: String? = null,
 	val phone: String? = null,
 	val email: String? = null,

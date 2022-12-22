@@ -48,10 +48,15 @@ suspend fun <T, R, C : BaseContext> ApplicationCall.authProcessTypes(
 	}
 	context.principalUser = principalUser.toUser()
 
-	val request = receiveNullable<T>(typeInfo = requestType) ?: run {
+	val request = try {
+		receive<T>(typeInfo = requestType)
+	} catch (e: Exception) {
 		responseBadRequest()
 		return
 	}
+
+	println("AUTH REQUEST OK: $request")
+
 	context.fromTransport(request)
 
 	processor.exec(context)

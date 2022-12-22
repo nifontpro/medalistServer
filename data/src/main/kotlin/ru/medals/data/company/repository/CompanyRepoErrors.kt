@@ -39,5 +39,22 @@ interface CompanyRepoErrors {
 				description = "Ошибка обновления данных организации"
 			)
 		)
+
+		fun errorCompanyImageDelete() = RepositoryData.error(
+			error = RepositoryError(
+				repository = REPO,
+				violationCode = "image delete error",
+				description = "Ошибка удаления изображения у компании"
+			)
+		)
+
+		fun errorCompanyImageNotFound() = RepositoryData.error(
+			error = RepositoryError(
+				repository = REPO,
+				violationCode = "image not found",
+				description = "У компании отсутствует изображение"
+			)
+		)
+
 	}
 }

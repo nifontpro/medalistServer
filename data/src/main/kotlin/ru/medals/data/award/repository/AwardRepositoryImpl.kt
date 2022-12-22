@@ -299,17 +299,22 @@ class AwardRepositoryImpl(
 	// Добавить транзакции!!!
 	override suspend fun deleteMainImage(awardLite: AwardLite): RepositoryData<Unit> {
 		if (!s3repository.available()) return errorS3()
-		val imageKey = awardLite.imageKey ?: return errorAwardImageNotFound()
 
-		if (!s3repository.deleteObject(key = imageKey)) return errorAwardImageDelete()
-		awards.updateOneById(
-			id = awardLite.id,
-			update = set(
-				AwardCol::imageKey setTo null,
-				AwardCol::imageUrl setTo null,
+		try {
+			val imageKey = awardLite.imageKey ?: return errorAwardImageNotFound()
+
+			if (!s3repository.deleteObject(key = imageKey)) return errorAwardImageDelete()
+			awards.updateOneById(
+				id = awardLite.id,
+				update = set(
+					AwardCol::imageKey setTo null,
+					AwardCol::imageUrl setTo null,
+				)
 			)
-		)
-		return RepositoryData.success()
+			return RepositoryData.success()
+		} catch (e: Exception) {
+			return errorAwardImageDelete()
+		}
 	}
 
 }

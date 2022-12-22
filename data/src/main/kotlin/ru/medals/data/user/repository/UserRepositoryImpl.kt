@@ -425,20 +425,24 @@ class UserRepositoryImpl(
 	override suspend fun deleteMainImage(userId: String): RepositoryData<Unit> {
 		if (!s3repository.available()) return errorS3()
 
-		val imageKey = users.aggregate<UserCol>(
-			match(UserCol::id eq userId),
-			project(UserCol::imageKey)
-		).first()?.imageKey ?: return errorUserImageNotFound()
+		try {
+			val imageKey = users.aggregate<UserCol>(
+				match(UserCol::id eq userId),
+				project(UserCol::imageKey)
+			).first()?.imageKey ?: return errorUserImageNotFound()
 
-		if (!s3repository.deleteObject(key = imageKey)) return errorUserImageDelete()
-		users.updateOneById(
-			id = userId,
-			update = set(
-				UserCol::imageKey setTo null,
-				UserCol::imageUrl setTo null,
+			if (!s3repository.deleteObject(key = imageKey)) return errorUserImageDelete()
+			users.updateOneById(
+				id = userId,
+				update = set(
+					UserCol::imageKey setTo null,
+					UserCol::imageUrl setTo null,
+				)
 			)
-		)
-		return RepositoryData.success()
+			return RepositoryData.success()
+		} catch (e: Exception) {
+			return errorUserImageDelete()
+		}
 	}
 
 	override suspend fun addImage(userId: String, fileData: FileData): RepositoryData<Unit> {

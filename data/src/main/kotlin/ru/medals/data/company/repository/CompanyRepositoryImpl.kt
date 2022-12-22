@@ -6,12 +6,12 @@ import org.litote.kmongo.coroutine.aggregate
 import ru.medals.data.company.model.CompanyCol
 import ru.medals.data.company.repository.CompanyRepoErrors.Companion.errorCompanyCreate
 import ru.medals.data.company.repository.CompanyRepoErrors.Companion.errorCompanyDelete
+import ru.medals.data.company.repository.CompanyRepoErrors.Companion.errorCompanyImageDelete
+import ru.medals.data.company.repository.CompanyRepoErrors.Companion.errorCompanyImageNotFound
 import ru.medals.data.company.repository.CompanyRepoErrors.Companion.errorCompanyNotFound
 import ru.medals.data.company.repository.CompanyRepoErrors.Companion.errorCompanyUpdate
 import ru.medals.data.core.errorBadImageKey
 import ru.medals.data.core.errorS3
-import ru.medals.data.user.repository.errorUserImageDelete
-import ru.medals.data.user.repository.errorUserImageNotFound
 import ru.medals.domain.company.model.Company
 import ru.medals.domain.company.repository.CompanyRepository
 import ru.medals.domain.core.bussines.model.RepositoryData
@@ -182,24 +182,28 @@ class CompanyRepositoryImpl(
 	 * Удаление основного изображения
 	 */
 
-	// Добавить транзакции!!!
 	override suspend fun deleteMainImage(companyId: String): RepositoryData<Unit> {
 		if (!s3repository.available()) return errorS3()
 
-		val imageKey = companies.aggregate<CompanyCol>(
-			match(CompanyCol::id eq companyId),
-			project(CompanyCol::imageKey)
-		).first()?.imageKey ?: return errorUserImageNotFound()
+		try {
+			val imageKey = companies.aggregate<CompanyCol>(
+				match(CompanyCol::id eq companyId),
+				project(CompanyCol::imageKey)
+			).first()?.imageKey ?: return errorCompanyImageNotFound()
 
-		if (!s3repository.deleteObject(key = imageKey)) return errorUserImageDelete()
-		companies.updateOneById(
-			id = companyId,
-			update = set(
-				CompanyCol::imageKey setTo null,
-				CompanyCol::imageUrl setTo null,
+			if (!s3repository.deleteObject(key = imageKey)) return errorCompanyImageDelete()
+
+			companies.updateOneById(
+				id = companyId,
+				update = set(
+					CompanyCol::imageKey setTo null,
+					CompanyCol::imageUrl setTo null,
+				)
 			)
-		)
-		return RepositoryData.success()
+			return RepositoryData.success()
+		} catch (e: Exception) {
+			return errorCompanyImageDelete()
+		}
 	}
 
 	override suspend fun addImage(companyId: String, fileData: FileData): RepositoryData<Unit> {

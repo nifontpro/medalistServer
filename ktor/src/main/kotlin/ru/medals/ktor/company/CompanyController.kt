@@ -67,7 +67,7 @@ suspend fun ApplicationCall.updateCompanyMainImage(processor: CompanyProcessor) 
 }
 
 suspend fun ApplicationCall.deleteCompanyMainImage(processor: CompanyProcessor) =
-	process<DeleteCompanyMainImageRequest, Unit, CompanyContext>(
+	authProcess<DeleteCompanyMainImageRequest, Unit, CompanyContext>(
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
 	)
