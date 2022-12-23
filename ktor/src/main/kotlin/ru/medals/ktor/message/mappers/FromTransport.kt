@@ -4,10 +4,7 @@ import ru.medals.domain.message.bussines.context.MessageCommand
 import ru.medals.domain.message.bussines.context.MessageContext
 import ru.medals.domain.message.model.Message
 import ru.medals.domain.message.model.MessageType
-import ru.medals.ktor.message.model.request.GetMessageByUserRequest
-import ru.medals.ktor.message.model.request.MarkMessageAsReadRequest
-import ru.medals.ktor.message.model.request.MarkMessageAsUnreadRequest
-import ru.medals.ktor.message.model.request.SendMessageRequest
+import ru.medals.ktor.message.model.request.*
 
 fun MessageContext.fromTransport(request: SendMessageRequest) {
 	command = MessageCommand.SEND
@@ -17,6 +14,11 @@ fun MessageContext.fromTransport(request: SendMessageRequest) {
 		text = request.text ?: "",
 		type = MessageType.USER
 	)
+}
+
+fun MessageContext.fromTransport(request: DeleteMessageRequest) {
+	command = MessageCommand.DELETE
+	messageId = request.messageId
 }
 
 fun MessageContext.fromTransport(request: GetMessageByUserRequest) {

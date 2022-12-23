@@ -12,8 +12,8 @@ fun ICorChainDsl<AwardContext>.deleteAward(title: String) = worker {
 	on { state == ContextState.RUNNING }
 
 	handle {
-		checkRepositoryData {
+		award = checkRepositoryData {
 			awardRepository.delete(awardId)
-		}
+		} ?: return@handle
 	}
 }

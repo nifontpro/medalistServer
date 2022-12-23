@@ -133,9 +133,9 @@ suspend fun <C : BaseContext> ApplicationCall.processImageSingle(
 
 	fileData?.url?.let { File(it).delete() }
 
-	mainResponse<Unit>(
+	mainResponse(
 		state = context.state,
-		data = null,
+		data = context.responseId,
 		errors = context.errors,
 	)
 }

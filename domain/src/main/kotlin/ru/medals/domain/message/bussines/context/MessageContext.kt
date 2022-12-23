@@ -15,7 +15,6 @@ data class MessageContext(
 
 }
 
-@Suppress("unused")
 enum class MessageCommand : IBaseCommand {
 	NONE,
 	SEND,

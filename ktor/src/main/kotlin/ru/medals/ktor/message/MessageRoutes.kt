@@ -23,6 +23,13 @@ fun Route.messageRoutes() {
 			}
 
 			/**
+			 * Удалить сообщение
+			 */
+			delete {
+				call.deleteMessage(messageProcessor)
+			}
+
+			/**
 			 * Получить сообщения сотрудника
 			 */
 			post("user") {

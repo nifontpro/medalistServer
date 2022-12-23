@@ -46,7 +46,10 @@ class AwardRepositoryImpl(
 
 	override suspend fun delete(id: String): RepositoryData<Award> {
 		val awardCol = awards.findOneById(id) ?: return errorAwardNotFound()
+
 		if (awardCol.relations.isNotEmpty()) return errorAwardDeleteContainsUser()
+		if (!s3repository.deleteAllImages(awardCol)) return errorS3()
+
 		return if (awards.deleteOneById(id).wasAcknowledged()) {
 			RepositoryData.success(data = awardCol.toAward())
 		} else {
@@ -261,11 +264,11 @@ class AwardRepositoryImpl(
 	override suspend fun updateImage(
 		awardId: String,
 		fileData: FileData,
-	): Boolean {
+	): String? {
 		try {
-			val awardCol = awards.findOneById(awardId) ?: return false
+			val awardCol = awards.findOneById(awardId) ?: return null
 			val imageKey = "C${awardCol.companyId}/awards/${fileData.filename}"
-			val imageUrl = s3repository.putObject(key = imageKey, fileData = fileData) ?: return false
+			val imageUrl = s3repository.putObject(key = imageKey, fileData = fileData) ?: return null
 
 			val isSuccess = awards.updateOneById(
 				id = awardId,
@@ -285,10 +288,10 @@ class AwardRepositoryImpl(
 				s3repository.deleteObject(key = imageKey)
 			}
 
-			return isSuccess
+			return imageUrl
 		} catch (e: Exception) {
 			println(e.stackTrace)
-			return false
+			return null
 		}
 	}
 

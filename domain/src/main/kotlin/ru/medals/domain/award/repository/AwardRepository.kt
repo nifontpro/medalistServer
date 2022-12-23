@@ -13,7 +13,7 @@ interface AwardRepository {
 	suspend fun getAwardsWithUsers(companyId: String, filter: String?): RepositoryData<List<AwardUsers>>
 	suspend fun getByIdWithUsers(awardId: String): RepositoryData<AwardUsers>
 	suspend fun update(award: Award): RepositoryData<Unit>
-	suspend fun updateImage(awardId: String, fileData: FileData): Boolean
+	suspend fun updateImage(awardId: String, fileData: FileData): String?
 	suspend fun getAwardRelateFromUser(awardId: String, userId: String): RepositoryData<AwardRelate>
 	suspend fun awardUser(awardId: String, awardRelate: AwardRelate, isNew: Boolean): RepositoryData<Unit>
 	suspend fun deleteUserAward(awardId: String, userId: String): RepositoryData<AwardRelate>

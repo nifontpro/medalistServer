@@ -30,6 +30,14 @@ class MessageProcessor : IBaseProcessor<MessageContext> {
 				sendMessage("Отправка сообщения в БД")
 			}
 
+			operation("Удалить сообщение", MessageCommand.DELETE) {
+				validateMessageIdEmpty("Проверяем messageId")
+				trimFieldMessageId("Очищаем")
+				getMessageByIdDb("Получаем сообщение сотрудника")
+				validateUserLevel("Доступ к сообщениям - сотрудник и выше")
+				deleteMessageDb("Удаляем сообщение")
+			}
+
 			operation("Получить сообщения сотрудника", MessageCommand.GET_BY_USER) {
 				validateUserIdEmpty("Проверка userId")
 				trimFieldUserIdAndCopyToValid("Очищаем")

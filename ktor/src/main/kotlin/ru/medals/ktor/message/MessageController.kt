@@ -8,13 +8,17 @@ import ru.medals.ktor.core.authProcess
 import ru.medals.ktor.message.mappers.fromTransport
 import ru.medals.ktor.message.mappers.toTransportGetMessage
 import ru.medals.ktor.message.mappers.toTransportGetMessages
-import ru.medals.ktor.message.model.request.GetMessageByUserRequest
-import ru.medals.ktor.message.model.request.MarkMessageAsReadRequest
-import ru.medals.ktor.message.model.request.MarkMessageAsUnreadRequest
-import ru.medals.ktor.message.model.request.SendMessageRequest
+import ru.medals.ktor.message.model.request.*
 
 suspend fun ApplicationCall.sendMessage(processor: MessageProcessor) =
 	authProcess<SendMessageRequest, Message, MessageContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetMessage() }
+	)
+
+suspend fun ApplicationCall.deleteMessage(processor: MessageProcessor) =
+	authProcess<DeleteMessageRequest, Message, MessageContext>(
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
 		toTransport = { toTransportGetMessage() }
