@@ -124,64 +124,8 @@ ant.withGroovyBuilder {
 	)
 }
 
-task("deploy") {
-	dependsOn(/*"clean", */"shadowJar")
-	ant.withGroovyBuilder {
-		doLast {
-			val knownHosts = File.createTempFile("knownhosts", "txt")
-			val user = "nifont"
-			val host = "192.168.1.106"
-			val key = file("d:/deploy/serverkey")
-			val jarFileName = "server.jar"
-			try {
-				"scp"(
-					"file" to file("build/libs/$jarFileName"),
-					"todir" to "$user@$host:~/medals",
-					"keyfile" to key,
-					"trust" to true,
-					"knownhosts" to knownHosts
-				)
-			} finally {
-				knownHosts.delete()
-			}
-		}
-	}
-}
-
-task("docker") {
-	dependsOn("clean", "shadowJar")
-	ant.withGroovyBuilder {
-		doLast {
-			val knownHosts = File.createTempFile("knownhosts", "txt")
-			val user = "nifont"
-			val host = "192.168.1.106"
-			val key = file("d:/deploy/serverkey")
-			val jarFileName = "server.jar"
-			try {
-				"scp"(
-					"file" to file("build/libs/$jarFileName"),
-					"todir" to "$user@$host:~/medals",
-					"keyfile" to key,
-					"trust" to true,
-					"knownhosts" to knownHosts
-				)
-				"ssh"(
-					"host" to host,
-					"username" to user,
-					"keyfile" to key,
-					"trust" to true,
-					"knownhosts" to knownHosts,
-					"command" to "cd ~/medals; docker compose build; docker compose up -d"
-				)
-			} finally {
-				knownHosts.delete()
-			}
-		}
-	}
-}
-
 val remoteUrl = "nmedalist.ru"
-val patchKey = "d:/deploy/serverkey"
+val patchKey = "/Users/nifont/Deploy/serverkey"
 
 task("remote-docker") {
 	dependsOn("clean", "shadowJar")
