@@ -5,7 +5,6 @@ import ru.medals.domain.auth.repository.AuthRepository
 import ru.medals.domain.core.bussines.BaseContext
 import ru.medals.domain.core.bussines.IBaseCommand
 import ru.medals.domain.user.model.User
-import ru.medals.domain.user.repository.UserRepository
 
 data class AuthContext(
 
@@ -19,7 +18,6 @@ data class AuthContext(
 
 	) : BaseContext(command = Command.NONE) {
 
-	val userRepository: UserRepository by inject(UserRepository::class.java)
 	val authRepository: AuthRepository by inject(AuthRepository::class.java)
 
 	enum class Command : IBaseCommand {

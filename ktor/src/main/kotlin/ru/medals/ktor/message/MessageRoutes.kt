@@ -18,7 +18,7 @@ fun Route.messageRoutes() {
 			/**
 			 * Отправить сообщение
 			 */
-			post {
+			post("send") {
 				call.sendMessage(messageProcessor)
 			}
 
@@ -39,7 +39,7 @@ fun Route.messageRoutes() {
 			/**
 			 * Пометить сообщение как непрочитанное
 			 */
-			post("read") {
+			post("unread") {
 				call.markMessageAsUnread(messageProcessor)
 			}
 

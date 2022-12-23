@@ -6,7 +6,6 @@ import ru.medals.domain.company.repository.CompanyRepository
 import ru.medals.domain.core.bussines.BaseContext
 import ru.medals.domain.core.bussines.IBaseCommand
 import ru.medals.domain.department.repository.DepartmentRepository
-import ru.medals.domain.user.repository.UserRepository
 
 data class CompanyContext(
 
@@ -17,7 +16,6 @@ data class CompanyContext(
 
 	val companyRepository: CompanyRepository by inject(CompanyRepository::class.java)
 	val departmentRepository: DepartmentRepository by inject(DepartmentRepository::class.java)
-	val userRepository: UserRepository by inject(UserRepository::class.java)
 }
 
 enum class CompanyCommand : IBaseCommand {

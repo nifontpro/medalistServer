@@ -1,13 +1,12 @@
 package ru.medals.ktor.message
 
 import io.ktor.server.application.*
-import ru.medals.domain.core.response.IdResponse
-import ru.medals.domain.core.response.baseResponseId
 import ru.medals.domain.message.bussines.context.MessageContext
 import ru.medals.domain.message.bussines.processor.MessageProcessor
 import ru.medals.domain.message.model.Message
 import ru.medals.ktor.core.authProcess
 import ru.medals.ktor.message.mappers.fromTransport
+import ru.medals.ktor.message.mappers.toTransportGetMessage
 import ru.medals.ktor.message.mappers.toTransportGetMessages
 import ru.medals.ktor.message.model.request.GetMessageByUserRequest
 import ru.medals.ktor.message.model.request.MarkMessageAsReadRequest
@@ -15,10 +14,10 @@ import ru.medals.ktor.message.model.request.MarkMessageAsUnreadRequest
 import ru.medals.ktor.message.model.request.SendMessageRequest
 
 suspend fun ApplicationCall.sendMessage(processor: MessageProcessor) =
-	authProcess<SendMessageRequest, IdResponse, MessageContext>(
+	authProcess<SendMessageRequest, Message, MessageContext>(
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
-		toTransport = { baseResponseId() }
+		toTransport = { toTransportGetMessage() }
 	)
 
 suspend fun ApplicationCall.getMessageByUser(processor: MessageProcessor) =

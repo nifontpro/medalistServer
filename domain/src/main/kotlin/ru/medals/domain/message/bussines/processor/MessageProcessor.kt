@@ -21,6 +21,12 @@ class MessageProcessor : IBaseProcessor<MessageContext> {
 			initStatus("Инициализация статуса")
 
 			operation("Отправить сообщение", MessageCommand.SEND) {
+				validateUserIdEmpty("Проверка userId")
+				trimFieldUserIdAndCopyToValid("Копируем в валидный")
+				validateUserExist("Проверяем наличие сотрудника")
+				validateUserLevel("Авторизация - сотрудник и выше")
+				trimFieldMessage("Подготовка полей")
+
 				sendMessage("Отправка сообщения в БД")
 			}
 

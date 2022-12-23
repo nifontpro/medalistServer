@@ -13,8 +13,6 @@ data class MessageContext(
 
 	) : BaseContext(command = MessageCommand.NONE) {
 
-//	val messageRepository: MessageRepository by inject(MessageRepository::class.java)
-
 }
 
 @Suppress("unused")

@@ -9,6 +9,7 @@ import ru.medals.domain.core.bussines.IBaseProcessor
 import ru.medals.domain.core.bussines.workers.*
 import ru.medals.domain.core.bussines.workers.validation.validateAdminLevel
 import ru.medals.domain.core.bussines.workers.validation.validateCompanyIdEmpty
+import ru.medals.domain.core.bussines.workers.validation.validateUserExist
 import ru.medals.domain.core.bussines.workers.validation.validateUserIdEmpty
 import ru.otus.cor.rootChain
 import ru.otus.cor.worker
@@ -98,7 +99,7 @@ class AwardProcessor : IBaseProcessor<AwardContext> {
 				validateAwardState("Проверяем сотстояние")
 				validateUserIdEmpty("Проверяем userId")
 				trimFieldUserIdAndCopyToValid("Очищаем userId")
-				checkUserExist("Проверяем наличие сотрудника")
+				validateUserExist("Проверяем наличие сотрудника")
 				// Добавить расширенную проверку сторудника, чтоб не был из другой компании
 				validateAwardIdEmpty("Проверяем на непустой id")
 				getAwardByIdFromDb("Получаем награду")

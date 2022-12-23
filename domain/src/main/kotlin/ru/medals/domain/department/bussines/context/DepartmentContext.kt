@@ -5,7 +5,6 @@ import ru.medals.domain.core.bussines.BaseContext
 import ru.medals.domain.core.bussines.IBaseCommand
 import ru.medals.domain.department.model.Department
 import ru.medals.domain.department.repository.DepartmentRepository
-import ru.medals.domain.user.repository.UserRepository
 
 data class DepartmentContext(
 
@@ -15,7 +14,6 @@ data class DepartmentContext(
 	) : BaseContext(command = Command.NONE) {
 
 	val departmentRepository: DepartmentRepository by inject(DepartmentRepository::class.java)
-	val userRepository: UserRepository by inject(UserRepository::class.java)
 
 	enum class Command : IBaseCommand {
 		NONE,

@@ -6,6 +6,7 @@ import ru.medals.domain.core.util.Constants.TEST_MODE
 import ru.medals.domain.image.model.FileData
 import ru.medals.domain.message.repository.MessageRepository
 import ru.medals.domain.user.model.User
+import ru.medals.domain.user.repository.UserRepository
 
 interface IBaseCommand
 
@@ -49,6 +50,7 @@ abstract class BaseContext(
 	fun prodMode() = !(testMode && TEST_MODE)
 
 	val messageRepository: MessageRepository by inject(MessageRepository::class.java)
+	val userRepository: UserRepository by inject(UserRepository::class.java)
 }
 
 @Suppress("unused")

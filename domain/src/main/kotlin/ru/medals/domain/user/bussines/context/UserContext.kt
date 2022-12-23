@@ -11,7 +11,6 @@ import ru.medals.domain.user.model.UserAwardCount
 import ru.medals.domain.user.model.UserAwardsLite
 import ru.medals.domain.user.model.UserAwardsUnion
 import ru.medals.domain.user.model.count.UserAwardsCountDep
-import ru.medals.domain.user.repository.UserRepository
 
 data class UserContext(
 
@@ -29,7 +28,6 @@ data class UserContext(
 
 	) : BaseContext(command = UserCommand.NONE) {
 
-	val userRepository: UserRepository by inject(UserRepository::class.java)
 	val companyRepository: CompanyRepository by inject(CompanyRepository::class.java)
 	val awardRepository: AwardRepository by inject(AwardRepository::class.java)
 	val authRepository: AuthRepository by inject(AuthRepository::class.java)
