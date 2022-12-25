@@ -17,6 +17,7 @@ import ru.medals.data.user.repository.query.getUserByIdWithAwardsQuery
 import ru.medals.data.user.repository.query.getUsersAwardCountByCompanyAggregateQuery
 import ru.medals.data.user.repository.query.getUsersByCompanyWithAwardsQuery
 import ru.medals.domain.core.bussines.model.RepositoryData
+import ru.medals.domain.core.util.getFullUserName
 import ru.medals.domain.image.model.FileData
 import ru.medals.domain.image.model.ImageRef
 import ru.medals.domain.image.repository.S3Repository
@@ -300,6 +301,26 @@ class UserRepositoryImpl(
 				RepositoryData.success()
 			} else {
 				errorUserNotFound()
+			}
+		} catch (e: Exception) {
+			errorUserGet()
+		}
+	}
+
+	/**
+	 * Получаем только ФИО сотрудника с проверкой на его наличие
+	 */
+	override suspend fun getFIO(userId: String): RepositoryData<String> {
+		return try {
+			val user = users.aggregate<UserCol>(
+				match(UserCol::id eq userId),
+				project(UserCol::lastname)
+			).first()?.toUser()
+			if (user == null) {
+				errorUserNotFound()
+			} else {
+				val fio = getFullUserName(lastname = user.lastname, name = user.name, patronymic = user.patronymic)
+				RepositoryData.success(data = fio)
 			}
 		} catch (e: Exception) {
 			errorUserGet()

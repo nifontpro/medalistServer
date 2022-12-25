@@ -8,28 +8,30 @@ import ru.medals.domain.message.model.MessageType
 import ru.otus.cor.ICorChainDsl
 import ru.otus.cor.worker
 
-fun ICorChainDsl<AwardContext>.awardUserMsg(title: String) = worker {
+fun ICorChainDsl<AwardContext>.sendMessageToPrincipal(title: String) = worker {
 	this.title = title
 	on { state == ContextState.RUNNING }
 	handle {
 
 		val msg = buildString {
-			append("Поздравляем! Вы ")
+			append("Вами ")
 			if (awardState == AwardState.NOMINEE) {
-				append("номинированы на награду")
+				append("номинирован ")
 			} else {
-				append("награждены наградой")
+				append("награжден ")
 			}
-			append(" ${award.name}!")
+			append(userFIO) // кого наградили
+			append(" наградой \"${award.name}\" ")
 		}
 
 		val message = Message(
-			fromId = principalUser.id,
-			toId = userIdValid,
+			fromId = null,
+			toId = principalUser.id,
 			type = MessageType.SYSTEM,
 			theme = "Награждение",
 			themeSlug = "awardUser",
-			text = msg
+			text = msg,
+			imageUrl = award.imageUrl
 		)
 
 		messageRepository.send(message)

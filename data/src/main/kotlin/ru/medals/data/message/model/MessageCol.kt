@@ -16,6 +16,7 @@ data class MessageCol(
 	val read: Boolean = false, // Сообщение прочитано
 	val sendDate: Date? = null,
 	val readDate: Date? = null,
+	val imageUrl: String? = null,
 
 	@BsonId
 	val id: String = ObjectId().toString()
@@ -31,6 +32,7 @@ data class MessageCol(
 		read = read,
 		sendDate = sendDate?.time,
 		readDate = readDate?.time,
+		imageUrl = imageUrl,
 
 		id = id
 	)
@@ -43,4 +45,5 @@ fun Message.toMessageColCreate() = MessageCol(
 	theme = theme,
 	themeSlug = themeSlug,
 	text = text,
+	imageUrl = imageUrl
 )

@@ -125,7 +125,8 @@ ant.withGroovyBuilder {
 }
 
 val remoteUrl = "nmedalist.ru"
-val patchKey = "c:/Users/nifont/Deploy/serverkey"
+val myFolder = System.getenv("MY_FOLDER") ?: "~"
+val patchKey = "$myFolder/Deploy/serverkey"
 
 task("remote-docker") {
 	dependsOn("clean", "shadowJar")

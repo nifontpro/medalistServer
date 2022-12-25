@@ -4,12 +4,12 @@ import ru.medals.domain.award.bussines.context.AwardCommand
 import ru.medals.domain.award.bussines.context.AwardContext
 import ru.medals.domain.award.bussines.validate.*
 import ru.medals.domain.award.bussines.workers.*
-import ru.medals.domain.award.bussines.workers.message.awardUserMsg
+import ru.medals.domain.award.bussines.workers.message.sendMessageToPrincipal
+import ru.medals.domain.award.bussines.workers.message.sendMessageToUser
 import ru.medals.domain.core.bussines.IBaseProcessor
 import ru.medals.domain.core.bussines.workers.*
 import ru.medals.domain.core.bussines.workers.validation.validateAdminLevel
 import ru.medals.domain.core.bussines.workers.validation.validateCompanyIdEmpty
-import ru.medals.domain.core.bussines.workers.validation.validateUserExist
 import ru.medals.domain.core.bussines.workers.validation.validateUserIdEmpty
 import ru.otus.cor.rootChain
 import ru.otus.cor.worker
@@ -99,7 +99,8 @@ class AwardProcessor : IBaseProcessor<AwardContext> {
 				validateAwardState("Проверяем сотстояние")
 				validateUserIdEmpty("Проверяем userId")
 				trimFieldUserIdAndCopyToValid("Очищаем userId")
-				validateUserExist("Проверяем наличие сотрудника")
+//				validateUserExist("Проверяем наличие сотрудника")
+				getUserFIO("Проверяем наличие сотрудника и его ФИО")
 				// Добавить расширенную проверку сторудника, чтоб не был из другой компании
 				validateAwardIdEmpty("Проверяем на непустой id")
 				getAwardByIdFromDb("Получаем награду")
@@ -111,7 +112,8 @@ class AwardProcessor : IBaseProcessor<AwardContext> {
 				awardUserDb("Награждаем сотрудника")
 				incrementAwardUserDb("Увеличиваем число наград у сотрудника на 1")
 
-				awardUserMsg("Отправляем сотруднику сообщение о награждении")
+				sendMessageToUser("Отправляем сотруднику сообщение о награждении")
+				sendMessageToPrincipal("Отправляем сообщение тому, кто наградил")
 			}
 
 			operation("Удалить награждение сотрудника", AwardCommand.AWARD_USER_DELETE) {

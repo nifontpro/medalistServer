@@ -15,6 +15,8 @@ import ru.medals.domain.message.model.Message
 import ru.medals.domain.message.repository.MessageRepository
 import java.util.*
 
+//private val log: KLogger = KotlinLogging.logger {}
+
 class MessageRepositoryImpl(
 	db: CoroutineDatabase
 ) : MessageRepository {

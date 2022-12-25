@@ -1,5 +1,7 @@
 package ru.medals.domain.award.bussines.context
 
+import mu.KLogger
+import mu.KotlinLogging
 import org.koin.java.KoinJavaComponent.inject
 import ru.medals.domain.award.model.*
 import ru.medals.domain.award.repository.AwardRepository
@@ -21,7 +23,9 @@ data class AwardContext(
 	var awardState: AwardState = AwardState.NONE,
 	var isNew: Boolean = true,
 
-	) : BaseContext(command = AwardCommand.NONE) {
+	val log: KLogger = KotlinLogging.logger {}
+
+) : BaseContext(command = AwardCommand.NONE) {
 
 	val awardRepository: AwardRepository by inject(AwardRepository::class.java)
 }

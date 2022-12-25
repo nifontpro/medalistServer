@@ -19,6 +19,8 @@ dependencies {
 
     implementation(group = "org.mindrot", name = "jbcrypt", version = "0.4")
 
+    implementation("io.github.microutils:kotlin-logging-jvm:3.0.4")
+
     implementation(kotlin("test-common"))
     implementation(kotlin("test-annotations-common"))
     testImplementation(kotlin("test-junit"))

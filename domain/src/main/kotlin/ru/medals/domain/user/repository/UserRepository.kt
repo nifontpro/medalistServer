@@ -56,4 +56,5 @@ interface UserRepository {
 	suspend fun getAwardCountByDepartment(departmentId: String): RepositoryData<UserAwardCount>
 	suspend fun getUsersAwardsCountAggregate(companyId: String): RepositoryData<List<UserAwardsCountDep>>
 
+	suspend fun getFIO(userId: String): RepositoryData<String>
 }

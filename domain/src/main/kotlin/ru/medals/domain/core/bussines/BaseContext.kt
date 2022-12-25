@@ -24,6 +24,7 @@ abstract class BaseContext(
 	var searchFilter: String? = null,
 
 	var principalUser: User = User(),
+	var userFIO: String = "",
 	var timeStart: Long = -1,
 
 	var command: IBaseCommand,

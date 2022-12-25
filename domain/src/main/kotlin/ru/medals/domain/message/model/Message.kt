@@ -12,6 +12,7 @@ data class Message(
 	val read: Boolean = false, // Сообщение прочитано
 	val sendDate: Long? = null,
 	val readDate: Long? = null,
+	val imageUrl: String? = null,
 
 	val id: String = ""
 )
