@@ -6,7 +6,7 @@ import ru.medals.domain.award.model.AwardLite
 import java.util.*
 
 data class AwardLiteCol(
-	val name: String,
+	val name: String = "",
 	val imageUrl: String? = null,
 	val imageKey: String? = null,
 	val startDate: Date? = null,

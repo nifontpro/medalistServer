@@ -100,9 +100,9 @@ class AwardProcessor : IBaseProcessor<AwardContext> {
 				validateUserIdEmpty("Проверяем userId")
 				trimFieldUserIdAndCopyToValid("Очищаем userId")
 //				validateUserExist("Проверяем наличие сотрудника")
-				getUserFIO("Проверяем наличие сотрудника и его ФИО")
+				getUserFIO("Проверяем наличие сотрудника и получаем его ФИО")
 				// Добавить расширенную проверку сторудника, чтоб не был из другой компании
-				validateAwardIdEmpty("Проверяем на непустой id")
+				validateAwardIdEmpty("Проверяем на непустой awardId")
 				getAwardByIdFromDb("Получаем награду")
 				getRelateUserFromAward("Получаем запись о награждении сотрудника и companyId для авторизации")
 				validateAdminLevel("Уровень доступа - администратор")
@@ -112,6 +112,7 @@ class AwardProcessor : IBaseProcessor<AwardContext> {
 				awardUserDb("Награждаем сотрудника")
 				incrementAwardUserDb("Увеличиваем число наград у сотрудника на 1")
 
+				addActivityDb("Добавляем событие в активность")
 				sendMessageToUser("Отправляем сотруднику сообщение о награждении")
 				sendMessageToPrincipal("Отправляем сообщение тому, кто наградил")
 			}

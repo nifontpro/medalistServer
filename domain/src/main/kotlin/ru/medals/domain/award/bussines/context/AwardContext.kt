@@ -3,6 +3,7 @@ package ru.medals.domain.award.bussines.context
 import mu.KLogger
 import mu.KotlinLogging
 import org.koin.java.KoinJavaComponent.inject
+import ru.medals.domain.activity.repository.ActivityRepository
 import ru.medals.domain.award.model.*
 import ru.medals.domain.award.repository.AwardRepository
 import ru.medals.domain.core.bussines.BaseContext
@@ -28,6 +29,7 @@ data class AwardContext(
 ) : BaseContext(command = AwardCommand.NONE) {
 
 	val awardRepository: AwardRepository by inject(AwardRepository::class.java)
+	val activityRepository: ActivityRepository by inject(ActivityRepository::class.java)
 }
 
 enum class AwardCommand : IBaseCommand {
