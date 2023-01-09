@@ -12,8 +12,8 @@ fun getUsersByCompanyWithAwardsQuery(companyId: String, filter: String?): String
 		"""
 				, {
             $or: [
-                {name: {$regex: '$filter'}},
-                {lastname: {$regex: '$filter'}}
+                {name: {$regex: '$filter', $options: "i"}},
+                {lastname: {$regex: '$filter', $options: "i"}}
             ]
         }			
 		""".trimIndent()

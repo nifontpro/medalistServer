@@ -6,11 +6,13 @@ import ru.medals.data.activity.model.ActivityCol
 import ru.medals.data.activity.model.ActivityExtCol
 import ru.medals.data.activity.model.toActivityColCreate
 import ru.medals.data.activity.repository.ActivityRepoErrors.Companion.errorActivityCreate
+import ru.medals.data.activity.repository.ActivityRepoErrors.Companion.errorGetActivity
 import ru.medals.data.activity.repository.query.getActivityQuery
 import ru.medals.domain.activity.model.Activity
+import ru.medals.domain.activity.model.ActivityExt
+import ru.medals.domain.activity.model.ActivityQuery
 import ru.medals.domain.activity.repository.ActivityRepository
 import ru.medals.domain.core.bussines.model.RepositoryData
-import ru.medals.domain.core.util.separator
 
 class ActivityRepositoryImpl(
 	db: CoroutineDatabase,
@@ -27,22 +29,15 @@ class ActivityRepositoryImpl(
 		}
 	}
 
-	override suspend fun getByCompany(
-		companyId: String,
-		startDate: Long,
-		endDate: Long,
-		filter: String?
-	) {
-		val res = activities.aggregate<ActivityExtCol>(
-			getActivityQuery(
-				companyId = companyId,
-				startDate = startDate,
-				endDate = endDate,
-				filter = filter
-			)
-		).toList().map { it.toActivityExt() }
-		separator()
-		println(res)
+	override suspend fun getByCompany(activityQuery: ActivityQuery): RepositoryData<List<ActivityExt>> {
+		return try {
+			val activityList = activities.aggregate<ActivityExtCol>(
+				getActivityQuery(activityQuery)
+			).toList().map { it.toActivityExt() }
+			RepositoryData.success(data = activityList)
+		} catch (e: Exception) {
+			errorGetActivity()
+		}
 	}
 
 }

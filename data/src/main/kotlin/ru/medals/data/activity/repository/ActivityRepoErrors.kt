@@ -16,6 +16,14 @@ interface ActivityRepoErrors {
 			)
 		)
 
+		fun errorGetActivity() = RepositoryData.error(
+			error = RepositoryError(
+				repository = REPO,
+				violationCode = "I/O error",
+				description = "Ошибка получения списка активности"
+			)
+		)
+
 		/*fun errorAwardNotFound() = RepositoryData.error(
 			error = RepositoryError(
 				repository = REPO,

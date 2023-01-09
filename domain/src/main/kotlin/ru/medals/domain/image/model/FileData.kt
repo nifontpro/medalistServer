@@ -5,4 +5,5 @@ data class FileData(
 	val filename: String = "",
 	val description: String? = null,
 	val size: Int = 0,
+	val system: Boolean = false, // Признак системного изображения
 )

@@ -9,6 +9,7 @@ import org.koin.java.KoinJavaComponent.inject
 import org.koin.test.KoinTest
 import ru.medals.data.di.dataModule
 import ru.medals.data.di.dbModule
+import ru.medals.domain.activity.model.ActivityQuery
 import ru.medals.domain.activity.repository.ActivityRepository
 
 @ExperimentalCoroutinesApi
@@ -25,12 +26,16 @@ class GetActivityTest : KoinTest {
 				modules(dbModule, dataModule)
 			}
 
-			activityRepository.getByCompany(
+			val activityQuery = ActivityQuery(
 				companyId = "638621902741bb167c6c2386",
 				startDate = 0,
-				endDate = 1672250302569,
-				filter = ""
+				endDate = Long.MAX_VALUE,
+				filter = null,
+				page = 1,
+				pageSize = 1
 			)
+
+			activityRepository.getByCompany(activityQuery)
 
 			stopKoin()
 		}

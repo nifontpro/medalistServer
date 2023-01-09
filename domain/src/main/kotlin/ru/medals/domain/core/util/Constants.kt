@@ -19,6 +19,7 @@ object Constants {
 	const val LOCAL_FOLDER: String = "/app/files"
 
 	const val S3_BUCKET_NAME = "medalist"
+	const val S3_BUCKET_SYSTEM = "medalistgallery"
 
 	//password
 	const val PASSWORD_LENGTH = 8 // Длина генерируемого пароля для сотрудников

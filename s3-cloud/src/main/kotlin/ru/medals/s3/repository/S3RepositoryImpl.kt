@@ -3,9 +3,9 @@ package ru.medals.s3.repository
 import com.amazonaws.services.s3.AmazonS3
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import ru.medals.domain.image.model.IImages
 import ru.medals.domain.core.util.Constants
 import ru.medals.domain.image.model.FileData
+import ru.medals.domain.image.model.IImages
 import ru.medals.domain.image.repository.S3Repository
 import java.io.File
 
@@ -15,10 +15,11 @@ class S3RepositoryImpl(
 
 	override suspend fun putObject(key: String, fileData: FileData): String? {
 		return try {
+			val bucket = if (fileData.system) Constants.S3_BUCKET_SYSTEM else Constants.S3_BUCKET_NAME
 			withContext(Dispatchers.IO) {
 				val file = File(fileData.url)
-				s3.putObject(Constants.S3_BUCKET_NAME, key, file)
-				s3.getUrl(Constants.S3_BUCKET_NAME, key).toExternalForm()
+				s3.putObject(bucket, key, file)
+				s3.getUrl(bucket, key).toExternalForm()
 			}
 		} catch (e: Exception) {
 			println(e.message)

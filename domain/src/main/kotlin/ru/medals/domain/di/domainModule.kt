@@ -1,6 +1,7 @@
 package ru.medals.domain.di
 
 import org.koin.dsl.module
+import ru.medals.domain.activity.bussines.processor.ActivityProcessor
 import ru.medals.domain.auth.bussines.processor.AuthProcessor
 import ru.medals.domain.award.bussines.processor.AwardProcessor
 import ru.medals.domain.company.bussines.processor.CompanyProcessor
@@ -27,5 +28,7 @@ val domainModule = module {
 	single { AwardProcessor() }
 
 	single { MessageProcessor() }
+
+	single { ActivityProcessor() }
 
 }

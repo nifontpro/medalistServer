@@ -5,6 +5,7 @@ import io.ktor.server.http.content.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import ru.medals.domain.core.util.Constants.LOCAL_FOLDER
+import ru.medals.ktor.activity.activityRoutes
 import ru.medals.ktor.auth.authRoutes
 import ru.medals.ktor.award.awardRoutes
 import ru.medals.ktor.company.companyRoutes
@@ -28,6 +29,7 @@ fun Application.configureRouting() {
 			medalRoutes()
 			awardRoutes()
 			messageRoutes()
+			activityRoutes()
 
 			get("/") {
 				call.respondText("Medalist server MVP")

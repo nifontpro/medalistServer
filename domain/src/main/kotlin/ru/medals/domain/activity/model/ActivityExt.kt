@@ -1,12 +1,12 @@
 package ru.medals.domain.activity.model
 
 import ru.medals.domain.award.model.AwardLite
-import ru.medals.domain.user.model.User
+import ru.medals.domain.user.model.UserLite
 
 data class ActivityExt(
-	val user: User = User(),
-	val award: AwardLite = AwardLite(),
-	val companyId: String? = null,
+	val user: UserLite? = null,
+	val award: AwardLite? = null,
+	val companyId: String = "",
 
 	val state: ActivityState = ActivityState.NONE,
 	val date: Long = 0,

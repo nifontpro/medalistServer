@@ -112,7 +112,7 @@ class AwardProcessor : IBaseProcessor<AwardContext> {
 				awardUserDb("Награждаем сотрудника")
 				incrementAwardUserDb("Увеличиваем число наград у сотрудника на 1")
 
-				addActivityDb("Добавляем событие в активность")
+				addActivityAwardUser("Добавляем событие в активность")
 				sendMessageToUser("Отправляем сотруднику сообщение о награждении")
 				sendMessageToPrincipal("Отправляем сообщение тому, кто наградил")
 			}
@@ -128,6 +128,7 @@ class AwardProcessor : IBaseProcessor<AwardContext> {
 				validateAdminLevel("Уровень доступа - администратор")
 				deleteAwardUserDb("Удаляем награждение сотрудника")
 				decrementAwardUserDb("Уменьшаем число наград у сотрудника на 1")
+				addActivityDeleteAwardUser("Отправляем событие в активность")
 			}
 
 			finishOperation()

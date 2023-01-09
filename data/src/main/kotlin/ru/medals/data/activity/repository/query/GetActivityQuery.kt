@@ -3,19 +3,44 @@
 package ru.medals.data.activity.repository.query
 
 import ru.medals.data.core.*
+import ru.medals.domain.activity.model.ActivityQuery
 
 //fields:
 private const val user = "\$user"
 private const val award = "\$award"
 private const val department = "\$department"
 
-fun getActivityQuery(companyId: String, startDate: Long, endDate: Long, filter: String?): String {
+fun getActivityQuery(activityQuery: ActivityQuery): String {
+
+	val filterStep = activityQuery.filter?.let {
+		if (it.isBlank()) return@let ""
+		"""
+			{$match: {
+			    $or: [
+				    {'departmentName': {$regex: '$it', $options: "i"}},
+				    {'user.lastname': {$regex: '$it', $options: "i"}},
+				    {'user.name': {$regex: '$it', $options: "i"}}
+			    ]	
+			}},			
+		""".trimIndent()
+	} ?: ""
+
+	val paginationStep = if (activityQuery.page != null && activityQuery.pageSize != null) {
+		val skipSize = (activityQuery.page ?: 0) * (activityQuery.pageSize ?: 0)
+		""",
+			{$skip: $skipSize},
+			{$limit: ${activityQuery.pageSize}}
+		""".trimIndent()
+	} else {
+		""
+	}
+
 	return """[
 		
 	{$match: {
 		$and: [
-      {companyId: '$companyId'},
-      {date: {$gte: $startDate, $lte: $endDate}}
+      {companyId: '${activityQuery.companyId}'},
+      {date: {$gte: ${activityQuery.startDate}, $lte: ${activityQuery.endDate}}}
     ]
 	}},
 	
@@ -30,6 +55,7 @@ fun getActivityQuery(companyId: String, startDate: Long, endDate: Long, filter: 
 	      lastname: 1,
 	      patronymic: 1,
 	      departmentId: 1,
+				post: 1,
 	      imageUrl: 1
 	    }}  
 	  ],
@@ -66,7 +92,7 @@ fun getActivityQuery(companyId: String, startDate: Long, endDate: Long, filter: 
 	  foreignField: '_id',
 	  pipeline: [
 	    {$project: {
-	      name: 1,
+	      name: 1
 	    }}  
 	  ],
 	  as: 'department'	
@@ -87,13 +113,15 @@ fun getActivityQuery(companyId: String, startDate: Long, endDate: Long, filter: 
 	  departmentName: '$department.name'		
 	}},
 	
-	{$match: {
-    $or: [
-	    {'departmentName': {$regex: '$filter'}},
-	    {'user.lastname': {$regex: '$filter'}},
-	    {'user.name': {$regex: '$filter'}}
-    ]	
+	$filterStep
+	
+	{$sort: {
+		date: ${activityQuery.sort}			
 	}}
-		
+	
+	$paginationStep
+	
 	]""".trimIndent()
 }
+
+// 'user.lastname': 1,
