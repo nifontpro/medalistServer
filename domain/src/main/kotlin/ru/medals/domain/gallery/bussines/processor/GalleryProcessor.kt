@@ -6,6 +6,7 @@ import ru.medals.domain.core.bussines.IBaseProcessor
 import ru.medals.domain.core.bussines.workers.*
 import ru.medals.domain.gallery.bussines.context.GalleryCommand
 import ru.medals.domain.gallery.bussines.context.GalleryContext
+import ru.medals.domain.gallery.workers.addGalleryItem
 import ru.otus.cor.rootChain
 
 @Suppress("RemoveExplicitTypeArguments")
@@ -18,8 +19,8 @@ class GalleryProcessor : IBaseProcessor<GalleryContext> {
 		private val businessChain = rootChain<GalleryContext> {
 			initStatus("Инициализация статуса")
 
-			operation("Добавить элемент", GalleryCommand.ADD) {
-
+			operation("Добавить элемент в галлерею", GalleryCommand.ADD) {
+				addGalleryItem("Добавляем объект в галлерею")
 			}
 
 			finishOperation()

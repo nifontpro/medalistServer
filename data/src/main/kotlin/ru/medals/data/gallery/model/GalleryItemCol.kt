@@ -2,9 +2,9 @@ package ru.medals.data.gallery.model
 
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
-import ru.medals.domain.gallery.model.Gallery
+import ru.medals.domain.gallery.model.GalleryItem
 
-data class GalleryCol(
+data class GalleryItemCol(
 	val name: String = "",
 	val description: String? = null,
 	val folderId: String? = null,
@@ -19,7 +19,7 @@ data class GalleryCol(
 	@BsonId
 	val id: String = ObjectId().toString()
 ) {
-	fun toGallery() = Gallery(
+	fun toGalleryItem() = GalleryItem(
 		name = name,
 		description = description,
 		folderId = folderId,

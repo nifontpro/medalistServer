@@ -10,6 +10,7 @@ import ru.medals.ktor.auth.authRoutes
 import ru.medals.ktor.award.awardRoutes
 import ru.medals.ktor.company.companyRoutes
 import ru.medals.ktor.department.departmentRoutes
+import ru.medals.ktor.gallery.galleryRoutes
 import ru.medals.ktor.medal.medalRoutes
 import ru.medals.ktor.message.messageRoutes
 import ru.medals.ktor.register.registerRoutes
@@ -30,6 +31,7 @@ fun Application.configureRouting() {
 			awardRoutes()
 			messageRoutes()
 			activityRoutes()
+			galleryRoutes()
 
 			get("/") {
 				call.respondText("Medalist server MVP")

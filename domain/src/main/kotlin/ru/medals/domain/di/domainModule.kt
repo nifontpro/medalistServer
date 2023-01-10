@@ -6,6 +6,7 @@ import ru.medals.domain.auth.bussines.processor.AuthProcessor
 import ru.medals.domain.award.bussines.processor.AwardProcessor
 import ru.medals.domain.company.bussines.processor.CompanyProcessor
 import ru.medals.domain.department.bussines.processor.DepartmentProcessor
+import ru.medals.domain.gallery.bussines.processor.GalleryProcessor
 import ru.medals.domain.medal.bussines.processor.MedalProcessor
 import ru.medals.domain.message.bussines.processor.MessageProcessor
 import ru.medals.domain.register.bussines.processor.RegisterProcessor
@@ -30,5 +31,7 @@ val domainModule = module {
 	single { MessageProcessor() }
 
 	single { ActivityProcessor() }
+
+	single { GalleryProcessor() }
 
 }

@@ -5,6 +5,7 @@ import ru.medals.data.activity.repository.ActivityRepositoryImpl
 import ru.medals.data.award.repository.AwardRepositoryImpl
 import ru.medals.data.company.repository.CompanyRepositoryImpl
 import ru.medals.data.department.repository.DepartmentRepositoryImpl
+import ru.medals.data.gallery.repository.GalleryRepositoryImpl
 import ru.medals.data.medal.repository.MedalRepositoryImpl
 import ru.medals.data.message.repository.MessageRepositoryImpl
 import ru.medals.data.register.repository.RegisterRepositoryImpl
@@ -13,6 +14,7 @@ import ru.medals.domain.activity.repository.ActivityRepository
 import ru.medals.domain.award.repository.AwardRepository
 import ru.medals.domain.company.repository.CompanyRepository
 import ru.medals.domain.department.repository.DepartmentRepository
+import ru.medals.domain.gallery.repository.GalleryRepository
 import ru.medals.domain.medal.repository.MedalRepository
 import ru.medals.domain.message.repository.MessageRepository
 import ru.medals.domain.register.repository.RegisterRepository
@@ -54,5 +56,9 @@ val dataModule = module {
 
 	single<ActivityRepository> {
 		ActivityRepositoryImpl(db = get())
+	}
+
+	single<GalleryRepository> {
+		GalleryRepositoryImpl(db = get(), s3repository = get())
 	}
 }

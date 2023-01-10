@@ -1,6 +1,6 @@
 package ru.medals.domain.gallery.model
 
-data class Gallery(
+data class GalleryItem(
 	val name: String = "",
 	val description: String? = null,
 	val folderId: String? = null,
