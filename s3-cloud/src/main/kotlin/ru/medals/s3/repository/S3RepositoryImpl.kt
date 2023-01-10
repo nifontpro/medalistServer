@@ -13,9 +13,12 @@ class S3RepositoryImpl(
 	private val s3: AmazonS3
 ) : S3Repository {
 
+	private fun getBucketName(system: Boolean) =
+		if (system) Constants.S3_BUCKET_SYSTEM else Constants.S3_BUCKET_NAME
+
 	override suspend fun putObject(key: String, fileData: FileData): String? {
 		return try {
-			val bucket = if (fileData.system) Constants.S3_BUCKET_SYSTEM else Constants.S3_BUCKET_NAME
+			val bucket = getBucketName(fileData.system)
 			withContext(Dispatchers.IO) {
 				val file = File(fileData.url)
 				s3.putObject(bucket, key, file)
@@ -27,10 +30,10 @@ class S3RepositoryImpl(
 		}
 	}
 
-	override suspend fun deleteObject(key: String): Boolean {
+	override suspend fun deleteObject(key: String, system: Boolean): Boolean {
 		return try {
 			withContext(Dispatchers.IO) {
-				s3.deleteObject(Constants.S3_BUCKET_NAME, key)
+				s3.deleteObject(getBucketName(system), key)
 			}
 			true
 		} catch (e: Exception) {

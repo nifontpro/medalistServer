@@ -5,11 +5,14 @@ import mu.KotlinLogging
 import org.koin.java.KoinJavaComponent.inject
 import ru.medals.domain.core.bussines.BaseContext
 import ru.medals.domain.core.bussines.IBaseCommand
+import ru.medals.domain.core.bussines.model.BaseQuery
 import ru.medals.domain.gallery.model.GalleryItem
 import ru.medals.domain.gallery.repository.GalleryRepository
 
 data class GalleryContext(
 	var galleryItem: GalleryItem = GalleryItem(),
+	var gallery: List<GalleryItem> = emptyList(),
+	var baseQuery: BaseQuery = BaseQuery(),
 
 	val log: KLogger = KotlinLogging.logger {}
 
@@ -19,5 +22,6 @@ data class GalleryContext(
 
 enum class GalleryCommand : IBaseCommand {
 	NONE,
-	ADD
+	ADD,
+	GET_BY_FOLDER
 }

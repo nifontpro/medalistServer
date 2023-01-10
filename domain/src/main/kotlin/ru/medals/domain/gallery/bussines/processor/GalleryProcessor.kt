@@ -7,6 +7,7 @@ import ru.medals.domain.core.bussines.workers.*
 import ru.medals.domain.gallery.bussines.context.GalleryCommand
 import ru.medals.domain.gallery.bussines.context.GalleryContext
 import ru.medals.domain.gallery.workers.addGalleryItem
+import ru.medals.domain.gallery.workers.getGalleryByFolder
 import ru.otus.cor.rootChain
 
 @Suppress("RemoveExplicitTypeArguments")
@@ -21,6 +22,10 @@ class GalleryProcessor : IBaseProcessor<GalleryContext> {
 
 			operation("Добавить элемент в галлерею", GalleryCommand.ADD) {
 				addGalleryItem("Добавляем объект в галлерею")
+			}
+
+			operation("Получить список объектов галереи", GalleryCommand.GET_BY_FOLDER) {
+				getGalleryByFolder("Получаем список объектов в галереи")
 			}
 
 			finishOperation()

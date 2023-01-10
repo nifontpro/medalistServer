@@ -8,5 +8,4 @@ data class ActivityQuery(
 	val sort: Int = -1, // Направление сортировки по дате
 	val page: Int? = null,
 	val pageSize: Int? = null
-
 )

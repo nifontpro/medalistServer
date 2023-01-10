@@ -108,8 +108,8 @@ class UserRepositoryImpl(
 						UserCol::companyId eq companyId,
 						filter?.let {
 							or(
-								UserCol::name regex Regex("$filter", RegexOption.IGNORE_CASE),
-								UserCol::lastname regex Regex("$filter", RegexOption.IGNORE_CASE),
+								UserCol::name regex Regex(it, RegexOption.IGNORE_CASE),
+								UserCol::lastname regex Regex(it, RegexOption.IGNORE_CASE),
 							)
 						}
 					)
@@ -149,8 +149,8 @@ class UserRepositoryImpl(
 			UserCol::companyId eq companyId,
 			filter?.let {
 				or(
-					UserCol::name regex Regex("$filter", RegexOption.IGNORE_CASE),
-					UserCol::lastname regex Regex("$filter", RegexOption.IGNORE_CASE),
+					UserCol::name regex Regex(it, RegexOption.IGNORE_CASE),
+					UserCol::lastname regex Regex(it, RegexOption.IGNORE_CASE),
 				)
 			}
 		)

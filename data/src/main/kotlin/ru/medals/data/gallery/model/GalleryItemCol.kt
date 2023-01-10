@@ -7,7 +7,7 @@ import ru.medals.domain.gallery.model.GalleryItem
 data class GalleryItemCol(
 	val name: String = "",
 	val description: String? = null,
-	val folderId: String? = null,
+	val folderId: String = "",
 	val countLink: Int = -1, // Число ссылок на объект
 
 	val createDate: Long = 0,
@@ -17,7 +17,7 @@ data class GalleryItemCol(
 	val imageKey: String = "",
 
 	@BsonId
-	val id: String = ObjectId().toString()
+	val id: String = ""
 ) {
 	fun toGalleryItem() = GalleryItem(
 		name = name,
@@ -31,3 +31,25 @@ data class GalleryItemCol(
 		id = id
 	)
 }
+
+@DslMarker
+annotation class GalleryDslBuild
+
+class GalleryItemColBuild {
+	var item = GalleryItem()
+	var imgUrl = ""
+	var imgKey = ""
+
+	fun build() = GalleryItemCol(
+		name = item.name,
+		description = item.description,
+		folderId = item.folderId,
+		createDate = System.currentTimeMillis(),
+		imageUrl = imgUrl,
+		imageKey = imgKey,
+		id = ObjectId().toString()
+	)
+}
+
+@GalleryDslBuild
+fun galleryItemColBuild(block: GalleryItemColBuild.() -> Unit) = GalleryItemColBuild().apply(block).build()
