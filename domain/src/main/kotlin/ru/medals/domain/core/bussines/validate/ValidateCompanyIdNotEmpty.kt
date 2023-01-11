@@ -1,4 +1,4 @@
-package ru.medals.domain.core.bussines.workers.validation
+package ru.medals.domain.core.bussines.validate
 
 import ru.medals.domain.core.bussines.BaseContext
 import ru.medals.domain.core.bussines.helper.errorValidation
@@ -6,15 +6,15 @@ import ru.medals.domain.core.bussines.helper.fail
 import ru.otus.cor.ICorChainDsl
 import ru.otus.cor.worker
 
-fun <T : BaseContext> ICorChainDsl<T>.validateImageKeyEmpty(title: String) = worker {
+fun <T : BaseContext> ICorChainDsl<T>.validateCompanyIdEmpty(title: String) = worker {
 	this.title = title
-	on { imageKey.isNullOrBlank() }
+	on { companyId.isNullOrBlank() }
 	handle {
 		fail(
 			errorValidation(
-				field = "imageKey",
+				field = "companyId",
 				violationCode = "empty",
-				description = "Не должно быть пустым"
+				description = "Поле companyId не должно быть пустым"
 			)
 		)
 	}

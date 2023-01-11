@@ -5,17 +5,15 @@ import org.bson.BsonInt32
 import org.bson.conversions.Bson
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineDatabase
-import org.litote.kmongo.coroutine.aggregate
 import ru.medals.data.core.errorS3
-import ru.medals.data.core.limitStep
-import ru.medals.data.core.skipStep
 import ru.medals.data.gallery.model.GalleryItemCol
 import ru.medals.data.gallery.model.galleryItemColBuild
 import ru.medals.data.gallery.repository.GalleryRepoErrors.Companion.errorGalleryCreate
+import ru.medals.data.gallery.repository.GalleryRepoErrors.Companion.errorGalleryDelete
+import ru.medals.data.gallery.repository.GalleryRepoErrors.Companion.errorGalleryNotFound
 import ru.medals.data.gallery.repository.GalleryRepoErrors.Companion.errorGetGallery
-import ru.medals.domain.core.bussines.model.BaseQuery
+import ru.medals.domain.core.bussines.model.BaseQueryValid
 import ru.medals.domain.core.bussines.model.RepositoryData
-import ru.medals.domain.core.util.separator
 import ru.medals.domain.gallery.model.GalleryItem
 import ru.medals.domain.gallery.repository.GalleryRepository
 import ru.medals.domain.image.model.FileData
@@ -50,8 +48,33 @@ class GalleryRepositoryImpl(
 		}
 	}
 
-	private fun sortStep(baseQuery: BaseQuery): Bson {
-		val direct = BsonInt32(baseQuery.direction ?: 1)
+	/**
+	 * Удаление объекта галереи
+	 */
+	override suspend fun delete(item: GalleryItem): RepositoryData<Unit> {
+		if (!s3repository.deleteObject(key = item.imageKey, system = true)) return errorS3()
+		return try {
+			gallery.deleteOneById(id = item.id)
+			RepositoryData.success()
+		} catch (e: Exception) {
+			errorGalleryDelete()
+		}
+	}
+
+	override suspend fun getById(id: String): RepositoryData<GalleryItem> {
+		return try {
+			val item = gallery.findOneById(id = id) ?: return errorGalleryNotFound()
+			RepositoryData.success(data = item.toGalleryItem())
+		} catch (e: Exception) {
+			errorGetGallery()
+		}
+	}
+
+	/**
+	 * Шаг сортировки в запросе на получении списка объектов галереи
+	 */
+	private fun sortStep(baseQuery: BaseQueryValid): Bson {
+		val direct = BsonInt32(baseQuery.direction)
 		return when (baseQuery.field) {
 			GalleryItemCol::name.path() -> sort(
 				BsonDocument().append(GalleryItemCol::name.path(), direct)
@@ -68,27 +91,28 @@ class GalleryRepositoryImpl(
 		}
 	}
 
-	override suspend fun getByFolder(folderId: String, baseQuery: BaseQuery): RepositoryData<List<GalleryItem>> {
+	/**
+	 * Получить список объектов из папки
+	 */
+	override suspend fun getByFolder(
+		folderId: String,
+		baseQuery: BaseQueryValid
+	): RepositoryData<List<GalleryItem>> {
 		return try {
+
 			val filter = and(
 				GalleryItemCol::folderId eq folderId,
 				baseQuery.filter?.let {
 					GalleryItemCol::name regex Regex(it, RegexOption.IGNORE_CASE)
 				}
 			)
-			val count = gallery.countDocuments(
-				filter = filter,
-			)
 
-			separator()
-			println("count = $count")
+			val query = mutableListOf(match(filter))
+			if (baseQuery.field != null) query += sortStep(baseQuery)
+			query += skip(baseQuery.page * baseQuery.pageSize)
+			query += limit(baseQuery.pageSize)
 
-			val items = gallery.aggregate<GalleryItemCol>(
-				match(filter),
-				sortStep(baseQuery),
-				skipStep(baseQuery),
-				limitStep(baseQuery)
-			).toList().map { it.toGalleryItem() }
+			val items = gallery.aggregate<GalleryItemCol>(query).toList().map { it.toGalleryItem() }
 			RepositoryData.success(data = items)
 		} catch (e: Exception) {
 			errorGetGallery()

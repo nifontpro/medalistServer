@@ -1,4 +1,4 @@
-package ru.medals.domain.core.bussines.workers.validation
+package ru.medals.domain.core.bussines.validate
 
 import ru.medals.domain.auth.util.checkAuthMinDirector
 import ru.medals.domain.core.bussines.BaseContext

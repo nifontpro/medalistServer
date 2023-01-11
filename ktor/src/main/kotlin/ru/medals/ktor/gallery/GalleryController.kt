@@ -9,6 +9,8 @@ import ru.medals.ktor.core.process
 import ru.medals.ktor.core.processGallery
 import ru.medals.ktor.gallery.mappers.fromTransport
 import ru.medals.ktor.gallery.mappers.toTransportGetGallery
+import ru.medals.ktor.gallery.mappers.toTransportGetGalleryItem
+import ru.medals.ktor.gallery.model.request.GalleryItemDeleteRequest
 import ru.medals.ktor.gallery.model.request.GetGalleryByFolderRequest
 
 suspend fun ApplicationCall.createGalleryItem(processor: GalleryProcessor) {
@@ -21,4 +23,11 @@ suspend fun ApplicationCall.getGalleryByFolder(processor: GalleryProcessor) =
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
 		toTransport = { toTransportGetGallery() }
+	)
+
+suspend fun ApplicationCall.deleteGalleryItem(processor: GalleryProcessor) =
+	process<GalleryItemDeleteRequest, GalleryItem, GalleryContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetGalleryItem() }
 	)

@@ -8,9 +8,9 @@ import ru.medals.domain.award.bussines.workers.message.sendMessageToPrincipal
 import ru.medals.domain.award.bussines.workers.message.sendMessageToUser
 import ru.medals.domain.core.bussines.IBaseProcessor
 import ru.medals.domain.core.bussines.workers.*
-import ru.medals.domain.core.bussines.workers.validation.validateAdminLevel
-import ru.medals.domain.core.bussines.workers.validation.validateCompanyIdEmpty
-import ru.medals.domain.core.bussines.workers.validation.validateUserIdEmpty
+import ru.medals.domain.core.bussines.validate.validateAdminLevel
+import ru.medals.domain.core.bussines.validate.validateCompanyIdEmpty
+import ru.medals.domain.core.bussines.validate.validateUserIdEmpty
 import ru.otus.cor.rootChain
 import ru.otus.cor.worker
 

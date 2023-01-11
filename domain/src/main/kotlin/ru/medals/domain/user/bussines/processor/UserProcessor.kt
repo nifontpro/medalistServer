@@ -1,8 +1,8 @@
 package ru.medals.domain.user.bussines.processor
 
 import ru.medals.domain.core.bussines.IBaseProcessor
+import ru.medals.domain.core.bussines.validate.*
 import ru.medals.domain.core.bussines.workers.*
-import ru.medals.domain.core.bussines.workers.validation.*
 import ru.medals.domain.user.bussines.context.UserCommand
 import ru.medals.domain.user.bussines.context.UserContext
 import ru.medals.domain.user.bussines.validate.*

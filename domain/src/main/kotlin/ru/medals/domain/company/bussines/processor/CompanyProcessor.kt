@@ -6,8 +6,8 @@ import ru.medals.domain.company.bussines.validate.validateCompanyNameEmpty
 import ru.medals.domain.company.bussines.validate.validateOwnerPrincipalUser
 import ru.medals.domain.company.bussines.workers.*
 import ru.medals.domain.core.bussines.IBaseProcessor
+import ru.medals.domain.core.bussines.validate.*
 import ru.medals.domain.core.bussines.workers.*
-import ru.medals.domain.core.bussines.workers.validation.*
 import ru.otus.cor.rootChain
 import ru.otus.cor.worker
 

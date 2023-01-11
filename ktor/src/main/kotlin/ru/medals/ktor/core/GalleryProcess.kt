@@ -90,7 +90,7 @@ suspend fun ApplicationCall.processGallery(
 
 	mainResponse(
 		state = context.state,
-		data = context.responseId,
+		data = context.galleryItem,
 		errors = context.errors,
 	)
 }

@@ -1,4 +1,4 @@
-package ru.medals.domain.core.bussines.workers.validation
+package ru.medals.domain.core.bussines.validate
 
 import ru.medals.domain.core.bussines.BaseContext
 import ru.medals.domain.core.bussines.helper.errorValidation

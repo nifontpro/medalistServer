@@ -12,8 +12,8 @@ import ru.medals.domain.award.bussines.validate.*
 import ru.medals.domain.award.bussines.workers.*
 import ru.medals.domain.core.bussines.IBaseProcessor
 import ru.medals.domain.core.bussines.workers.*
-import ru.medals.domain.core.bussines.workers.validation.prepareFilter
-import ru.medals.domain.core.bussines.workers.validation.validateCompanyIdEmpty
+import ru.medals.domain.core.bussines.validate.prepareFilter
+import ru.medals.domain.core.bussines.validate.validateCompanyIdEmpty
 import ru.otus.cor.rootChain
 
 @Suppress("RemoveExplicitTypeArguments")

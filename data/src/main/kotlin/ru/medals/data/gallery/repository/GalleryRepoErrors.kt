@@ -19,8 +19,8 @@ interface GalleryRepoErrors {
 		fun errorGalleryDelete() = RepositoryData.error(
 			error = RepositoryError(
 				repository = REPO,
-				violationCode = "$REPO i/o delete error",
-				description = "Ошибка удаления медали"
+				violationCode = "$REPO db delete error",
+				description = "Ошибка удаления объекта галереи"
 			)
 		)
 
@@ -28,7 +28,7 @@ interface GalleryRepoErrors {
 			error = RepositoryError(
 				repository = REPO,
 				violationCode = "get error",
-				description = "Ошибка чтения галереи"
+				description = "Ошибка чтения объектов галереи"
 			)
 		)
 
@@ -36,7 +36,7 @@ interface GalleryRepoErrors {
 			error = RepositoryError(
 				repository = REPO,
 				violationCode = "$REPO not found",
-				description = "Медаль не найдена"
+				description = "Объект галереи не найден"
 			)
 		)
 

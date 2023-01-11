@@ -2,6 +2,8 @@ package ru.medals.domain.core.bussines
 
 import org.koin.java.KoinJavaComponent.inject
 import ru.medals.domain.core.bussines.helper.ContextError
+import ru.medals.domain.core.bussines.model.BaseQuery
+import ru.medals.domain.core.bussines.model.BaseQueryValid
 import ru.medals.domain.core.util.Constants.TEST_MODE
 import ru.medals.domain.image.model.FileData
 import ru.medals.domain.message.repository.MessageRepository
@@ -21,7 +23,9 @@ abstract class BaseContext(
 	var departmentIdValid: String = "",
 	var userIdValid: String = "",
 
-	var searchFilter: String? = null,
+	var baseQuery: BaseQuery = BaseQuery(),
+	var baseQueryValid: BaseQueryValid = BaseQueryValid(),
+	var searchFilter: String? = null, // deprecated
 
 	var principalUser: User = User(),
 	var userFIO: String = "",

@@ -51,6 +51,7 @@ suspend fun <T, R, C : BaseContext> ApplicationCall.authProcessTypes(
 	val request = try {
 		receive<T>(typeInfo = requestType)
 	} catch (e: Exception) {
+		println(e.message)
 		responseBadRequest()
 		return
 	}

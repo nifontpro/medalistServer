@@ -11,6 +11,7 @@ import ru.medals.domain.user.model.User.Companion.DIRECTOR
 import ru.medals.domain.user.model.User.Companion.DIRECTOR_PRIORITY
 import ru.medals.domain.user.model.User.Companion.OWNER
 import ru.medals.domain.user.model.User.Companion.ROOT
+import ru.medals.domain.user.model.User.Companion.SUPER
 import ru.medals.domain.user.model.User.Companion.USER
 import ru.medals.domain.user.model.User.Companion.USER_PRIORITY
 import ru.medals.domain.user.repository.UserRepository
@@ -38,6 +39,20 @@ fun Application.configureSecurity() {
 				val userId = payload.getClaim("userId").asString()
 				val user = userRepository.getUserById(userId) ?: return@validate null
 				if (user.role != ROOT) return@validate null
+				user.toPrincipalUser()
+			}
+		}
+
+		jwt(SUPER) {
+			realm = jwtRealm
+			verifier(authVerify.verifyJwtToken)
+			validate { jwtCredential ->
+				val payload = jwtCredential.payload
+				val type = payload.getClaim("type").asString()
+				if (type != "access") return@validate null
+				val userId = payload.getClaim("userId").asString()
+				val user = userRepository.getUserById(userId) ?: return@validate null
+				if (user.role != SUPER) return@validate null
 				user.toPrincipalUser()
 			}
 		}

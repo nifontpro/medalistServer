@@ -1,8 +1,8 @@
 package ru.medals.domain.department.bussines.processor
 
 import ru.medals.domain.core.bussines.IBaseProcessor
+import ru.medals.domain.core.bussines.validate.*
 import ru.medals.domain.core.bussines.workers.*
-import ru.medals.domain.core.bussines.workers.validation.*
 import ru.medals.domain.department.bussines.context.DepartmentContext
 import ru.medals.domain.department.bussines.validate.validateDepartmentIdLocalEmpty
 import ru.medals.domain.department.bussines.validate.validateDepartmentNameEmpty

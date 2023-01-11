@@ -1,4 +1,4 @@
-package ru.medals.domain.gallery.workers
+package ru.medals.domain.gallery.bussines.workers.db
 
 import ru.medals.domain.core.bussines.ContextState
 import ru.medals.domain.core.bussines.helper.checkRepositoryData
@@ -12,7 +12,7 @@ fun ICorChainDsl<GalleryContext>.getGalleryByFolder(title: String) = worker {
 	on { state == ContextState.RUNNING }
 	handle {
 		gallery = checkRepositoryData {
-			galleryRepository.getByFolder(folderId = galleryItem.folderId, baseQuery = baseQuery)
+			galleryRepository.getByFolder(folderId = galleryItem.folderId, baseQuery = baseQueryValid)
 		} ?: return@handle
 	}
 

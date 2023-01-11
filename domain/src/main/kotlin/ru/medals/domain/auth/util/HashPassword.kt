@@ -7,6 +7,6 @@ fun hashPassword(password: String): String {
 }
 
 fun main() {
-    val password = "111111"
+    val password = "maximum"
     println(hashPassword(password))
 }

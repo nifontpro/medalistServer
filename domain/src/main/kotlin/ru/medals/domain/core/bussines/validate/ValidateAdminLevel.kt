@@ -1,6 +1,6 @@
-package ru.medals.domain.core.bussines.workers.validation
+package ru.medals.domain.core.bussines.validate
 
-import ru.medals.domain.auth.util.checkAuthMinOwner
+import ru.medals.domain.auth.util.checkAuthMinAdmin
 import ru.medals.domain.core.bussines.BaseContext
 import ru.medals.domain.core.bussines.ContextState
 import ru.medals.domain.core.bussines.helper.errorDb
@@ -10,11 +10,11 @@ import ru.otus.cor.ICorChainDsl
 import ru.otus.cor.worker
 
 /**
- * Проверка уровня - владелец компаний
- * В базовом контексте необходимы companyId, principalUser
+ * Проверка уровня - администратор и выше
+ * В базовом контексте необходимы companyIdValid, principalUser
  */
-fun <T : BaseContext> ICorChainDsl<T>.validateOwnerLevel(
-	title: String = "Проверка уровня доступа не ниже OWNER"
+fun <T : BaseContext> ICorChainDsl<T>.validateAdminLevel(
+	title: String = "Проверка уровня доступа не ниже ADMIN"
 ) = worker {
 
 	this.title = title
@@ -22,22 +22,22 @@ fun <T : BaseContext> ICorChainDsl<T>.validateOwnerLevel(
 	except {
 		fail(
 			errorDb(
-				repository = "owner level",
+				repository = "admin level",
 				violationCode = "internal",
 				description = "Внутренний сбой при проверке уровня доступа"
 			)
 		)
 	}
 	handle {
-		if (!checkAuthMinOwner(
+		if (!checkAuthMinAdmin(
 				companyId = companyIdValid,
 				principalUser = principalUser
 			)
 		) {
 			fail(
 				errorUnauthorized(
-					role = "owner",
-					description = "Владелец компаний"
+					role = "admin",
+					description = "Администратор компании"
 				)
 			)
 		}

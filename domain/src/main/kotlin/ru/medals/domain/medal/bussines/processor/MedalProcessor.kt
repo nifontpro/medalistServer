@@ -1,8 +1,11 @@
 package ru.medals.domain.medal.bussines.processor
 
 import ru.medals.domain.core.bussines.IBaseProcessor
+import ru.medals.domain.core.bussines.validate.prepareFilter
+import ru.medals.domain.core.bussines.validate.validateAdminLevel
+import ru.medals.domain.core.bussines.validate.validateCompanyIdEmpty
+import ru.medals.domain.core.bussines.validate.validateImageKeyEmpty
 import ru.medals.domain.core.bussines.workers.*
-import ru.medals.domain.core.bussines.workers.validation.*
 import ru.medals.domain.medal.bussines.context.MedalContext
 import ru.medals.domain.medal.bussines.validate.validateMedalIdEmpty
 import ru.medals.domain.medal.bussines.validate.validateMedalNameEmpty

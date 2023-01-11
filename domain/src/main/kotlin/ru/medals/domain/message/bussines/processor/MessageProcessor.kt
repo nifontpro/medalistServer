@@ -2,8 +2,10 @@ package ru.medals.domain.message.bussines.processor
 
 import ru.medals.domain.company.bussines.workers.*
 import ru.medals.domain.core.bussines.IBaseProcessor
+import ru.medals.domain.core.bussines.validate.validateUserExist
+import ru.medals.domain.core.bussines.validate.validateUserIdEmpty
+import ru.medals.domain.core.bussines.validate.validateUserLevel
 import ru.medals.domain.core.bussines.workers.*
-import ru.medals.domain.core.bussines.workers.validation.*
 import ru.medals.domain.message.bussines.context.MessageCommand
 import ru.medals.domain.message.bussines.context.MessageContext
 import ru.medals.domain.message.bussines.validate.validateMessageIdEmpty
