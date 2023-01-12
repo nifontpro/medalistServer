@@ -10,7 +10,9 @@ import ru.medals.domain.gallery.repository.GalleryRepository
 
 data class GalleryContext(
 	var galleryItem: GalleryItem = GalleryItem(),
+	var findGalleryItem: GalleryItem = GalleryItem(),
 	var gallery: List<GalleryItem> = emptyList(),
+	var isImageUpdate: Boolean = false,
 
 	val log: KLogger = KotlinLogging.logger {}
 
@@ -22,5 +24,6 @@ enum class GalleryCommand : IBaseCommand {
 	NONE,
 	ADD,
 	DELETE,
+	UPDATE,
 	GET_BY_FOLDER
 }

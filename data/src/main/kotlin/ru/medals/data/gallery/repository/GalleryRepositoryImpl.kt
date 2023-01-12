@@ -11,6 +11,7 @@ import ru.medals.data.gallery.model.galleryItemColBuild
 import ru.medals.data.gallery.repository.GalleryRepoErrors.Companion.errorGalleryCreate
 import ru.medals.data.gallery.repository.GalleryRepoErrors.Companion.errorGalleryDelete
 import ru.medals.data.gallery.repository.GalleryRepoErrors.Companion.errorGalleryNotFound
+import ru.medals.data.gallery.repository.GalleryRepoErrors.Companion.errorGalleryUpdate
 import ru.medals.data.gallery.repository.GalleryRepoErrors.Companion.errorGetGallery
 import ru.medals.domain.core.bussines.model.BaseQueryValid
 import ru.medals.domain.core.bussines.model.RepositoryData
@@ -51,11 +52,11 @@ class GalleryRepositoryImpl(
 	/**
 	 * Удаление объекта галереи
 	 */
-	override suspend fun delete(item: GalleryItem): RepositoryData<Unit> {
+	override suspend fun delete(item: GalleryItem): RepositoryData<GalleryItem> {
 		if (!s3repository.deleteObject(key = item.imageKey, system = true)) return errorS3()
 		return try {
 			gallery.deleteOneById(id = item.id)
-			RepositoryData.success()
+			RepositoryData.success(data = item)
 		} catch (e: Exception) {
 			errorGalleryDelete()
 		}
@@ -108,7 +109,7 @@ class GalleryRepositoryImpl(
 			)
 
 			val query = mutableListOf(match(filter))
-			if (baseQuery.field != null) query += sortStep(baseQuery)
+			baseQuery.field?.let { query += sortStep(baseQuery) }
 			query += skip(baseQuery.page * baseQuery.pageSize)
 			query += limit(baseQuery.pageSize)
 
@@ -116,6 +117,29 @@ class GalleryRepositoryImpl(
 			RepositoryData.success(data = items)
 		} catch (e: Exception) {
 			errorGetGallery()
+		}
+	}
+
+	override suspend fun updateImage(item: GalleryItem, fileData: FileData): RepositoryData<Unit> {
+		s3repository.putObject(key = item.imageKey, fileData = fileData) ?: return errorS3()
+		return RepositoryData.success()
+	}
+
+	override suspend fun update(item: GalleryItem): RepositoryData<GalleryItem> {
+		return try {
+			val now =  System.currentTimeMillis()
+			gallery.updateOneById(
+				id = item.id,
+				update = set(
+					GalleryItemCol::name setTo item.name,
+					GalleryItemCol::description setTo item.description,
+					GalleryItemCol::folderId setTo item.folderId,
+					GalleryItemCol::updateDate setTo now
+				)
+			)
+			RepositoryData.success(data = item.copy(updateDate = now))
+		} catch (e: Exception) {
+			errorGalleryUpdate()
 		}
 	}
 }

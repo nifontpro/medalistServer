@@ -47,20 +47,20 @@ class ValidateBaseQueryTest : KoinTest {
 			}
 			galleryProcessor.exec(ctx)
 			var baseQueryValid = BaseQueryValid(
-					page = 0, pageSize = Int.MAX_VALUE, filter = "filter", field = "name", direction = 1
-				)
+				page = 0, pageSize = Int.MAX_VALUE, filter = "filter", field = "name", direction = 1
+			)
 			assertEquals(baseQueryValid, ctx.baseQueryValid)
 
 			/**
 			 * Actual
 			 */
 			ctx.baseQuery = BaseQuery(
-					page = 10,
-					pageSize = 34,
-					filter = "  xx  ",
-					field = "name",
-					direction = -10,
-				)
+				page = 10,
+				pageSize = 34,
+				filter = "  xx  ",
+				field = "name",
+				direction = -10,
+			)
 
 			galleryProcessor.exec(ctx)
 			baseQueryValid = BaseQueryValid(

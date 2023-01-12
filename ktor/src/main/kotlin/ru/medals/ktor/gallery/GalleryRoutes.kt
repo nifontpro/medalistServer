@@ -22,6 +22,10 @@ fun Route.galleryRoutes() {
 			delete {
 				call.deleteGalleryItem(galleryProcessor)
 			}
+
+			put {
+				call.updateGalleryItem(galleryProcessor)
+			}
 		}
 
 		post("get_folder") {

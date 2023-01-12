@@ -6,13 +6,14 @@ import ru.medals.domain.gallery.bussines.context.GalleryContext
 import ru.otus.cor.ICorChainDsl
 import ru.otus.cor.worker
 
-fun ICorChainDsl<GalleryContext>.getGalleryItem(title: String) = worker {
+fun ICorChainDsl<GalleryContext>.updateGalleryItemImage(title: String) = worker {
 
 	this.title = title
-	on { state == ContextState.RUNNING }
+	on { state == ContextState.RUNNING && fileData.size > 0 }
 	handle {
-		galleryItem = checkRepositoryData {
-			galleryRepository.getById(id = galleryItem.id)
-		} ?: return@handle
+		checkRepositoryData {
+			galleryRepository.updateImage(item = findGalleryItem, fileData = fileData)
+		}
 	}
+
 }

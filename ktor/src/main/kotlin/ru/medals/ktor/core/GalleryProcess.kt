@@ -2,13 +2,17 @@ package ru.medals.ktor.core
 
 import io.ktor.http.content.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
+import ru.medals.domain.gallery.bussines.context.GalleryCommand
 import ru.medals.domain.gallery.bussines.context.GalleryContext
 import ru.medals.domain.gallery.bussines.processor.GalleryProcessor
 import ru.medals.domain.gallery.model.GalleryItem
 import ru.medals.domain.image.model.FileData
 import ru.medals.ktor.core.response.responseBadRequest
 import ru.medals.ktor.core.response.responseInternalError
+import ru.medals.ktor.core.response.responseUnauthorized
+import ru.medals.ktor.user.PrincipalUser
 import java.io.File
 
 /**
@@ -22,11 +26,11 @@ suspend fun ApplicationCall.processGallery(
 		this.timeStart = System.currentTimeMillis()
 	}
 
-	/*	val principalUser = principal<PrincipalUser>() ?: run {
-			responseUnauthorized("Не найден авторизованный пользователь")
-			return
-		}
-		context.principalUser = principalUser.toUser()*/
+	val principalUser = principal<PrincipalUser>() ?: run {
+		responseUnauthorized("Не найден авторизованный пользователь")
+		return
+	}
+	context.principalUser = principalUser.toUser()
 
 	val multipart = try {
 		receiveMultipart()
@@ -78,8 +82,10 @@ suspend fun ApplicationCall.processGallery(
 	if (fileData != null) {
 		fileData?.let { context.fileData = it }
 	} else {
-		responseInternalError("Ошибка записи в файловую систему сервера")
-		return
+		if (context.command == GalleryCommand.ADD) {
+			responseInternalError("Ошибка загрузки изображения")
+			return
+		}
 	}
 
 	context.galleryItem = galleryItem

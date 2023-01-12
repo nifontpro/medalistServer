@@ -18,6 +18,11 @@ suspend fun ApplicationCall.createGalleryItem(processor: GalleryProcessor) {
 	processGallery(context = context, processor = processor)
 }
 
+suspend fun ApplicationCall.updateGalleryItem(processor: GalleryProcessor) {
+	val context = GalleryContext().apply { command = GalleryCommand.UPDATE }
+	processGallery(context = context, processor = processor)
+}
+
 suspend fun ApplicationCall.getGalleryByFolder(processor: GalleryProcessor) =
 	process<GetGalleryByFolderRequest, List<GalleryItem>, GalleryContext>(
 		processor = processor,

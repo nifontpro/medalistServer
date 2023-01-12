@@ -6,14 +6,13 @@ import ru.medals.domain.gallery.bussines.context.GalleryContext
 import ru.otus.cor.ICorChainDsl
 import ru.otus.cor.worker
 
-fun ICorChainDsl<GalleryContext>.deleteGalleryItem(title: String) = worker {
+fun ICorChainDsl<GalleryContext>.getGalleryItemById(title: String) = worker {
 
 	this.title = title
 	on { state == ContextState.RUNNING }
 	handle {
-		galleryItem = checkRepositoryData {
-			galleryRepository.delete(item = findGalleryItem)
+		findGalleryItem = checkRepositoryData {
+			galleryRepository.getById(id = galleryItem.id)
 		} ?: return@handle
 	}
-
 }

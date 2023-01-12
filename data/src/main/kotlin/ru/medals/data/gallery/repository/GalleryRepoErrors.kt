@@ -44,7 +44,7 @@ interface GalleryRepoErrors {
 			error = RepositoryError(
 				repository = REPO,
 				violationCode = "bad update",
-				description = "Ошибка обновления данных награды"
+				description = "Ошибка обновления объекта галереи"
 			)
 		)
 	}

@@ -9,10 +9,7 @@ import ru.medals.domain.core.bussines.workers.query.prepareBaseQuery
 import ru.medals.domain.gallery.bussines.context.GalleryCommand
 import ru.medals.domain.gallery.bussines.context.GalleryContext
 import ru.medals.domain.gallery.bussines.validate.*
-import ru.medals.domain.gallery.bussines.workers.db.addGalleryItem
-import ru.medals.domain.gallery.bussines.workers.db.deleteGalleryItem
-import ru.medals.domain.gallery.bussines.workers.db.getGalleryByFolder
-import ru.medals.domain.gallery.bussines.workers.db.getGalleryItem
+import ru.medals.domain.gallery.bussines.workers.db.*
 import ru.medals.domain.gallery.bussines.workers.trimFieldGalleryItem
 import ru.otus.cor.rootChain
 
@@ -28,7 +25,7 @@ class GalleryProcessor : IBaseProcessor<GalleryContext> {
 
 			operation("Добавить объект в галерею", GalleryCommand.ADD) {
 				validateGalleryItemName("Проверяем наименование")
-				validateGalleryFolderId("Провурка folderId")
+//				validateGalleryFolderId("Проверка folderId")
 				validateFolderId("Проверка folderId")
 				trimFieldGalleryItem("Очищаем поля")
 				addGalleryItem("Добавляем объект в галерею")
@@ -36,13 +33,23 @@ class GalleryProcessor : IBaseProcessor<GalleryContext> {
 
 			operation("Удалить объект галереи", GalleryCommand.DELETE) {
 				validateGalleryItemId("Проверяем id")
-				getGalleryItem("Получаем объект")
+				getGalleryItemById("Получаем объект")
 				validateLinkExist("Проверяем наличие ссылок")
 				deleteGalleryItem("Удаляем объект галереи")
 			}
 
+			operation("Обновить объект галереи", GalleryCommand.UPDATE) {
+				validateGalleryItemId("Проверяем id")
+				validateFolderId("Проверка folderId")
+				validateGalleryItemName("Проверяем наименование")
+				trimFieldGalleryItem("Очищаем поля")
+				getGalleryItemById("Получаем объект")
+				updateGalleryItemImage("Обновляем изображение")
+				updateGalleryItem("Обновляем поля объекта")
+			}
+
 			operation("Получить список объектов галереи", GalleryCommand.GET_BY_FOLDER) {
-				validateGalleryFolderId("Провурка folderId")
+				validateFolderId("Проверка folderId")
 				validateBaseQuery("Проверка базового запроса")
 				prepareBaseQuery("Подготовка базового запроса")
 				getGalleryByFolder("Получаем список объектов в галереи")

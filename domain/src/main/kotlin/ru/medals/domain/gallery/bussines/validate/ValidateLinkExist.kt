@@ -8,7 +8,7 @@ import ru.otus.cor.worker
 
 fun ICorChainDsl<GalleryContext>.validateLinkExist(title: String) = worker {
 	this.title = title
-	on { galleryItem.countLink > 0 }
+	on { findGalleryItem.countLink > 0 }
 	handle {
 		fail(
 			errorDb(
