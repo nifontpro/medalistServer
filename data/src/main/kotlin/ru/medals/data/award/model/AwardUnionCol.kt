@@ -17,6 +17,7 @@ data class AwardUnionCol(
 	val score: Int? = null,
 	val companyId: String,
 
+	override val sysImage: Boolean = false,
 	override val imageUrl: String? = null,
 	override val imageKey: String? = null,
 	override val images: List<ImageRef> = emptyList(),
@@ -43,6 +44,7 @@ data class AwardUnionCol(
 		score = score,
 		companyId = companyId,
 
+		sysImage = sysImage,
 		imageUrl = imageUrl,
 		imageKey = imageKey,
 		images = images,

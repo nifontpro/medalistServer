@@ -14,6 +14,7 @@ fun ICorChainDsl<GalleryContext>.getGalleryByFolder(title: String) = worker {
 		gallery = checkRepositoryData {
 			galleryRepository.getByFolder(folderId = galleryItem.folderId, baseQuery = baseQueryValid)
 		} ?: return@handle
+
 	}
 
 }

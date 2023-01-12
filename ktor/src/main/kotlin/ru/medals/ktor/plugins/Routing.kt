@@ -34,7 +34,9 @@ fun Application.configureRouting() {
 			galleryRoutes()
 
 			get("/") {
-				call.respondText("Medalist server MVP")
+
+				val usedMb = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576
+				call.respondText("Medalist server MVP, used $usedMb Mb")
 			}
 
 			static("/logs") {

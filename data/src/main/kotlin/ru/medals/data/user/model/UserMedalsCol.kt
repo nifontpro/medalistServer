@@ -29,6 +29,7 @@ data class UserMedalsCol(
 	val medalsInfo: List<MedalInfoCol> = emptyList(),
 	val medals: List<MedalCol>,
 
+	override val sysImage: Boolean = false,
 	override val imageUrl: String? = null,
 	override val imageKey: String? = null,
 	override val images: List<ImageRef> = emptyList(),
@@ -45,15 +46,18 @@ data class UserMedalsCol(
 		lastname = lastname,
 		hashPassword = null,
 		role = role ?: User.NONE,
-		imageUrl = imageUrl,
-		imageKey = imageKey,
-		images = images,
 		bio = bio,
 		companyId = companyId,
 		departmentId = departmentId,
 		score = score,
 		currentScore = currentScore,
 		rewardCount = rewardCount,
+
+		sysImage = sysImage,
+		imageUrl = imageUrl,
+		imageKey = imageKey,
+		images = images,
+
 		medalsInfo = medalsInfo.map { medalInfoCol ->
 			MedalInfo(
 				medal = medals.find { medal -> medalInfoCol.medalId == medal.id }?.toMedal() ?: Medal(),

@@ -33,6 +33,7 @@ data class UserAwardsLiteCol(
 
 	val awards: List<AwardLiteCol> = emptyList(),
 
+	override val sysImage: Boolean = false,
 	override val imageUrl: String? = null,
 	override val imageKey: String? = null,
 	override val images: List<ImageRef> = emptyList(),
@@ -49,9 +50,6 @@ data class UserAwardsLiteCol(
 		patronymic = patronymic,
 		lastname = lastname,
 		role = role ?: User.NONE,
-		imageUrl = imageUrl,
-		imageKey = imageKey,
-		images = images,
 		post = post,
 		phone = phone,
 		gender = gender ?: Gender.UNDEFINED,
@@ -61,6 +59,11 @@ data class UserAwardsLiteCol(
 		score = score,
 		currentScore = currentScore,
 		awardCount = awardCount,
-		awards = awards.map { it.toAwardLite() }
+		awards = awards.map { it.toAwardLite() },
+
+		sysImage = sysImage,
+		imageUrl = imageUrl,
+		imageKey = imageKey,
+		images = images,
 	)
 }

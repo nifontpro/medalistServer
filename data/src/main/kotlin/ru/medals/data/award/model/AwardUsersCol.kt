@@ -24,6 +24,7 @@ data class AwardUsersCol(
 	val fromNomineeUsers: List<UserCol> = emptyList(),
 	val fromAwardUsers: List<UserCol> = emptyList(),
 
+	override val sysImage: Boolean = false,
 	override val imageUrl: String? = null,
 	override val imageKey: String? = null,
 	override val images: List<ImageRef> = emptyList(),
@@ -52,6 +53,7 @@ data class AwardUsersCol(
 			)
 		},
 
+		sysImage = sysImage,
 		imageUrl = imageUrl,
 		imageKey = imageKey,
 

@@ -24,6 +24,7 @@ data class User(
 	val isMnc: Boolean? = null, // Является ли членом номинационной коммисии
 	val departmentName: String? = null,
 
+	override val sysImage: Boolean = false,
 	override val imageUrl: String? = null,
 	override val imageKey: String? = null,
 	override val images: List<ImageRef> = emptyList(),

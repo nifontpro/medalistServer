@@ -14,6 +14,7 @@ data class Award(
 	val companyId: String = "",
 	val relations: List<AwardRelate> = emptyList(),
 
+	override val sysImage: Boolean = false,
 	override val imageUrl: String? = null,
 	override val imageKey: String? = null,
 	override val images: List<ImageRef> = emptyList(),

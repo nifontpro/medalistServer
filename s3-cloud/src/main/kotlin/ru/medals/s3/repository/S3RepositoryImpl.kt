@@ -46,9 +46,14 @@ class S3RepositoryImpl(
 	override suspend fun deleteAllImages(entity: IImages): Boolean {
 		return try {
 			withContext(Dispatchers.IO) {
-				entity.imageKey?.let {
-					s3.deleteObject(Constants.S3_BUCKET_NAME, it)
+
+				// Удаляем, если изображение не из хранилища
+				if (!entity.sysImage) {
+					entity.imageKey?.let {
+						s3.deleteObject(Constants.S3_BUCKET_NAME, it)
+					}
 				}
+
 				entity.images.forEach { imageRef ->
 					s3.deleteObject(Constants.S3_BUCKET_NAME, imageRef.imageKey)
 				}

@@ -8,6 +8,7 @@ data class Department(
 	val description: String? = null,
 	val companyId: String = "", // id компании
 
+	override val sysImage: Boolean = false,
 	override val imageUrl: String? = null,
 	override val imageKey: String? = null,
 	override val images: List<ImageRef> = emptyList(),

@@ -13,6 +13,7 @@ data class MedalCol(
 	val isSystem: Boolean = false,
 	val score: Int? = null,
 
+	override val sysImage: Boolean = false,
 	override val imageUrl: String? = null,
 	override val imageKey: String? = null,
 	override val images: List<ImageRef> = emptyList(),
@@ -29,6 +30,7 @@ data class MedalCol(
 		isSystem = isSystem,
 		score = score,
 
+		sysImage = sysImage,
 		imageUrl = imageUrl,
 		imageKey = imageKey,
 		images = images,

@@ -11,6 +11,7 @@ data class DepartmentCol(
 	val description: String? = null,
 	val companyId: String? = null, // id компании
 
+	override val sysImage: Boolean = false,
 	override val imageUrl: String? = null,
 	override val imageKey: String? = null,
 	override val images: List<ImageRef> = emptyList(),
@@ -25,6 +26,7 @@ data class DepartmentCol(
 		description = description,
 		companyId = companyId ?: "",
 
+		sysImage = sysImage,
 		imageUrl = imageUrl,
 		imageKey = imageKey,
 		images = images,
@@ -34,7 +36,7 @@ data class DepartmentCol(
 fun Department.toDepartmentCol(isNew: Boolean = true) = DepartmentCol(
 	name = name,
 	description = description,
-	imageUrl = imageUrl,
+	imageUrl = imageUrl, // ?
 	companyId = companyId,
 	id = if (isNew) ObjectId().toString() else id
 )

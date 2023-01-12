@@ -11,6 +11,7 @@ data class Company(
 	val email: String? = null,
 	val address: String? = null,
 
+	override val sysImage: Boolean = false,
 	override val imageUrl: String? = null,
 	override val imageKey: String? = null,
 	override val images: List<ImageRef> = emptyList(),

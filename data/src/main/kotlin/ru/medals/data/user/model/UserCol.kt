@@ -30,6 +30,7 @@ data class UserCol(
 
 	val medalsInfo: List<MedalInfoCol> = emptyList(),
 
+	override val sysImage: Boolean = false,
 	override val imageUrl: String? = null,
 	override val imageKey: String? = null,
 	override val images: List<ImageRef> = emptyList(),
@@ -48,9 +49,6 @@ data class UserCol(
 			lastname = lastname,
 			hashPassword = if (clearHashPassword) null else hashPassword,
 			role = role ?: User.NONE,
-			imageUrl = imageUrl,
-			imageKey = imageKey,
-			images = images,
 			bio = bio,
 			post = post,
 			phone = phone,
@@ -63,6 +61,11 @@ data class UserCol(
 			currentScore = currentScore,
 			awardCount = awardCount,
 			isMnc = mnc ?: false,
+
+			sysImage = sysImage,
+			imageUrl = imageUrl,
+			imageKey = imageKey,
+			images = images,
 		)
 	}
 }
@@ -89,6 +92,7 @@ fun User.toUserCol(isNew: Boolean = false): UserCol {
 		currentScore = currentScore,
 		awardCount = awardCount,
 
+		sysImage = sysImage,
 		imageUrl = imageUrl,
 		imageKey = imageKey,
 		images = images,

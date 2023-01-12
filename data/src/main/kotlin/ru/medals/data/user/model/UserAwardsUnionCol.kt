@@ -34,6 +34,7 @@ data class UserAwardsUnionCol(
 
 	val awards: List<AwardUnionCol> = emptyList(),
 
+	override val sysImage: Boolean = false,
 	override val imageUrl: String? = null,
 	override val imageKey: String? = null,
 	override val images: List<ImageRef> = emptyList(),
@@ -50,9 +51,6 @@ data class UserAwardsUnionCol(
 		patronymic = patronymic,
 		lastname = lastname,
 		role = role ?: User.NONE,
-		imageUrl = imageUrl,
-		imageKey = imageKey,
-		images = images,
 		post = post,
 		phone = phone,
 		gender = gender ?: Gender.UNDEFINED,
@@ -63,6 +61,11 @@ data class UserAwardsUnionCol(
 		score = score,
 		currentScore = currentScore,
 		awardCount = awardCount,
-		awards = awards.map { it.toAwardUnion() }
+		awards = awards.map { it.toAwardUnion() },
+
+		sysImage = sysImage,
+		imageUrl = imageUrl,
+		imageKey = imageKey,
+		images = images,
 	)
 }

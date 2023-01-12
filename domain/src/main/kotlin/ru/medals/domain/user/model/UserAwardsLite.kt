@@ -23,6 +23,7 @@ data class UserAwardsLite(
 
 	val awards: List<AwardLite> = emptyList(),
 
+	override val sysImage: Boolean = false,
 	override val imageUrl: String? = null,
 	override val imageKey: String? = null,
 	override val images: List<ImageRef> = emptyList(),

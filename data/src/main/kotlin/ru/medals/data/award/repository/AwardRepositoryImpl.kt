@@ -279,9 +279,11 @@ class AwardRepositoryImpl(
 			).wasAcknowledged()
 
 			if (isSuccess) {
-				// Удаляем старое изображение в s3
-				awardCol.imageKey?.let {
-					s3repository.deleteObject(key = it)
+				// Удаляем старое изображение в s3, если оно не системное (не из галереи)
+				if (!awardCol.sysImage) {
+					awardCol.imageKey?.let {
+						s3repository.deleteObject(key = it)
+					}
 				}
 			} else {
 				// Удаляем новое изображение в s3, если не обновились данные в БД

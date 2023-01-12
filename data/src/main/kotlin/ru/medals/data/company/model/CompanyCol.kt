@@ -14,6 +14,7 @@ data class CompanyCol(
 	val address: String? = null,
 	val ownerId: String? = null, // id владельца компании
 
+	override val sysImage: Boolean = false,
 	override val imageUrl: String? = null,
 	override val imageKey: String? = null,
 	override val images: List<ImageRef> = emptyList(),
@@ -30,6 +31,7 @@ data class CompanyCol(
 		email = email,
 		address = address,
 
+		sysImage = sysImage,
 		imageUrl = imageUrl,
 		imageKey = imageKey,
 		images = images,

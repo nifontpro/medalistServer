@@ -24,6 +24,7 @@ data class UserAwardsUnion(
 
 	val awards: List<AwardUnion> = emptyList(),
 
+	override val sysImage: Boolean = false,
 	override val imageUrl: String? = null,
 	override val imageKey: String? = null,
 	override val images: List<ImageRef> = emptyList(),
