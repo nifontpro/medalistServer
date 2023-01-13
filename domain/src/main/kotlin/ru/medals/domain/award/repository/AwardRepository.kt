@@ -2,6 +2,7 @@ package ru.medals.domain.award.repository
 
 import ru.medals.domain.award.model.*
 import ru.medals.domain.core.bussines.model.RepositoryData
+import ru.medals.domain.gallery.model.GalleryItem
 import ru.medals.domain.image.model.FileData
 
 interface AwardRepository {
@@ -20,5 +21,5 @@ interface AwardRepository {
 	suspend fun deleteUserAwards(userId: String): RepositoryData<Long>
 	suspend fun getAwardsCountByCompany(companyId: String): RepositoryData<AwardCount>
 	suspend fun deleteMainImage(awardLite: AwardLite): RepositoryData<Unit>
-
+	suspend fun setImageFromGallery(awardLite: AwardLite, galleryItem: GalleryItem): RepositoryData<AwardLite>
 }

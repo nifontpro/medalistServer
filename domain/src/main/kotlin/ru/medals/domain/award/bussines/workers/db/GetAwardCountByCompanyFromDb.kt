@@ -1,4 +1,4 @@
-package ru.medals.domain.award.bussines.workers
+package ru.medals.domain.award.bussines.workers.db
 
 import ru.medals.domain.award.bussines.context.AwardContext
 import ru.medals.domain.core.bussines.ContextState

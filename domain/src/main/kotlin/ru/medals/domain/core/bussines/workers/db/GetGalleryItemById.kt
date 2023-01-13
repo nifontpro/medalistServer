@@ -1,12 +1,12 @@
-package ru.medals.domain.gallery.bussines.workers.db
+package ru.medals.domain.core.bussines.workers.db
 
+import ru.medals.domain.core.bussines.BaseContext
 import ru.medals.domain.core.bussines.ContextState
 import ru.medals.domain.core.bussines.helper.checkRepositoryData
-import ru.medals.domain.gallery.bussines.context.GalleryContext
 import ru.otus.cor.ICorChainDsl
 import ru.otus.cor.worker
 
-fun ICorChainDsl<GalleryContext>.getGalleryItemById(title: String) = worker {
+fun <T : BaseContext> ICorChainDsl<T>.getGalleryItemById(title: String) = worker {
 
 	this.title = title
 	on { state == ContextState.RUNNING }

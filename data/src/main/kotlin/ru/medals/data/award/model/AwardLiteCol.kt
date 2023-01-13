@@ -7,6 +7,7 @@ import java.util.*
 
 data class AwardLiteCol(
 	val name: String = "",
+	val sysImage: Boolean = false,
 	val imageUrl: String? = null,
 	val imageKey: String? = null,
 	val startDate: Date? = null,
@@ -19,6 +20,7 @@ data class AwardLiteCol(
 
 	fun toAwardLite() = AwardLite(
 		name = name,
+		sysImage = sysImage,
 		imageUrl = imageUrl,
 		imageKey = imageKey,
 		state = calcAwardState(startDate, endDate),

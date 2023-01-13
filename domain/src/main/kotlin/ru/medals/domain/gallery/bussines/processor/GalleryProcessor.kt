@@ -3,8 +3,10 @@ package ru.medals.domain.gallery.bussines.processor
 import ru.medals.domain.award.bussines.validate.*
 import ru.medals.domain.award.bussines.workers.*
 import ru.medals.domain.core.bussines.IBaseProcessor
+import ru.medals.domain.core.bussines.validate.gallery.validateGalleryItemId
 import ru.medals.domain.core.bussines.validate.query.validateBaseQuery
 import ru.medals.domain.core.bussines.workers.*
+import ru.medals.domain.core.bussines.workers.db.getGalleryItemById
 import ru.medals.domain.core.bussines.workers.query.prepareBaseQuery
 import ru.medals.domain.gallery.bussines.context.GalleryCommand
 import ru.medals.domain.gallery.bussines.context.GalleryContext

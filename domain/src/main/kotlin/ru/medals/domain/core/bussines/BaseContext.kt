@@ -5,6 +5,8 @@ import ru.medals.domain.core.bussines.helper.ContextError
 import ru.medals.domain.core.bussines.model.BaseQuery
 import ru.medals.domain.core.bussines.model.BaseQueryValid
 import ru.medals.domain.core.util.Constants.TEST_MODE
+import ru.medals.domain.gallery.model.GalleryItem
+import ru.medals.domain.gallery.repository.GalleryRepository
 import ru.medals.domain.image.model.FileData
 import ru.medals.domain.message.repository.MessageRepository
 import ru.medals.domain.user.model.User
@@ -13,7 +15,6 @@ import ru.medals.domain.user.repository.UserRepository
 interface IBaseCommand
 
 abstract class BaseContext(
-
 	var companyId: String? = null,
 	var departmentId: String? = null,
 	var userId: String? = null,
@@ -30,6 +31,9 @@ abstract class BaseContext(
 	var principalUser: User = User(),
 	var userFIO: String = "",
 	var timeStart: Long = -1,
+
+	var galleryItem: GalleryItem = GalleryItem(),
+	var findGalleryItem: GalleryItem = GalleryItem(),
 
 	var command: IBaseCommand,
 	var state: ContextState = ContextState.NONE,
@@ -56,6 +60,7 @@ abstract class BaseContext(
 
 	val messageRepository: MessageRepository by inject(MessageRepository::class.java)
 	val userRepository: UserRepository by inject(UserRepository::class.java)
+	val galleryRepository: GalleryRepository by inject(GalleryRepository::class.java)
 }
 
 @Suppress("unused")

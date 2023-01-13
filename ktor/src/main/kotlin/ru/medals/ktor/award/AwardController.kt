@@ -4,10 +4,7 @@ import io.ktor.server.application.*
 import ru.medals.domain.award.bussines.context.AwardCommand
 import ru.medals.domain.award.bussines.context.AwardContext
 import ru.medals.domain.award.bussines.processor.AwardProcessor
-import ru.medals.domain.award.model.Award
-import ru.medals.domain.award.model.AwardCount
-import ru.medals.domain.award.model.AwardRelate
-import ru.medals.domain.award.model.AwardUsers
+import ru.medals.domain.award.model.*
 import ru.medals.ktor.award.mappers.*
 import ru.medals.ktor.award.model.request.*
 import ru.medals.ktor.core.authProcess
@@ -91,4 +88,11 @@ suspend fun ApplicationCall.deleteAwardImageOld(processor: AwardProcessor) =
 	authProcess<AwardDeleteMainImageRequest, Unit, AwardContext>(
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
+	)
+
+suspend fun ApplicationCall.setAwardImageGallery(processor: AwardProcessor) =
+	authProcess<SetAwardGalleryImageRequest, AwardLite, AwardContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetAwardLite() }
 	)

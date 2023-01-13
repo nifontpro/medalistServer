@@ -23,6 +23,7 @@ import ru.medals.data.user.repository.query.getAwardsCountByCompanyQuery
 import ru.medals.domain.award.model.*
 import ru.medals.domain.award.repository.AwardRepository
 import ru.medals.domain.core.bussines.model.RepositoryData
+import ru.medals.domain.gallery.model.GalleryItem
 import ru.medals.domain.image.model.FileData
 import ru.medals.domain.image.repository.S3Repository
 import java.util.*
@@ -91,6 +92,7 @@ class AwardRepositoryImpl(
 				match(AwardCol::id eq id),
 				project(
 					AwardCol::name from 1,
+					AwardCol::sysImage from 1,
 					AwardCol::imageUrl from 1,
 					AwardCol::imageKey from 1,
 					AwardCol::companyId from 1,
@@ -260,6 +262,42 @@ class AwardRepositoryImpl(
 		}
 	}
 
+	/**
+	 * Установить основное изображение из галереи
+	 */
+	override suspend fun setImageFromGallery(
+		awardLite: AwardLite,
+		galleryItem: GalleryItem
+	): RepositoryData<AwardLite> {
+
+		// Удаляем изображение, если не системное:
+		if (!awardLite.sysImage) {
+			awardLite.imageKey?.let {
+				if (!s3repository.deleteObject(key = it)) return errorS3()
+			}
+		}
+
+		return try {
+			awards.updateOneById(
+				id = awardLite.id,
+				update = set(
+					AwardCol::imageUrl setTo galleryItem.imageUrl,
+					AwardCol::imageKey setTo null,
+					AwardCol::sysImage setTo true
+				)
+			)
+			RepositoryData.success(
+				data = awardLite.copy(
+					imageUrl = galleryItem.imageUrl,
+					imageKey = null,
+					sysImage = true
+				)
+			)
+		} catch (e: Exception) {
+			errorAwardUpdate()
+		}
+	}
+
 	@Deprecated("Удалить в будущем")
 	override suspend fun updateImage(
 		awardId: String,
@@ -267,6 +305,10 @@ class AwardRepositoryImpl(
 	): String? {
 		try {
 			val awardCol = awards.findOneById(awardId) ?: return null
+
+			/**
+			 * Переделать, если обновление старого, оставить ссылки
+			 */
 			val imageKey = "C${awardCol.companyId}/awards/${fileData.filename}"
 			val imageUrl = s3repository.putObject(key = imageKey, fileData = fileData) ?: return null
 

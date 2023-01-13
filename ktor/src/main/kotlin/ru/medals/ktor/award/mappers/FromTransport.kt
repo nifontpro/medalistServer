@@ -3,6 +3,7 @@ package ru.medals.ktor.award.mappers
 import ru.medals.domain.award.bussines.context.AwardCommand
 import ru.medals.domain.award.bussines.context.AwardContext
 import ru.medals.domain.award.model.Award
+import ru.medals.domain.gallery.model.GalleryItem
 import ru.medals.ktor.award.model.request.*
 
 fun AwardContext.fromTransport(request: CreateAwardRequest) {
@@ -81,4 +82,10 @@ fun AwardContext.fromTransport(request: GetAwardCountByCompanyRequest) {
 fun AwardContext.fromTransport(request: AwardDeleteMainImageRequest) {
 	command = AwardCommand.DELETE_IMAGE_OLD
 	awardId = request.awardId ?: ""
+}
+
+fun AwardContext.fromTransport(request: SetAwardGalleryImageRequest) {
+	command = AwardCommand.SET_GALLERY_IMAGE
+	awardId = request.awardId
+	galleryItem = GalleryItem(id = request.galleryItemId)
 }

@@ -1,4 +1,4 @@
-package ru.medals.domain.award.bussines.workers
+package ru.medals.domain.award.bussines.workers.db
 
 import ru.medals.domain.activity.model.Activity
 import ru.medals.domain.activity.model.ActivityState

@@ -33,6 +33,10 @@ fun Route.awardRoutes() {
 				call.deleteAwardImageOld(awardProcessor)
 			}
 
+			post("image/set_sys") {
+				call.setAwardImageGallery(awardProcessor)
+			}
+
 			post("user") {
 				call.awardUser(awardProcessor)
 			}

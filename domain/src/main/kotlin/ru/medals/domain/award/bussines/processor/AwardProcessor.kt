@@ -4,13 +4,16 @@ import ru.medals.domain.award.bussines.context.AwardCommand
 import ru.medals.domain.award.bussines.context.AwardContext
 import ru.medals.domain.award.bussines.validate.*
 import ru.medals.domain.award.bussines.workers.*
+import ru.medals.domain.award.bussines.workers.db.*
 import ru.medals.domain.award.bussines.workers.message.sendMessageToPrincipal
 import ru.medals.domain.award.bussines.workers.message.sendMessageToUser
 import ru.medals.domain.core.bussines.IBaseProcessor
-import ru.medals.domain.core.bussines.workers.*
+import ru.medals.domain.core.bussines.validate.gallery.validateGalleryItemId
 import ru.medals.domain.core.bussines.validate.validateAdminLevel
 import ru.medals.domain.core.bussines.validate.validateCompanyIdEmpty
 import ru.medals.domain.core.bussines.validate.validateUserIdEmpty
+import ru.medals.domain.core.bussines.workers.*
+import ru.medals.domain.core.bussines.workers.db.getGalleryItemById
 import ru.otus.cor.rootChain
 import ru.otus.cor.worker
 
@@ -93,6 +96,16 @@ class AwardProcessor : IBaseProcessor<AwardContext> {
 				trimFieldCompanyIdAndCopyToValid("Очищаем companyId")
 				validateAdminLevel("Уровень доступа - администратор")
 				deleteAwardImageOldS3("Удаляем изображение в S3")
+			}
+
+			operation("Установить изображение награды из галереи", AwardCommand.SET_GALLERY_IMAGE) {
+				validateAwardIdEmpty("Проверяем на непустой id")
+				validateGalleryItemId("Проверяем id объекта галереи")
+				getAwardLiteByIdFromDb("Получаем награду, companyId")
+				trimFieldCompanyIdAndCopyToValid("Очищаем companyId")
+				validateAdminLevel("Уровень доступа - администратор")
+				getGalleryItemById("Получаем объект из галереи")
+				setAwardImageGallery("Устанавливаем изображение награды")
 			}
 
 			operation("Наградить сотрудника", AwardCommand.AWARD_USER) {
