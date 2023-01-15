@@ -4,12 +4,15 @@ import io.ktor.server.application.*
 import ru.medals.domain.gallery.bussines.context.GalleryCommand
 import ru.medals.domain.gallery.bussines.context.GalleryContext
 import ru.medals.domain.gallery.bussines.processor.GalleryProcessor
+import ru.medals.domain.gallery.model.Folder
 import ru.medals.domain.gallery.model.GalleryItem
 import ru.medals.ktor.core.process
 import ru.medals.ktor.core.processGallery
 import ru.medals.ktor.gallery.mappers.fromTransport
+import ru.medals.ktor.gallery.mappers.toTransportGetFolder
 import ru.medals.ktor.gallery.mappers.toTransportGetGallery
 import ru.medals.ktor.gallery.mappers.toTransportGetGalleryItem
+import ru.medals.ktor.gallery.model.request.CreateFolderRequest
 import ru.medals.ktor.gallery.model.request.GalleryItemDeleteRequest
 import ru.medals.ktor.gallery.model.request.GetGalleryByFolderRequest
 
@@ -35,4 +38,11 @@ suspend fun ApplicationCall.deleteGalleryItem(processor: GalleryProcessor) =
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
 		toTransport = { toTransportGetGalleryItem() }
+	)
+
+suspend fun ApplicationCall.createFolder(processor: GalleryProcessor) =
+	process<CreateFolderRequest, Folder, GalleryContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetFolder() }
 	)

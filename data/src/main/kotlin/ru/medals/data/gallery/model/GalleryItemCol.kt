@@ -33,7 +33,7 @@ data class GalleryItemCol(
 }
 
 @DslMarker
-annotation class GalleryDslBuild
+annotation class EntityDslBuild
 
 class GalleryItemColBuild {
 	var item = GalleryItem()
@@ -52,5 +52,5 @@ class GalleryItemColBuild {
 	)
 }
 
-@GalleryDslBuild
+@EntityDslBuild
 fun galleryItemColBuild(block: GalleryItemColBuild.() -> Unit) = GalleryItemColBuild().apply(block).build()

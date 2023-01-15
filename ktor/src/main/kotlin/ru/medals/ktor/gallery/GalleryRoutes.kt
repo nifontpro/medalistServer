@@ -26,6 +26,10 @@ fun Route.galleryRoutes() {
 			put {
 				call.updateGalleryItem(galleryProcessor)
 			}
+
+			post("folder") {
+				call.createFolder(galleryProcessor)
+			}
 		}
 
 		post("get_folder") {

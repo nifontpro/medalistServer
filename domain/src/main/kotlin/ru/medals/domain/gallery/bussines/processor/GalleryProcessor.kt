@@ -11,7 +11,12 @@ import ru.medals.domain.core.bussines.workers.query.prepareBaseQuery
 import ru.medals.domain.gallery.bussines.context.GalleryCommand
 import ru.medals.domain.gallery.bussines.context.GalleryContext
 import ru.medals.domain.gallery.bussines.validate.*
+import ru.medals.domain.gallery.bussines.validate.folder.validateFolderName
+import ru.medals.domain.gallery.bussines.validate.folder.validateParentId
 import ru.medals.domain.gallery.bussines.workers.db.*
+import ru.medals.domain.gallery.bussines.workers.folder.db.checkParentFolderExist
+import ru.medals.domain.gallery.bussines.workers.folder.db.createFolder
+import ru.medals.domain.gallery.bussines.workers.folder.trimFieldFolderItem
 import ru.medals.domain.gallery.bussines.workers.trimFieldGalleryItem
 import ru.otus.cor.rootChain
 
@@ -27,8 +32,7 @@ class GalleryProcessor : IBaseProcessor<GalleryContext> {
 
 			operation("Добавить объект в галерею", GalleryCommand.ADD) {
 				validateGalleryItemName("Проверяем наименование")
-//				validateGalleryFolderId("Проверка folderId")
-				validateFolderId("Проверка folderId")
+				validateGalleryFolderId("Проверка folderId")
 				trimFieldGalleryItem("Очищаем поля")
 				addGalleryItem("Добавляем объект в галерею")
 			}
@@ -42,7 +46,7 @@ class GalleryProcessor : IBaseProcessor<GalleryContext> {
 
 			operation("Обновить объект галереи", GalleryCommand.UPDATE) {
 				validateGalleryItemId("Проверяем id")
-				validateFolderId("Проверка folderId")
+				validateGalleryFolderId("Проверка folderId")
 				validateGalleryItemName("Проверяем наименование")
 				trimFieldGalleryItem("Очищаем поля")
 				getGalleryItemById("Получаем объект")
@@ -51,10 +55,18 @@ class GalleryProcessor : IBaseProcessor<GalleryContext> {
 			}
 
 			operation("Получить список объектов галереи", GalleryCommand.GET_BY_FOLDER) {
-				validateFolderId("Проверка folderId")
+				validateGalleryFolderId("Проверка folderId")
 				validateBaseQuery("Проверка базового запроса")
 				prepareBaseQuery("Подготовка базового запроса")
 				getGalleryByFolder("Получаем список объектов в галереи")
+			}
+
+			operation("Создать папку", GalleryCommand.CREATE_FOLDER) {
+				validateFolderName("Проверяем наименование")
+				validateParentId("Проверяем parentId")
+				checkParentFolderExist("Проверяем наличие родительской папки")
+				trimFieldFolderItem("Очищаем поля")
+				createFolder("Создаем папку")
 			}
 
 			finishOperation()

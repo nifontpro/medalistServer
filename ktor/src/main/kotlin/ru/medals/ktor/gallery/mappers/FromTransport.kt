@@ -3,7 +3,9 @@ package ru.medals.ktor.gallery.mappers
 import ru.medals.domain.core.bussines.model.BaseQuery
 import ru.medals.domain.gallery.bussines.context.GalleryCommand
 import ru.medals.domain.gallery.bussines.context.GalleryContext
+import ru.medals.domain.gallery.model.Folder
 import ru.medals.domain.gallery.model.GalleryItem
+import ru.medals.ktor.gallery.model.request.CreateFolderRequest
 import ru.medals.ktor.gallery.model.request.GalleryItemDeleteRequest
 import ru.medals.ktor.gallery.model.request.GetGalleryByFolderRequest
 
@@ -24,4 +26,12 @@ fun GalleryContext.fromTransport(request: GetGalleryByFolderRequest) {
 fun GalleryContext.fromTransport(request: GalleryItemDeleteRequest) {
 	command = GalleryCommand.DELETE
 	galleryItem = GalleryItem(id = request.itemId)
+}
+
+fun GalleryContext.fromTransport(request: CreateFolderRequest) {
+	command = GalleryCommand.CREATE_FOLDER
+	folder = Folder(
+		name = request.name,
+		parentId = request.parentId
+	)
 }
