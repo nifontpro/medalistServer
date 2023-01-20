@@ -32,5 +32,6 @@ enum class CompanyCommand : IBaseCommand {
 	DELETE_MAIN_IMAGE,
 	IMAGE_ADD,
 	IMAGE_UPDATE,
-	IMAGE_DELETE
+	IMAGE_DELETE,
+	GET_IDS
 }

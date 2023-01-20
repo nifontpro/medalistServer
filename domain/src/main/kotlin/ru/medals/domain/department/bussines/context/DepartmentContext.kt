@@ -27,6 +27,7 @@ data class DepartmentContext(
 		UPDATE_IMAGE_OLD,
 		IMAGE_ADD,
 		IMAGE_UPDATE,
-		IMAGE_DELETE
+		IMAGE_DELETE,
+		GET_IDS,
 	}
 }

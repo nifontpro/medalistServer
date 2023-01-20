@@ -35,5 +35,9 @@ fun Route.galleryRoutes() {
 		post("get_folder") {
 			call.getGalleryByFolder(galleryProcessor)
 		}
+
+		post("folders") {
+			call.getFolders(galleryProcessor)
+		}
 	}
 }

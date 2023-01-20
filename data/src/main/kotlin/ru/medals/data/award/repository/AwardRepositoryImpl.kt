@@ -19,6 +19,7 @@ import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorAwardUserD
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorGetAward
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorGetAwardCount
 import ru.medals.data.core.errorS3
+import ru.medals.data.core.model.IdCol
 import ru.medals.data.user.repository.query.getAwardsCountByCompanyQuery
 import ru.medals.domain.award.model.*
 import ru.medals.domain.award.repository.AwardRepository
@@ -282,7 +283,7 @@ class AwardRepositoryImpl(
 				id = awardLite.id,
 				update = set(
 					AwardCol::imageUrl setTo galleryItem.imageUrl,
-					AwardCol::imageKey setTo null,
+					AwardCol::imageKey setTo galleryItem.id,
 					AwardCol::sysImage setTo true
 				)
 			)
@@ -300,20 +301,18 @@ class AwardRepositoryImpl(
 
 	@Deprecated("Удалить в будущем")
 	override suspend fun updateImage(
-		awardId: String,
+		award: AwardLite,
 		fileData: FileData,
 	): String? {
 		try {
-			val awardCol = awards.findOneById(awardId) ?: return null
-
 			/**
 			 * Переделать, если обновление старого, оставить ссылки
 			 */
-			val imageKey = "C${awardCol.companyId}/awards/${fileData.filename}"
+			val imageKey = "C${award.companyId}/awards/${fileData.filename}"
 			val imageUrl = s3repository.putObject(key = imageKey, fileData = fileData) ?: return null
 
 			val isSuccess = awards.updateOneById(
-				id = awardId,
+				id = award.id,
 				update = set(
 					AwardCol::imageUrl setTo imageUrl,
 					AwardCol::imageKey setTo imageKey
@@ -322,8 +321,8 @@ class AwardRepositoryImpl(
 
 			if (isSuccess) {
 				// Удаляем старое изображение в s3, если оно не системное (не из галереи)
-				if (!awardCol.sysImage) {
-					awardCol.imageKey?.let {
+				if (!award.sysImage) {
+					award.imageKey?.let {
 						s3repository.deleteObject(key = it)
 					}
 				}
@@ -348,9 +347,12 @@ class AwardRepositoryImpl(
 		if (!s3repository.available()) return errorS3()
 
 		try {
-			val imageKey = awardLite.imageKey ?: return errorAwardImageNotFound()
 
-			if (!s3repository.deleteObject(key = imageKey)) return errorAwardImageDelete()
+			if (!awardLite.sysImage) {
+				val imageKey = awardLite.imageKey ?: return errorAwardImageNotFound()
+				if (!s3repository.deleteObject(key = imageKey)) return errorAwardImageDelete()
+			}
+
 			awards.updateOneById(
 				id = awardLite.id,
 				update = set(
@@ -361,6 +363,36 @@ class AwardRepositoryImpl(
 			return RepositoryData.success()
 		} catch (e: Exception) {
 			return errorAwardImageDelete()
+		}
+	}
+
+	/**
+	 * Проверка, привязан ли к награде объект из галереи
+	 */
+	override suspend fun galleryItemLinkExist(itemId: String): RepositoryData<Boolean> {
+		return try {
+			val exist = awards.countDocuments(
+				and(AwardCol::sysImage eq true, AwardCol::imageKey eq itemId)
+			) > 0
+			RepositoryData.success(data = exist)
+		} catch (e: Exception) {
+			errorGetAwardCount()
+		}
+	}
+
+	/**
+	 * Получить все id
+	 */
+	override suspend fun getIds(): RepositoryData<List<String>> {
+		return try {
+
+			val ids = awards.aggregate<IdCol>(
+				project(IdCol::id from 1)
+			).toList().map { it.id }
+
+			RepositoryData.success(data = ids)
+		} catch (e: Exception) {
+			errorGetAward()
 		}
 	}
 

@@ -60,6 +60,10 @@ fun Route.departmentRoutes() {
 		post("get_id") {
 			call.getDepartmentById(departmentProcessor)
 		}
+
+		post("ids") {
+			call.getDepartmentIds(departmentProcessor)
+		}
 	}
 
 }

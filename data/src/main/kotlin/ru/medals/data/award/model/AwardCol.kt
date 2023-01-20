@@ -12,13 +12,13 @@ import java.util.*
 //private val log = KotlinLogging.logger {}
 
 data class AwardCol(
-	val name: String,
+	val name: String = "",
 	val description: String? = null,
 	val criteria: String? = null,
 	val startDate: Date? = null,
 	val endDate: Date? = null,
 	val score: Int? = null,
-	val companyId: String,
+	val companyId: String = "",
 	val relations: List<AwardRelate> = emptyList(),
 
 	override val sysImage: Boolean = false,

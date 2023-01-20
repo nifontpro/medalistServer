@@ -6,6 +6,7 @@ import ru.medals.domain.core.response.baseResponseId
 import ru.medals.domain.department.bussines.context.DepartmentContext
 import ru.medals.domain.department.bussines.processor.DepartmentProcessor
 import ru.medals.domain.department.model.Department
+import ru.medals.ktor.award.model.request.GetIdsRequest
 import ru.medals.ktor.core.*
 import ru.medals.ktor.department.mappers.fromTransport
 import ru.medals.ktor.department.mappers.toTransportGetDepartment
@@ -79,4 +80,11 @@ suspend fun ApplicationCall.deleteDepartmentImage(processor: DepartmentProcessor
 	authProcess<DeleteDepartmentImageRequest, Unit, DepartmentContext>(
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) }
+	)
+
+suspend fun ApplicationCall.getDepartmentIds(processor: DepartmentProcessor) =
+	process<GetIdsRequest, List<String>, DepartmentContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetIds() }
 	)

@@ -6,12 +6,14 @@ import org.litote.kmongo.coroutine.aggregate
 import ru.medals.data.company.model.CompanyCol
 import ru.medals.data.company.repository.CompanyRepoErrors.Companion.errorCompanyCreate
 import ru.medals.data.company.repository.CompanyRepoErrors.Companion.errorCompanyDelete
+import ru.medals.data.company.repository.CompanyRepoErrors.Companion.errorCompanyGet
 import ru.medals.data.company.repository.CompanyRepoErrors.Companion.errorCompanyImageDelete
 import ru.medals.data.company.repository.CompanyRepoErrors.Companion.errorCompanyImageNotFound
 import ru.medals.data.company.repository.CompanyRepoErrors.Companion.errorCompanyNotFound
 import ru.medals.data.company.repository.CompanyRepoErrors.Companion.errorCompanyUpdate
 import ru.medals.data.core.errorBadImageKey
 import ru.medals.data.core.errorS3
+import ru.medals.data.core.model.IdCol
 import ru.medals.domain.company.model.Company
 import ru.medals.domain.company.repository.CompanyRepository
 import ru.medals.domain.core.bussines.model.RepositoryData
@@ -261,6 +263,22 @@ class CompanyRepositoryImpl(
 			RepositoryData.success()
 		} else {
 			errorCompanyUpdate()
+		}
+	}
+
+	/**
+	 * Получить все id
+	 */
+	override suspend fun getIds(): RepositoryData<List<String>> {
+		return try {
+
+			val ids = companies.aggregate<IdCol>(
+				project(IdCol::id from 1)
+			).toList().map { it.id }
+
+			RepositoryData.success(data = ids)
+		} catch (e: Exception) {
+			errorCompanyGet()
 		}
 	}
 

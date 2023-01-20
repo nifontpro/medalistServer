@@ -19,7 +19,6 @@ fun ICorChainDsl<GalleryContext>.updateGalleryItem(title: String) = worker {
 		galleryItem = galleryItem.copy(
 			imageUrl = findGalleryItem.imageUrl,
 			imageKey = findGalleryItem.imageKey,
-			countLink = findGalleryItem.countLink,
 			createDate = findGalleryItem.createDate,
 			updateDate = updateDate
 		)

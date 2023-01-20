@@ -112,6 +112,10 @@ class DepartmentProcessor : IBaseProcessor<DepartmentContext> {
 				deleteDepartmentImageDb("Удаляем изображение")
 			}
 
+			operation("Получить ids", DepartmentContext.Command.GET_IDS) {
+				getDepartmentIdsDb("Получаем ids")
+			}
+
 			finishOperation()
 		}.build()
 	}

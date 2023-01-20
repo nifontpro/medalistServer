@@ -39,5 +39,13 @@ interface CompanyRepoErrors {
 				description = "Ошибка обновления данных отдела"
 			)
 		)
+
+		fun errorDepartmentGet() = RepositoryData.error(
+			error = RepositoryError(
+				repository = REPO,
+				violationCode = "i/o error",
+				description = "Ошибка получения данных отдела"
+			)
+		)
 	}
 }

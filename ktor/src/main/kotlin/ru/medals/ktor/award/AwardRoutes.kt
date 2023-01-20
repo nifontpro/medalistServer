@@ -66,5 +66,9 @@ fun Route.awardRoutes() {
 			call.getAwardCountByCompany(awardProcessor)
 		}
 
+		post("ids") {
+			call.getAwardIds(awardProcessor)
+		}
+
 	}
 }

@@ -14,7 +14,6 @@ interface AwardRepository {
 	suspend fun getAwardsWithUsers(companyId: String, filter: String?): RepositoryData<List<AwardUsers>>
 	suspend fun getByIdWithUsers(awardId: String): RepositoryData<AwardUsers>
 	suspend fun update(award: Award): RepositoryData<Unit>
-	suspend fun updateImage(awardId: String, fileData: FileData): String?
 	suspend fun getAwardRelateFromUser(awardId: String, userId: String): RepositoryData<AwardRelate>
 	suspend fun awardUser(awardId: String, awardRelate: AwardRelate, isNew: Boolean): RepositoryData<Unit>
 	suspend fun deleteUserAward(awardId: String, userId: String): RepositoryData<AwardRelate>
@@ -22,4 +21,7 @@ interface AwardRepository {
 	suspend fun getAwardsCountByCompany(companyId: String): RepositoryData<AwardCount>
 	suspend fun deleteMainImage(awardLite: AwardLite): RepositoryData<Unit>
 	suspend fun setImageFromGallery(awardLite: AwardLite, galleryItem: GalleryItem): RepositoryData<AwardLite>
+	suspend fun updateImage(award: AwardLite, fileData: FileData): String?
+	suspend fun galleryItemLinkExist(itemId: String): RepositoryData<Boolean>
+	suspend fun getIds(): RepositoryData<List<String>>
 }

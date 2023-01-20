@@ -79,6 +79,20 @@ class FolderRepositoryImpl(
 		errorGetFolder()
 	}
 
+	/**
+	 * Получить список
+	 */
+	override suspend fun getFolders(parentId: String): RepositoryData<List<Folder>> {
+		return try {
+			val folderList = folders.find(
+				FolderCol::parentId eq parentId
+			).toList().map { it.toFolder() }
+			RepositoryData.success(data = folderList)
+		} catch (e: Exception) {
+			errorGetFolder()
+		}
+	}
+
 	companion object {
 		const val ROOT = "root"
 	}

@@ -16,4 +16,3 @@ fun AwardContext.toTransportGetAwardUsers(): AwardUsers = awardUsers
 fun AwardContext.toTransportGetAwardRelate(): AwardRelate? = awardRelate
 
 fun AwardContext.toTransportGetAwardCount(): AwardCount = awardCount
-

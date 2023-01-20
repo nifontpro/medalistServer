@@ -84,7 +84,7 @@ class AwardProcessor : IBaseProcessor<AwardContext> {
 			operation("Обновить изображение награды", AwardCommand.UPDATE_IMAGE_OLD) {
 				worker("Подготовка к получению из БД") { awardId = imageEntityId }
 				validateAwardIdEmpty("Проверяем на непустой id")
-				getCompanyIdByAwardId("Получаем companyId")
+				getAwardLiteByIdFromDb("Получаем награду, companyId")
 				trimFieldCompanyIdAndCopyToValid("Очищаем companyId")
 				validateAdminLevel("Уровень доступа - администратор")
 				updateAwardImageS3("Обновляем изображение в S3")
@@ -142,6 +142,10 @@ class AwardProcessor : IBaseProcessor<AwardContext> {
 				deleteAwardUserDb("Удаляем награждение сотрудника")
 				decrementAwardUserDb("Уменьшаем число наград у сотрудника на 1")
 				addActivityDeleteAwardUser("Отправляем событие в активность")
+			}
+
+			operation("Получить ids", AwardCommand.GET_IDS) {
+				getAwardIdsDb("Получаем ids")
 			}
 
 			finishOperation()

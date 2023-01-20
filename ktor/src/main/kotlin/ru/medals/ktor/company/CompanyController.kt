@@ -7,6 +7,7 @@ import ru.medals.domain.company.bussines.processor.CompanyProcessor
 import ru.medals.domain.company.model.Company
 import ru.medals.domain.core.response.IdResponse
 import ru.medals.domain.core.response.baseResponseId
+import ru.medals.ktor.award.model.request.GetIdsRequest
 import ru.medals.ktor.company.mappers.fromTransport
 import ru.medals.ktor.company.mappers.toTransportGetCompanies
 import ru.medals.ktor.company.mappers.toTransportGetCompany
@@ -93,4 +94,11 @@ suspend fun ApplicationCall.deleteCompanyImage(processor: CompanyProcessor) =
 	authProcess<DeleteCompanyImageRequest, Unit, CompanyContext>(
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) }
+	)
+
+suspend fun ApplicationCall.getCompanyIds(processor: CompanyProcessor) =
+	process<GetIdsRequest, List<String>, CompanyContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetIds() }
 	)

@@ -16,6 +16,7 @@ import ru.medals.domain.gallery.bussines.validate.folder.validateParentId
 import ru.medals.domain.gallery.bussines.workers.db.*
 import ru.medals.domain.gallery.bussines.workers.folder.db.checkParentFolderExist
 import ru.medals.domain.gallery.bussines.workers.folder.db.createFolder
+import ru.medals.domain.gallery.bussines.workers.folder.db.getFolders
 import ru.medals.domain.gallery.bussines.workers.folder.trimFieldFolderItem
 import ru.medals.domain.gallery.bussines.workers.trimFieldGalleryItem
 import ru.otus.cor.rootChain
@@ -40,7 +41,7 @@ class GalleryProcessor : IBaseProcessor<GalleryContext> {
 			operation("Удалить объект галереи", GalleryCommand.DELETE) {
 				validateGalleryItemId("Проверяем id")
 				getGalleryItemById("Получаем объект")
-				validateLinkExist("Проверяем наличие ссылок")
+				checkAwardLinkExist("Проверка, есть ли ссылки на объект у наград")
 				deleteGalleryItem("Удаляем объект галереи")
 			}
 
@@ -67,6 +68,11 @@ class GalleryProcessor : IBaseProcessor<GalleryContext> {
 				checkParentFolderExist("Проверяем наличие родительской папки")
 				trimFieldFolderItem("Очищаем поля")
 				createFolder("Создаем папку")
+			}
+
+			operation("Получить список папок", GalleryCommand.GET_FOLDERS) {
+				validateParentId("Проверяем parentId")
+				getFolders("Получаем список папок")
 			}
 
 			finishOperation()

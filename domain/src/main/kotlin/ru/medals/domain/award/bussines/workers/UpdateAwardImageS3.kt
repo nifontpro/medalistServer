@@ -17,7 +17,7 @@ fun ICorChainDsl<AwardContext>.updateAwardImageS3(title: String) = worker {
 			description = "Сбой при обновлении изображения награды"
 		) {
 			awardRepository.updateImage(
-				awardId = awardId,
+				award = awardLite,
 				fileData = fileData
 			)
 		}

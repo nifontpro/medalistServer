@@ -3,6 +3,7 @@ package ru.medals.ktor.company.mappers
 import ru.medals.domain.company.bussines.context.CompanyCommand
 import ru.medals.domain.company.bussines.context.CompanyContext
 import ru.medals.domain.company.model.Company
+import ru.medals.ktor.award.model.request.GetIdsRequest
 import ru.medals.ktor.company.model.request.*
 
 @Suppress("UNUSED_PARAMETER")
@@ -69,4 +70,8 @@ fun CompanyContext.fromTransport(request: DeleteCompanyImageRequest) {
 fun CompanyContext.fromTransport(request: DeleteCompanyMainImageRequest) {
 	command = CompanyCommand.DELETE_MAIN_IMAGE
 	companyId = request.companyId
+}
+
+fun CompanyContext.fromTransport(@Suppress("UNUSED_PARAMETER") request: GetIdsRequest) {
+	command = CompanyCommand.GET_IDS
 }

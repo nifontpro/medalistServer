@@ -23,4 +23,5 @@ interface CompanyRepository {
 	suspend fun updateImage(companyId: String, imageKey: String, fileData: FileData): RepositoryData<Unit>
 	suspend fun deleteImage(companyId: String, imageKey: String): RepositoryData<Unit>
 	suspend fun deleteMainImage(companyId: String): RepositoryData<Unit>
+	suspend fun getIds(): RepositoryData<List<String>>
 }

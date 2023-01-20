@@ -8,7 +8,6 @@ data class GalleryItemCol(
 	val name: String = "",
 	val description: String? = null,
 	val folderId: String = "",
-	val countLink: Int = -1, // Число ссылок на объект
 
 	val createDate: Long = -1,
 	val updateDate: Long? = null,
@@ -23,7 +22,6 @@ data class GalleryItemCol(
 		name = name,
 		description = description,
 		folderId = folderId,
-		countLink = countLink,
 		createDate = createDate,
 		updateDate = updateDate,
 		imageUrl = imageUrl,
@@ -44,7 +42,6 @@ class GalleryItemColBuild {
 		name = item.name,
 		description = item.description,
 		folderId = item.folderId,
-		countLink = 0,
 		createDate = System.currentTimeMillis(),
 		imageUrl = imgUrl,
 		imageKey = imgKey,

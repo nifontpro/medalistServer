@@ -2,6 +2,7 @@ package ru.medals.ktor.department.mappers
 
 import ru.medals.domain.department.bussines.context.DepartmentContext
 import ru.medals.domain.department.model.Department
+import ru.medals.ktor.award.model.request.GetIdsRequest
 import ru.medals.ktor.department.model.request.*
 
 fun DepartmentContext.fromTransport(request: CreateEmptyDepartmentRequest) {
@@ -53,4 +54,8 @@ fun DepartmentContext.fromTransport(request: DeleteDepartmentImageRequest) {
 	command = DepartmentContext.Command.IMAGE_DELETE
 	departmentId = request.departmentId
 	imageKey = request.imageKey
+}
+
+fun DepartmentContext.fromTransport(@Suppress("UNUSED_PARAMETER") request: GetIdsRequest) {
+	command = DepartmentContext.Command.GET_IDS
 }

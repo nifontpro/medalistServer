@@ -27,6 +27,7 @@ abstract class BaseContext(
 	var baseQuery: BaseQuery = BaseQuery(),
 	var baseQueryValid: BaseQueryValid = BaseQueryValid(),
 	var searchFilter: String? = null, // deprecated
+	var ids: List<String> = emptyList(),
 
 	var principalUser: User = User(),
 	var userFIO: String = "",

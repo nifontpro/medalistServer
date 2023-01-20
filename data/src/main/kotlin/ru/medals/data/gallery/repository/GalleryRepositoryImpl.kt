@@ -127,7 +127,7 @@ class GalleryRepositoryImpl(
 
 	override suspend fun update(item: GalleryItem): RepositoryData<GalleryItem> {
 		return try {
-			val now =  System.currentTimeMillis()
+			val now = System.currentTimeMillis()
 			gallery.updateOneById(
 				id = item.id,
 				update = set(

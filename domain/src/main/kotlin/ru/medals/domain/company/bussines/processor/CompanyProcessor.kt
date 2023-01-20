@@ -110,6 +110,10 @@ class CompanyProcessor : IBaseProcessor<CompanyContext> {
 				deleteCompanyImageDb("Удаляем изображение")
 			}
 
+			operation("Получить ids", CompanyCommand.GET_IDS) {
+				getCompanyIdsDb("Получаем ids")
+			}
+
 			finishOperation()
 		}.build()
 	}

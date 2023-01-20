@@ -9,3 +9,5 @@ fun GalleryContext.toTransportGetGallery(): List<GalleryItem> = gallery
 fun GalleryContext.toTransportGetGalleryItem(): GalleryItem = galleryItem
 
 fun GalleryContext.toTransportGetFolder(): Folder = folder
+
+fun GalleryContext.toTransportGetFolders(): List<Folder> = folders

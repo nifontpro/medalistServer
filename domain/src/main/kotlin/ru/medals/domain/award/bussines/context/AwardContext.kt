@@ -46,5 +46,6 @@ enum class AwardCommand : IBaseCommand {
 	SET_GALLERY_IMAGE,
 	AWARD_USER,
 	AWARD_USER_DELETE,
-	GET_COUNT
+	GET_COUNT,
+	GET_IDS,
 }

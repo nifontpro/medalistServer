@@ -10,6 +10,7 @@ import ru.medals.ktor.award.model.request.*
 import ru.medals.ktor.core.authProcess
 import ru.medals.ktor.core.process
 import ru.medals.ktor.core.processImageSingle
+import ru.medals.ktor.core.toTransportGetIds
 
 suspend fun ApplicationCall.createAward(processor: AwardProcessor) =
 	authProcess<CreateAwardRequest, Award, AwardContext>(
@@ -95,4 +96,11 @@ suspend fun ApplicationCall.setAwardImageGallery(processor: AwardProcessor) =
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
 		toTransport = { toTransportGetAwardLite() }
+	)
+
+suspend fun ApplicationCall.getAwardIds(processor: AwardProcessor) =
+	process<GetIdsRequest, List<String>, AwardContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetIds() }
 	)

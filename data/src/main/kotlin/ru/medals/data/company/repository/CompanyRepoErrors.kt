@@ -32,6 +32,14 @@ interface CompanyRepoErrors {
 			)
 		)
 
+		fun errorCompanyGet() = RepositoryData.error(
+			error = RepositoryError(
+				repository = REPO,
+				violationCode = "$REPO i/o",
+				description = "Ошибка получения компании"
+			)
+		)
+
 		fun errorCompanyUpdate() = RepositoryData.error(
 			error = RepositoryError(
 				repository = REPO,

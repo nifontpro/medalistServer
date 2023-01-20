@@ -66,5 +66,9 @@ fun Route.companyRoutes() {
 		post("get_id") {
 			call.getCompanyById(companyProcessor)
 		}
+
+		post("ids") {
+			call.getCompanyIds(companyProcessor)
+		}
 	}
 }

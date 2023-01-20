@@ -3,6 +3,7 @@ package ru.medals.domain.gallery.bussines.context
 import mu.KLogger
 import mu.KotlinLogging
 import org.koin.java.KoinJavaComponent.inject
+import ru.medals.domain.award.repository.AwardRepository
 import ru.medals.domain.core.bussines.BaseContext
 import ru.medals.domain.core.bussines.IBaseCommand
 import ru.medals.domain.gallery.model.Folder
@@ -14,11 +15,13 @@ data class GalleryContext(
 	var isImageUpdate: Boolean = false,
 
 	var folder: Folder = Folder(),
+	var folders: List<Folder> = emptyList(),
 
 	val log: KLogger = KotlinLogging.logger {}
 
 ) : BaseContext(command = GalleryCommand.NONE) {
 	val folderRepository: FolderRepository by inject(FolderRepository::class.java)
+	val awardRepository: AwardRepository by inject(AwardRepository::class.java)
 }
 
 enum class GalleryCommand : IBaseCommand {
@@ -27,5 +30,6 @@ enum class GalleryCommand : IBaseCommand {
 	DELETE,
 	UPDATE,
 	GET_BY_FOLDER,
-	CREATE_FOLDER
+	CREATE_FOLDER,
+	GET_FOLDERS
 }

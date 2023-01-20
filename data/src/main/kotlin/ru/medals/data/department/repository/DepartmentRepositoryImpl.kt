@@ -2,12 +2,15 @@ package ru.medals.data.department.repository
 
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineDatabase
+import org.litote.kmongo.coroutine.aggregate
 import ru.medals.data.core.errorBadImageKey
 import ru.medals.data.core.errorS3
+import ru.medals.data.core.model.IdCol
 import ru.medals.data.department.model.DepartmentCol
 import ru.medals.data.department.model.toDepartmentCol
 import ru.medals.data.department.repository.CompanyRepoErrors.Companion.errorDepartmentCreate
 import ru.medals.data.department.repository.CompanyRepoErrors.Companion.errorDepartmentDelete
+import ru.medals.data.department.repository.CompanyRepoErrors.Companion.errorDepartmentGet
 import ru.medals.data.department.repository.CompanyRepoErrors.Companion.errorDepartmentNotFound
 import ru.medals.data.department.repository.CompanyRepoErrors.Companion.errorDepartmentUpdate
 import ru.medals.domain.core.bussines.model.RepositoryData
@@ -200,6 +203,22 @@ class DepartmentRepositoryImpl(
 			RepositoryData.success()
 		} else {
 			errorDepartmentUpdate()
+		}
+	}
+
+	/**
+	 * Получить все id
+	 */
+	override suspend fun getIds(): RepositoryData<List<String>> {
+		return try {
+
+			val ids = departments.aggregate<IdCol>(
+				project(IdCol::id from 1)
+			).toList().map { it.id }
+
+			RepositoryData.success(data = ids)
+		} catch (e: Exception) {
+			errorDepartmentGet()
 		}
 	}
 }

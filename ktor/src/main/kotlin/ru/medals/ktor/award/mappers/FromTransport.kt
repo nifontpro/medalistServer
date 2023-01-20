@@ -89,3 +89,7 @@ fun AwardContext.fromTransport(request: SetAwardGalleryImageRequest) {
 	awardId = request.awardId
 	galleryItem = GalleryItem(id = request.galleryItemId)
 }
+
+fun AwardContext.fromTransport(@Suppress("UNUSED_PARAMETER") request: GetIdsRequest) {
+	command = AwardCommand.GET_IDS
+}
