@@ -6,7 +6,15 @@ import ru.medals.data.core.*
 @Suppress("ConstPropertyName")
 private const val Relations = "\$relations"
 
-fun getUsersByCompanyWithAwardsQuery(companyId: String, searchFilter: String?): String {
+/**
+ * Получить только сотрудников с наградами
+ */
+fun getAwardUsersByCompanyQuery(
+	companyId: String,
+	searchFilter: String?,
+	startDate: Long? = null,
+	endDate: Long? = null,
+): String {
 
 	val strFilter = if (searchFilter.isNullOrBlank()) "" else
 		"""
@@ -17,6 +25,14 @@ fun getUsersByCompanyWithAwardsQuery(companyId: String, searchFilter: String?): 
             ]
         }			
 		""".trimIndent()
+
+	val dataFilter = if (startDate != null && endDate != null) {
+		""",
+			{$eq: ['${"$$"}rel.state', 'AWARD']},	
+			{$gte: ['${"$$"}rel.awardDate', $startDate]},					
+			{$lte: ['${"$$"}rel.awardDate', $endDate]},					
+		""".trimIndent()
+	} else ""
 
 	return """[
     {
@@ -43,7 +59,12 @@ fun getUsersByCompanyWithAwardsQuery(companyId: String, searchFilter: String?): 
                     endDate: 1,
                     imageUrl: 1,
                     relations: {
-                        $filter: {input: '$Relations', as: 'rel', cond: {$eq: ['${"$$"}rel.userId', '${"$$"}uid']}}
+                        $filter: {input: '$Relations', as: 'rel', 
+													cond: {$and: [
+														{$eq: ['${"$$"}rel.userId', '${"$$"}uid']}
+														$dataFilter
+													]}
+												}
                     }
                 }
             }, {$unwind: '$Relations'},
@@ -68,6 +89,16 @@ fun getUsersByCompanyWithAwardsQuery(companyId: String, searchFilter: String?): 
             as: 'awards'
         }
     },
+		
+		{$addFields: {
+			awardCount: {
+        $size: '${'$'}awards'
+      }	
+		}},
+		
+		{$match: { $expr: {
+			$gt: ['${'$'}awardCount', 0]
+		}}},
 
     {
         $lookup: {
@@ -104,12 +135,7 @@ fun getUsersByCompanyWithAwardsQuery(companyId: String, searchFilter: String?): 
             imageUrl: 1,
             imageKey: 1,
             departmentName: '${'$'}department.name',
-            awardCount: {
-                $size: {
-                    $filter:
-                        {input: '${'$'}awards', as: 'awards', cond: {$eq: ['${"$$"}awards.state', 'AWARD']}}
-                }
-            }
+            awardCount: 1
         }
     },
 

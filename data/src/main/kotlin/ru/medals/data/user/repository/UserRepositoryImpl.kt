@@ -12,10 +12,7 @@ import ru.medals.data.user.model.count.UserAwardsCountDepCol
 import ru.medals.data.user.repository.UserDbProjection.Companion.projectUserFieldsWithDepNameAndAwards
 import ru.medals.data.user.repository.UserDbProjection.Companion.projectUserFieldsWithDepartmentName
 import ru.medals.data.user.repository.UserDbProjection.Companion.sortByAwardCountAndLastName
-import ru.medals.data.user.repository.query.getAwardCountByEntity
-import ru.medals.data.user.repository.query.getUserByIdWithAwardsQuery
-import ru.medals.data.user.repository.query.getUsersAwardCountByCompanyAggregateQuery
-import ru.medals.data.user.repository.query.getUsersByCompanyWithAwardsQuery
+import ru.medals.data.user.repository.query.*
 import ru.medals.domain.core.bussines.model.RepositoryData
 import ru.medals.domain.core.util.getFullUserName
 import ru.medals.domain.image.model.FileData
@@ -136,10 +133,36 @@ class UserRepositoryImpl(
 	): RepositoryData<List<UserAwardsUnion>> {
 		return try {
 			val userAwards = users.aggregate<UserAwardsUnionCol>(
-				getUsersByCompanyWithAwardsQuery(companyId = companyId, filter = filter)
+				getUsersByCompanyWithAwardsQuery(companyId = companyId, searchFilter = filter)
 			).toList().map { it.toUserAwardsUnion() }
 			RepositoryData.success(data = userAwards)
 		} catch (e: Exception) {
+			errorUserGet()
+		}
+	}
+
+	/**
+	 * Список награжденных сотрудников компании со списком их наград и именами отделов, в которых находятся
+	 * Награды со всеми полями (AwardUnion)
+	 */
+	override suspend fun getAwardUsersByCompany(
+		companyId: String,
+		filter: String?,
+		startDate: Long?,
+		endDate: Long?,
+	): RepositoryData<List<UserAwardsUnion>> {
+		return try {
+			val userAwards = users.aggregate<UserAwardsUnionCol>(
+				getAwardUsersByCompanyQuery(
+					companyId = companyId,
+					searchFilter = filter,
+					startDate = startDate,
+					endDate = endDate
+				)
+			).toList().map { it.toUserAwardsUnion() }
+			RepositoryData.success(data = userAwards)
+		} catch (e: Exception) {
+			println(e.message)
 			errorUserGet()
 		}
 	}
