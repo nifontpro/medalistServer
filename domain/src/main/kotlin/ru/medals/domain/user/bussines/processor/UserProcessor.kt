@@ -207,6 +207,14 @@ class UserProcessor : IBaseProcessor<UserContext> {
 				deleteUserImageDb("Удаляем изображение")
 			}
 
+			operation("Получить сотрудников для доски почета", UserCommand.FOR_HONOR) {
+				validateCompanyIdEmpty("Проверка на непустой companyId")
+				trimFieldCompanyIdAndCopyToValid("Очистка companyId")
+				prepareFilter("Подготовка фильтра")
+				validateUserCount("Проверяем количество сотрудников на доске почета")
+				getUsersForHonorDb("Получаем сотрудников для доски почета")
+			}
+
 			finishOperation()
 		}.build()
 	}

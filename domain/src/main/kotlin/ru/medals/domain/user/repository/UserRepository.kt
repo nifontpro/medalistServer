@@ -57,10 +57,12 @@ interface UserRepository {
 	suspend fun getUsersAwardsCountAggregate(companyId: String): RepositoryData<List<UserAwardsCountDep>>
 
 	suspend fun getFIO(userId: String): RepositoryData<String>
-	suspend fun getAwardUsersByCompany(
+
+	suspend fun getUsersForHonor(
 		companyId: String,
-		filter: String? = null,
+		searchFilter: String? = null,
 		startDate: Long? = null,
-		endDate: Long? = null
+		endDate: Long? = null,
+		count: Int? = null
 	): RepositoryData<List<UserAwardsUnion>>
 }

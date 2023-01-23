@@ -153,3 +153,12 @@ fun UserContext.fromTransport(request: DeleteUserImageRequest) {
 	userId = request.userId
 	imageKey = request.imageKey
 }
+
+fun UserContext.fromTransport(request: UsersHonorRequest) {
+	command = UserCommand.FOR_HONOR
+	companyId = request.companyId
+	searchFilter = request.filter
+	startDate = request.startDate
+	endDate = request.endDate ?: System.currentTimeMillis()
+	count = request.count
+}

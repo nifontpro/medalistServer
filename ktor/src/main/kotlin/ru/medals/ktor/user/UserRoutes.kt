@@ -140,5 +140,9 @@ fun Route.userRoutes() {
 			call.getUserAwardCountDepByCompany(userProcessor)
 		}
 
+		post("honor") {
+			call.getUsersForHonor(userProcessor)
+		}
+
 	}
 }

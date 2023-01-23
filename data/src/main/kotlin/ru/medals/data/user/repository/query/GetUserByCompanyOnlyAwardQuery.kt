@@ -9,11 +9,12 @@ private const val Relations = "\$relations"
 /**
  * Получить только сотрудников с наградами
  */
-fun getAwardUsersByCompanyQuery(
+fun getUsersForHonorQuery(
 	companyId: String,
 	searchFilter: String?,
 	startDate: Long? = null,
 	endDate: Long? = null,
+	count: Int? = null
 ): String {
 
 	val strFilter = if (searchFilter.isNullOrBlank()) "" else
@@ -33,6 +34,12 @@ fun getAwardUsersByCompanyQuery(
 			{$lte: ['${"$$"}rel.awardDate', $endDate]},					
 		""".trimIndent()
 	} else ""
+
+	val limitStage = count?.let {
+		""",
+			{$limit: $count}
+		""".trimIndent()
+	} ?: ""
 
 	return """[
     {
@@ -140,6 +147,8 @@ fun getAwardUsersByCompanyQuery(
     },
 
     {$sort: {awardCount: -1, lastname: 1}}
-
+		
+		$limitStage
+		
 ]""".trimIndent()
 }

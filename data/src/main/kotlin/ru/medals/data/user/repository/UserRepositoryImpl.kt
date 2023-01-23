@@ -142,22 +142,24 @@ class UserRepositoryImpl(
 	}
 
 	/**
-	 * Список награжденных сотрудников компании со списком их наград и именами отделов, в которых находятся
+	 * Список награжденных сотрудников компании за период
 	 * Награды со всеми полями (AwardUnion)
 	 */
-	override suspend fun getAwardUsersByCompany(
+	override suspend fun getUsersForHonor(
 		companyId: String,
-		filter: String?,
+		searchFilter: String?,
 		startDate: Long?,
 		endDate: Long?,
+		count: Int?,
 	): RepositoryData<List<UserAwardsUnion>> {
 		return try {
 			val userAwards = users.aggregate<UserAwardsUnionCol>(
-				getAwardUsersByCompanyQuery(
+				getUsersForHonorQuery(
 					companyId = companyId,
-					searchFilter = filter,
+					searchFilter = searchFilter,
 					startDate = startDate,
-					endDate = endDate
+					endDate = endDate,
+					count = count
 				)
 			).toList().map { it.toUserAwardsUnion() }
 			RepositoryData.success(data = userAwards)

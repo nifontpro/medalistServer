@@ -28,7 +28,10 @@ class GetUserWithAwardsTest : KoinTest {
 
 			val companyId = "638621902741bb167c6c2386"
 
-			val usersAwards = userRepository.getUsersByCompanyWithAwards(companyId = companyId).data
+			val usersAwards = userRepository.getUsersByCompanyWithAwards(
+				companyId = companyId,
+
+			).data
 			println(usersAwards)
 
 			stopKoin()

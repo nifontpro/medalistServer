@@ -29,10 +29,11 @@ class GetAwardUserTest : KoinTest {
 
 			val companyId = "638621902741bb167c6c2386"
 
-			val usersAwards = userRepository.getAwardUsersByCompany(
+			val usersAwards = userRepository.getUsersForHonor(
 				companyId = companyId,
 				startDate = 1669738287969 + 1,
-				endDate = System.currentTimeMillis()
+				endDate = System.currentTimeMillis(),
+				count = 1
 			)
 
 			separator()

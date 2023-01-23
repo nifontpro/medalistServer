@@ -9,10 +9,6 @@ fun <T : BaseContext> ICorChainDsl<T>.prepareFilter(title: String) = worker {
 	this.title = title
 	on { state == ContextState.RUNNING }
 	handle {
-		searchFilter = if (searchFilter.isNullOrBlank()) {
-			null
-		} else {
-			searchFilter?.trim()
-		}
+		searchFilter = searchFilter?.trim()
 	}
 }

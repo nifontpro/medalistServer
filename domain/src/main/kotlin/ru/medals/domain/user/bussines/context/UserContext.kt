@@ -26,6 +26,11 @@ data class UserContext(
 	var password: String = "",
 	var newPassword: String = "",
 
+	// for Honor:
+	var startDate: Long? = null,
+	var endDate: Long? = null,
+	var count: Int? = null
+
 	) : BaseContext(command = UserCommand.NONE) {
 
 	val companyRepository: CompanyRepository by inject(CompanyRepository::class.java)
@@ -58,5 +63,6 @@ enum class UserCommand : IBaseCommand {
 	AWARD_COUNT_BY_COMPANY_AGR_DEP,
 	IMAGE_ADD,
 	IMAGE_UPDATE,
-	IMAGE_DELETE
+	IMAGE_DELETE,
+	FOR_HONOR,
 }

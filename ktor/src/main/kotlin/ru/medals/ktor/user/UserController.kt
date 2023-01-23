@@ -171,3 +171,10 @@ suspend fun ApplicationCall.deleteUserImage(processor: UserProcessor) =
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) }
 	)
+
+suspend fun ApplicationCall.getUsersForHonor(processor: UserProcessor) =
+	process<UsersHonorRequest, List<UserAwardsUnion>, UserContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetUsersAwardsUnion() }
+	)
