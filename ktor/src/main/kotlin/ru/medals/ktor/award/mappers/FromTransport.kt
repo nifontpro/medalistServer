@@ -3,6 +3,7 @@ package ru.medals.ktor.award.mappers
 import ru.medals.domain.award.bussines.context.AwardCommand
 import ru.medals.domain.award.bussines.context.AwardContext
 import ru.medals.domain.award.model.Award
+import ru.medals.domain.core.bussines.model.BaseQuery
 import ru.medals.domain.gallery.model.GalleryItem
 import ru.medals.ktor.award.model.request.*
 
@@ -49,6 +50,14 @@ fun AwardContext.fromTransport(request: GetAllAwardsByCompanyRequest) {
 	command = AwardCommand.GET_BY_COMPANY_WITH_USERS
 	searchFilter = request.filter
 	companyId = request.companyId
+
+	baseQuery = BaseQuery(
+		page = request.page,
+		pageSize = request.pageSize,
+		filter = request.filter,
+		field = request.field,
+		direction = request.direction
+	)
 }
 
 fun AwardContext.fromTransport(request: GetAwardByIdRequest) {

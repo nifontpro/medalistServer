@@ -20,10 +20,13 @@ import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorGetAward
 import ru.medals.data.award.repository.AwardRepoErrors.Companion.errorGetAwardCount
 import ru.medals.data.core.errorS3
 import ru.medals.data.core.model.IdCol
+import ru.medals.data.core.model.sortStep
 import ru.medals.data.user.repository.query.getAwardsCountByCompanyQuery
 import ru.medals.domain.award.model.*
 import ru.medals.domain.award.repository.AwardRepository
+import ru.medals.domain.core.bussines.model.BaseQueryValid
 import ru.medals.domain.core.bussines.model.RepositoryData
+import ru.medals.domain.core.util.separator
 import ru.medals.domain.gallery.model.GalleryItem
 import ru.medals.domain.image.model.FileData
 import ru.medals.domain.image.repository.S3Repository
@@ -153,22 +156,28 @@ class AwardRepositoryImpl(
 
 	override suspend fun getAwardsWithUsers(
 		companyId: String,
-		filter: String?
+		baseQuery: BaseQueryValid
 	): RepositoryData<List<AwardUsers>> {
 		return try {
-			val awardsUsers = awards.aggregate<AwardUsersCol>(
-				match(
-					and(
-						AwardCol::companyId eq companyId,
-						filter?.let {
-							AwardCol::name regex Regex("$filter", RegexOption.IGNORE_CASE)
-						}
-					)
-				),
-				lookup(from = "userCol", localField = "relations.userId", foreignField = "_id", newAs = "users"),
-			).toList().map { it.toAwardUser() }
+
+			val filter = and(
+				AwardCol::companyId eq companyId,
+				baseQuery.filter?.let {
+					AwardCol::name regex Regex(it, RegexOption.IGNORE_CASE)
+				}
+			)
+
+			val query = mutableListOf(match(filter))
+//			baseQuery.field?.let { query += sortStep(baseQuery) }
+			query += sortStep(baseQuery)
+			query += skip(baseQuery.page * baseQuery.pageSize)
+			query += limit(baseQuery.pageSize)
+			query += lookup(from = "userCol", localField = "relations.userId", foreignField = "_id", newAs = "users")
+			val awardsUsers = awards.aggregate<AwardUsersCol>(query).toList().map { it.toAwardUser() }
 			RepositoryData.success(data = awardsUsers)
 		} catch (e: Exception) {
+			separator()
+			println(e.message)
 			errorGetAward()
 		}
 	}

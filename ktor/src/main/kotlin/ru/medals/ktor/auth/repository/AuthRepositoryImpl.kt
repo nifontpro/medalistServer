@@ -85,3 +85,9 @@ class AuthRepositoryImpl(
 		}
 	}
 }
+/*
+smtp-relay.sendinblue.com
+587
+
+leprinxol@gmail.com
+ */

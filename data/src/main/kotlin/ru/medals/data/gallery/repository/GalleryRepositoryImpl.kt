@@ -1,11 +1,9 @@
 package ru.medals.data.gallery.repository
 
-import org.bson.BsonDocument
-import org.bson.BsonInt32
-import org.bson.conversions.Bson
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import ru.medals.data.core.errorS3
+import ru.medals.data.core.model.sortStep
 import ru.medals.data.gallery.model.GalleryItemCol
 import ru.medals.data.gallery.model.galleryItemColBuild
 import ru.medals.data.gallery.repository.GalleryRepoErrors.Companion.errorGalleryCreate
@@ -68,27 +66,6 @@ class GalleryRepositoryImpl(
 			RepositoryData.success(data = item.toGalleryItem())
 		} catch (e: Exception) {
 			errorGetGallery()
-		}
-	}
-
-	/**
-	 * Шаг сортировки в запросе на получении списка объектов галереи
-	 */
-	private fun sortStep(baseQuery: BaseQueryValid): Bson {
-		val direct = BsonInt32(baseQuery.direction)
-		return when (baseQuery.field) {
-			GalleryItemCol::name.path() -> sort(
-				BsonDocument().append(GalleryItemCol::name.path(), direct)
-			)
-
-			null -> skip(0)
-			else -> {
-				sort(
-					BsonDocument()
-						.append(baseQuery.field, direct)
-						.append(GalleryItemCol::name.path(), BsonInt32(1))
-				)
-			}
 		}
 	}
 

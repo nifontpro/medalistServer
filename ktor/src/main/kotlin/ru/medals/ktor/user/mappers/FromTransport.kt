@@ -1,5 +1,6 @@
 package ru.medals.ktor.user.mappers
 
+import ru.medals.domain.setting.model.UserSetting
 import ru.medals.domain.user.bussines.context.UserCommand
 import ru.medals.domain.user.bussines.context.UserContext
 import ru.medals.domain.user.model.Gender
@@ -152,6 +153,20 @@ fun UserContext.fromTransport(request: DeleteUserImageRequest) {
 	command = UserCommand.IMAGE_DELETE
 	userId = request.userId
 	imageKey = request.imageKey
+}
+
+fun UserContext.fromTransport(request: SaveUserSettingRequest) {
+	command = UserCommand.SAVE_SETTING
+	userId = request.userId
+	userSetting = UserSetting(
+		showOnboarding = request.showOnboarding,
+		pageOnboarding = request.pageOnboarding
+	)
+}
+
+fun UserContext.fromTransport(request: GetUserSettingRequest) {
+	command = UserCommand.GET_SETTING
+	userId = request.userId
 }
 
 fun UserContext.fromTransport(request: UsersHonorRequest) {

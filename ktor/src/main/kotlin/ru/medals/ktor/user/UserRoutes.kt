@@ -51,6 +51,14 @@ fun Route.userRoutes() {
 			delete("image") {
 				call.deleteUserImage(userProcessor)
 			}
+
+			put("setting") {
+				call.saveUserSetting(userProcessor)
+			}
+
+			post("setting") {
+				call.getUserSetting(userProcessor)
+			}
 		}
 
 		authenticate(ADMIN) {

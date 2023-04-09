@@ -22,7 +22,7 @@ fun <T : BaseContext> ICorChainDsl<T>.prepareBaseQuery(title: String) = worker {
 
 			baseQueryValid = baseQueryValid.copy(
 				filter = if (filter.isNullOrBlank()) null else filter.trim(),
-				field = baseQuery.field?.trim(),
+				field = if (field.isNullOrBlank()) null else field.trim(),
 				direction = when {
 					direction == null -> 1
 					direction < 0 -> -1

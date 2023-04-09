@@ -10,7 +10,6 @@ import ru.medals.domain.user.bussines.workers.*
 import ru.otus.cor.rootChain
 import ru.otus.cor.worker
 
-@Suppress("RemoveExplicitTypeArguments")
 class UserProcessor : IBaseProcessor<UserContext> {
 
 	override suspend fun exec(ctx: UserContext) = businessChain.exec(ctx)
@@ -213,6 +212,20 @@ class UserProcessor : IBaseProcessor<UserContext> {
 				prepareFilter("Подготовка фильтра")
 				validateUserCount("Проверяем количество сотрудников на доске почета")
 				getUsersForHonorDb("Получаем сотрудников для доски почета")
+			}
+
+			operation("Сохранить настройки сотрудника", UserCommand.SAVE_SETTING) {
+				validateUserIdEmpty("Проверяем на непустой userId")
+				trimFieldUserIdAndCopyToValid("Очищаем userId")
+				validateUserLevel("Уровень доступа - сотрудник")
+				saveUserSetting("Сохраняем настройки сотрудника")
+			}
+
+			operation("СПолучить настройки сотрудника", UserCommand.GET_SETTING) {
+				validateUserIdEmpty("Проверяем на непустой userId")
+				trimFieldUserIdAndCopyToValid("Очищаем userId")
+				validateUserLevel("Уровень доступа - сотрудник")
+				getUserSetting("Получаем настройки сотрудника")
 			}
 
 			finishOperation()

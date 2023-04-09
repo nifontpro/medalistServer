@@ -9,15 +9,16 @@ import ru.medals.domain.award.bussines.workers.message.sendMessageToPrincipal
 import ru.medals.domain.award.bussines.workers.message.sendMessageToUser
 import ru.medals.domain.core.bussines.IBaseProcessor
 import ru.medals.domain.core.bussines.validate.gallery.validateGalleryItemId
+import ru.medals.domain.core.bussines.validate.query.validateBaseQuery
 import ru.medals.domain.core.bussines.validate.validateAdminLevel
 import ru.medals.domain.core.bussines.validate.validateCompanyIdEmpty
 import ru.medals.domain.core.bussines.validate.validateUserIdEmpty
 import ru.medals.domain.core.bussines.workers.*
 import ru.medals.domain.core.bussines.workers.db.getGalleryItemById
+import ru.medals.domain.core.bussines.workers.query.prepareBaseQuery
 import ru.otus.cor.rootChain
 import ru.otus.cor.worker
 
-@Suppress("RemoveExplicitTypeArguments")
 class AwardProcessor : IBaseProcessor<AwardContext> {
 
 	override suspend fun exec(ctx: AwardContext) = businessChain.exec(ctx)
@@ -68,6 +69,8 @@ class AwardProcessor : IBaseProcessor<AwardContext> {
 			operation("Получить награды в компании с сотрудниками", AwardCommand.GET_BY_COMPANY_WITH_USERS) {
 				validateCompanyIdEmpty("Проверка на непустой companyId")
 				trimFieldCompanyIdAndCopyToValid("Очищаем companyId")
+				validateBaseQuery("Проверка базового запроса")
+				prepareBaseQuery("Подготовка базового запроса")
 				getAwardsByCompanyWithUsersFromDb("Получаем награждения с сотрудниками")
 			}
 

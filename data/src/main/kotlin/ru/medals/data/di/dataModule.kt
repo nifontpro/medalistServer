@@ -10,6 +10,7 @@ import ru.medals.data.gallery.repository.GalleryRepositoryImpl
 import ru.medals.data.medal.repository.MedalRepositoryImpl
 import ru.medals.data.message.repository.MessageRepositoryImpl
 import ru.medals.data.register.repository.RegisterRepositoryImpl
+import ru.medals.data.setting.repository.SettingRepositoryImpl
 import ru.medals.data.user.repository.UserRepositoryImpl
 import ru.medals.domain.activity.repository.ActivityRepository
 import ru.medals.domain.award.repository.AwardRepository
@@ -20,6 +21,7 @@ import ru.medals.domain.gallery.repository.GalleryRepository
 import ru.medals.domain.medal.repository.MedalRepository
 import ru.medals.domain.message.repository.MessageRepository
 import ru.medals.domain.register.repository.RegisterRepository
+import ru.medals.domain.setting.repository.SettingRepository
 import ru.medals.domain.user.repository.UserRepository
 
 /**
@@ -66,5 +68,9 @@ val dataModule = module {
 
 	single<FolderRepository> {
 		FolderRepositoryImpl(db = get())
+	}
+
+	single<SettingRepository> {
+		SettingRepositoryImpl(db = get())
 	}
 }

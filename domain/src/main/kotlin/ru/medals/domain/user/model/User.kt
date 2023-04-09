@@ -21,7 +21,7 @@ data class User(
 	val score: Int? = null,
 	val currentScore: Int? = null,
 	val awardCount: Int = 0,
-	val isMnc: Boolean? = null, // Является ли членом номинационной коммисии
+	val isMnc: Boolean? = null, // Является ли членом номинационной комиссии
 	val departmentName: String? = null,
 
 	override val sysImage: Boolean = false,

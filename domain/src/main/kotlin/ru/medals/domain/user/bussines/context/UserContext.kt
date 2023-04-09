@@ -6,6 +6,8 @@ import ru.medals.domain.award.repository.AwardRepository
 import ru.medals.domain.company.repository.CompanyRepository
 import ru.medals.domain.core.bussines.BaseContext
 import ru.medals.domain.core.bussines.IBaseCommand
+import ru.medals.domain.setting.model.UserSetting
+import ru.medals.domain.setting.repository.SettingRepository
 import ru.medals.domain.user.model.User
 import ru.medals.domain.user.model.UserAwardCount
 import ru.medals.domain.user.model.UserAwardsLite
@@ -26,16 +28,19 @@ data class UserContext(
 	var password: String = "",
 	var newPassword: String = "",
 
+	var userSetting: UserSetting = UserSetting(),
+
 	// for Honor:
 	var startDate: Long? = null,
 	var endDate: Long? = null,
 	var count: Int? = null
 
-	) : BaseContext(command = UserCommand.NONE) {
+) : BaseContext(command = UserCommand.NONE) {
 
 	val companyRepository: CompanyRepository by inject(CompanyRepository::class.java)
 	val awardRepository: AwardRepository by inject(AwardRepository::class.java)
 	val authRepository: AuthRepository by inject(AuthRepository::class.java)
+	val settingRepository: SettingRepository by inject(SettingRepository::class.java)
 }
 
 enum class UserCommand : IBaseCommand {
@@ -65,4 +70,6 @@ enum class UserCommand : IBaseCommand {
 	IMAGE_UPDATE,
 	IMAGE_DELETE,
 	FOR_HONOR,
+	SAVE_SETTING,
+	GET_SETTING,
 }

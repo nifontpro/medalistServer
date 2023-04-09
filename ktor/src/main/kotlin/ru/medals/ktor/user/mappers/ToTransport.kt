@@ -1,5 +1,6 @@
 package ru.medals.ktor.user.mappers
 
+import ru.medals.domain.setting.model.UserSetting
 import ru.medals.domain.user.bussines.context.UserContext
 import ru.medals.domain.user.model.User
 import ru.medals.domain.user.model.UserAwardCount
@@ -20,4 +21,6 @@ fun UserContext.toTransportGetUsersAwardsUnion(): List<UserAwardsUnion> = usersA
 fun UserContext.toTransportGetUsersAwardCount(): UserAwardCount = userAwardCount
 
 fun UserContext.toTransportGetUsersAwardDepsCount(): List<UserAwardsCountDep> = usersAwardsCountDep
+
+fun UserContext.toTransportGetUserSetting(): UserSetting = userSetting
 

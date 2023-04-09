@@ -16,7 +16,7 @@ fun ICorChainDsl<AwardContext>.getAwardsByCompanyWithUsersFromDb(title: String) 
 			awardsUsers = checkRepositoryData {
 				awardRepository.getAwardsWithUsers(
 					companyId = companyIdValid,
-					filter = searchFilter
+					baseQuery = baseQueryValid
 				)
 			} ?: return@handle
 		}

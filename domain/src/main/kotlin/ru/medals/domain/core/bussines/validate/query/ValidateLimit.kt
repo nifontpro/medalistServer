@@ -12,9 +12,9 @@ fun <T : BaseContext> ICorChainDsl<T>.validateBaseQuery(title: String) = worker 
 	handle {
 		fail(
 			errorValidation(
-				field = "pages",
-				violationCode = "not positive",
-				description = "Страницы не могут быть отрицательными числами"
+				field = "base query",
+				violationCode = "bad base query",
+				description = "Ошибка в базовых параметрах запроса"
 			)
 		)
 	}

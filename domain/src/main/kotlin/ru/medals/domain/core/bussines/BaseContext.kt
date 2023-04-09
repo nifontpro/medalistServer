@@ -67,7 +67,7 @@ abstract class BaseContext(
 @Suppress("unused")
 enum class ContextState {
 	NONE,
-	STARTING, // Старт процесора
+	STARTING, // Старт процессора
 	RUNNING,  // Старт операции
 	FAILING,
 	FINISHING,

@@ -1,6 +1,7 @@
 package ru.medals.ktor.user
 
 import io.ktor.server.application.*
+import ru.medals.domain.setting.model.UserSetting
 import ru.medals.domain.user.bussines.context.UserCommand
 import ru.medals.domain.user.bussines.context.UserContext
 import ru.medals.domain.user.bussines.processor.UserProcessor
@@ -177,4 +178,18 @@ suspend fun ApplicationCall.getUsersForHonor(processor: UserProcessor) =
 		processor = processor,
 		fromTransport = { request -> fromTransport(request) },
 		toTransport = { toTransportGetUsersAwardsUnion() }
+	)
+
+suspend fun ApplicationCall.saveUserSetting(processor: UserProcessor) =
+	authProcess<SaveUserSettingRequest, UserSetting, UserContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetUserSetting() }
+	)
+
+suspend fun ApplicationCall.getUserSetting(processor: UserProcessor) =
+	authProcess<GetUserSettingRequest, UserSetting, UserContext>(
+		processor = processor,
+		fromTransport = { request -> fromTransport(request) },
+		toTransport = { toTransportGetUserSetting() }
 	)

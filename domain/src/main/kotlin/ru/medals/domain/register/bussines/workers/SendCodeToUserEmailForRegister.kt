@@ -11,7 +11,7 @@ fun ICorChainDsl<RegisterContext>.sendCodeToUserEmailForRegister(title: String) 
 	this.title = title
 	on { state == ContextState.RUNNING }
 	handle {
-		code = (10000..99999).random().toString()
+		code = (100000..999999).random().toString()
 		val fullName = getFullUserName(user.lastname, user.name, user.patronymic)
 		val message = "Привет, $fullName, \n" +
 				"Для завершения регистрации, введите код: $code"
